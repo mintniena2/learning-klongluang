@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- ป้องกันเบราว์เซอร์ในมือถือจำแคชเก่า ทำให้เห็นข้อมูลใหม่ทันทีที่ครูอัปเดตขึ้น Netlify -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <title>ห้องเรียนออนไลน์ ศูนย์การเรียนชุมชน ปีการศึกษา 2569 ภาคเรียนที่ 2</title>
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --pastel-purple: #9D84B7;
+      --pastel-purple-light: #E8DFF5;
+      --pastel-pink: #F7B2B7;
+      --pastel-pink-light: #FDE2E4;
+      --pastel-cream: #FFF1E6;
+      --pastel-cream-bg: #FFFDF9;
+      --text-dark: #3E3449;
+      --text-muted: #72687D;
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --success: #28a745;
+      --warning: #e0a800;
+      --danger: #dc3545;
+      --radius: 16px;
+      --shadow: 0 8px 24px rgba(157, 132, 183, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Kanit', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--pastel-cream) 0%, var(--pastel-pink-light) 50%, var(--pastel-purple-light) 100%);
+      min-height: 100vh;
+      color: var(--text-dark);
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      font-weight: 600;
+      color: var(--pastel-purple);
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .header-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-nav {
+      background: white;
+      border: 1px solid var(--pastel-purple);
+      color: var(--pastel-purple);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover, .btn-nav.active {
+      background: var(--pastel-purple);
+      color: white;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+      padding: 20px 15px;
+      flex: 1;
+      width: 100%;
+    }
+
+    .view {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    .view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      box-shadow: var(--shadow);
+      border: 1px solid white;
+      margin-bottom: 18px;
+    }
+
+    /* ภาพปกขนาดใหญ่ */
+    .hero-banner-wrapper {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+      border: 2px solid white;
+    }
+
+    @media (min-width: 768px) {
+      .hero-banner-wrapper {
+        height: 350px;
+      }
+    }
+
+    .hero-banner-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .hero-banner-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(74, 64, 84, 0.1) 0%, rgba(157, 132, 183, 0.75) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px;
+      color: white;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .hero-banner-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .hero-banner-sub {
+      font-size: 0.95rem;
+      opacity: 0.95;
+    }
+
+    .level-selection {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .btn-level {
+      background: white;
+      border: 2px solid var(--pastel-purple-light);
+      border-radius: 16px;
+      padding: 18px 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .btn-level:hover {
+      border-color: var(--pastel-purple);
+      transform: translateY(-2px);
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--pastel-purple);
+      cursor: pointer;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .course-card {
+      background: white;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .course-header {
+      font-weight: 600;
+      color: var(--pastel-purple);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px dashed #e8dff5;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+    }
+
+    .session-badge-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .session-btn {
+      background: var(--pastel-cream);
+      border: 1px solid #f2e2d2;
+      color: var(--text-dark);
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .session-btn:hover {
+      background: var(--pastel-purple);
+      color: white;
+      border-color: var(--pastel-purple);
+    }
+
+    /* ปุ่มที่ถูกล็อค */
+    .session-btn.locked {
+      background: #f1f3f5 !important;
+      color: #868e96 !important;
+      border-color: #dee2e6 !important;
+      cursor: not-allowed !important;
+      opacity: 0.9;
+    }
+    .session-btn.locked:hover {
+      background: #e9ecef !important;
+      color: #868e96 !important;
+      border-color: #ced4da !important;
+      transform: none !important;
+    }
+
+    /* Step Bar */
+    .step-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .step-item {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      flex: 1;
+    }
+
+    .step-circle {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 5px;
+      font-weight: 600;
+    }
+
+    .step-item.active .step-circle {
+      border-color: var(--pastel-purple);
+      background: var(--pastel-purple);
+      color: white;
+    }
+
+    .step-item.completed .step-circle {
+      border-color: #28a745;
+      background: #28a745;
+      color: white;
+    }
+
+    .video-container {
+      position: relative;
+      background: #111;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+
+    .video-container video {
+      width: 100%;
+      height: auto;
+      max-height: 420px;
+      display: block;
+    }
+
+    /* โพสต์ไทม์ไลน์โซเชียล (Facebook Style) */
+    .fb-post-card {
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1px solid #e4e6eb;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .fb-post-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px 6px 14px;
+    }
+
+    .fb-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--pastel-purple), var(--pastel-pink));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .fb-meta h4 {
+      font-size: 0.95rem;
+      color: #050505;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .fb-meta span {
+      font-size: 0.75rem;
+      color: #65676b;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .fb-content {
+      padding: 10px 14px;
+      font-size: 0.92rem;
+      color: #1c1e21;
+      line-height: 1.6;
+    }
+
+    .fb-tags-badge {
+      display: inline-block;
+      background: var(--pastel-purple-light);
+      color: var(--pastel-purple);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .fb-task-callout {
+      background: #f0f2f5;
+      border-left: 4px solid var(--pastel-purple);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-top: 10px;
+    }
+
+    .fb-comment-box {
+      background: #ffffff;
+      border: 1px solid #ccd0d5;
+      border-radius: 14px;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .fb-comment-box textarea {
+      width: 100%;
+      border: none;
+      outline: none;
+      resize: vertical;
+      font-size: 0.88rem;
+      background: transparent;
+      min-height: 55px;
+    }
+
+    .fb-comment-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 4px;
+      border-top: 1px dashed #e4e6eb;
+      font-size: 0.8rem;
+    }
+
+    .fb-read-media {
+      margin-top: 10px;
+      background: #000;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .fb-read-media img {
+      width: 100%;
+      max-height: 480px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .fb-read-media-overlay {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.65);
+      color: white;
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 14px;
+      pointer-events: none;
+    }
+
+    .fb-read-reactions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 16px;
+      font-size: 0.8rem;
+      color: #65676b;
+      border-bottom: 1px solid #ced0d4;
+    }
+
+    .fb-read-actions, .fb-actions-bar {
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid #ced0d4;
+      padding: 6px 0;
+      margin: 8px 14px 10px 14px;
+      color: #65676b;
+      font-size: 0.85rem;
+    }
+
+    .fb-action-btn {
+      background: transparent;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+
+    .fb-action-btn:hover { background: #f2f2f2; }
+    .fb-action-btn.liked { color: #1877f2; font-weight: 600; }
+
+    .btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--pastel-purple), var(--pastel-pink));
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(157, 132, 183, 0.3);
+      transition: all 0.2s;
+    }
+
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      border-radius: 8px;
+      width: auto;
+    }
+
+    .btn-danger { background: #dc3545; }
+    .btn-secondary { background: #6c757d; }
+    .btn-success { background: #28a745; }
+
+    .input-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    .input-group input, .input-group textarea, .input-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #e2d9ec;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      outline: none;
+      background: white;
+    }
+
+    .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+      border-color: var(--pastel-purple);
+    }
+
+    .question-card {
+      background: white;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border: 1px solid #f0e6f7;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      margin-top: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .option-label:hover {
+      background: var(--pastel-pink-light);
+    }
+
+    .table-container {
+      overflow-x: auto;
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #f0e6f7;
+      margin-top: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 11px;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background: var(--pastel-cream);
+      color: var(--text-dark);
+      white-space: nowrap;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .badge-pass { background: #d4edda; color: #155724; }
+    .badge-fail { background: #f8d7da; color: #721c24; }
+    .badge-wait { background: #fff3cd; color: #856404; }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+    .modal.active {
+      display: flex;
+    }
+    .modal-content {
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      width: 100%;
+      max-width: 580px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header>
+    <div class="brand" onclick="navigate('view-home')">
+      <i class="fa-solid fa-graduation-cap"></i>
+      <span>ศรช. ออนไลน์ 2/2569</span>
+    </div>
+    <div class="header-btns">
+      <button class="btn-nav" onclick="navigate('view-student-login')"><i class="fa-solid fa-user"></i> ดูผลคะแนน</button>
+      <button class="btn-nav" onclick="navigate('view-teacher-login')"><i class="fa-solid fa-chalkboard-user"></i> คุณครู</button>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- 1. HOME VIEW (รูปปกใหญ่ + เลือกระดับชั้น) -->
+    <div id="view-home" class="view active">
+      <div class="hero-banner-wrapper">
+        <img src="images/cover.png" 
+             onerror="this.src='https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop'" 
+             alt="ภาพปกห้องเรียนออนไลน์" 
+             class="hero-banner-img">
+        <div class="hero-banner-overlay">
+          <span style="background: rgba(255,255,255,0.25); backdrop-filter: blur(4px); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; width: fit-content; margin-bottom: 8px;">
+            <i class="fa-solid fa-graduation-cap"></i> ยินดีต้อนรับสู่ห้องเรียนออนไลน์
+          </span>
+          <h1 class="hero-banner-title">ศูนย์การเรียนชุมชน</h1>
+          <p class="hero-banner-sub">ปีการศึกษา 2569 ภาคเรียนที่ 2</p>
+        </div>
+      </div>
+
+      <div class="card" style="text-align: center; padding: 22px 18px;">
+        <h2 style="font-size:1.15rem; color:var(--pastel-purple); margin-bottom: 4px;">
+          <i class="fa-solid fa-layer-group"></i> เลือกระดับชั้นเพื่อเริ่มเรียนรู้
+        </h2>
+        <p style="font-size:0.85rem; color:var(--text-muted);">
+          เช็คชื่ออัตโนมัติ • ดูวิดีโอ • ศึกษาเนื้อหาไทม์ไลน์ • ส่งใบงาน • ทำแบบทดสอบ
+        </p>
+
+        <div class="level-selection">
+          <div class="btn-level" onclick="openLevel('m-ton')">
+            <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--pastel-pink-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">
+              <i class="fa-solid fa-school" style="font-size: 1.5rem; color: var(--pastel-purple);"></i>
+            </div>
+            <h3 style="font-size:1.05rem; color: var(--text-dark);">ระดับ ม.ต้น</h3>
+            <span style="font-size:0.75rem; color:var(--text-muted); display: block; margin-top: 3px;">3 รายวิชา (รวม 18 ครั้ง)</span>
+          </div>
+
+          <div class="btn-level" onclick="openLevel('m-ปลาย')">
+            <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--pastel-purple-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">
+              <i class="fa-solid fa-building-columns" style="font-size: 1.5rem; color: var(--pastel-purple);"></i>
+            </div>
+            <h3 style="font-size:1.05rem; color: var(--text-dark);">ระดับ ม.ปลาย</h3>
+            <span style="font-size:0.75rem; color:var(--text-muted); display: block; margin-top: 3px;">4 รายวิชา (รวม 18 ครั้ง)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. STUDENT LOGIN FOR ATTENDANCE -->
+    <div id="view-lesson-login" class="view">
+      <span class="back-btn" onclick="navigate('view-lessons')"><i class="fa-solid fa-arrow-left"></i> ย้อนกลับ</span>
+      <div class="card" style="text-align: center;">
+        <i class="fa-solid fa-id-card" style="font-size: 2.5rem; color: var(--pastel-purple); margin-bottom:10px;"></i>
+        <h2 id="login-lesson-title" style="margin-bottom: 6px; font-size:1.15rem;"></h2>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;">กรอกรหัสนักศึกษาเพื่อเช็คชื่อเข้าเรียนอัตโนมัติ</p>
+        
+        <div class="input-group">
+          <label>รหัสนักศึกษา (10 หลัก)</label>
+          <input type="text" id="lesson-std-id" placeholder="กรอกรหัสนักศึกษา" maxlength="15">
+        </div>
+        <div class="input-group">
+          <label>ชื่อ - นามสกุล นักศึกษา</label>
+          <input type="text" id="lesson-std-name" placeholder="ชื่อ นามสกุล จริง">
+        </div>
+        <button class="btn" onclick="startLearningLesson()">เช็คชื่อและเข้าสู่บทเรียน</button>
+      </div>
+    </div>
+
+    <!-- 3. LESSON LIST VIEW -->
+    <div id="view-lessons" class="view">
+      <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> หน้าแรก</span>
+      <div class="card">
+        <h2 id="level-title" style="color:var(--pastel-purple); margin-bottom: 15px; font-size:1.15rem;"></h2>
+        <div id="lesson-list-container"></div>
+      </div>
+    </div>
+
+    <!-- 4. STEP 1: VIDEO (นับถอยหลังแม่นยำ ไม่ค้าง 1 วินาที) -->
+    <div id="view-step-video" class="view">
+      <div class="card">
+        <div class="step-indicator">
+          <div class="step-item active"><div class="step-circle">1</div>วิดีโอ</div>
+          <div class="step-item"><div class="step-circle">2</div>อ่านเนื้อหา</div>
+          <div class="step-item"><div class="step-circle">3</div>ส่งใบงาน</div>
+          <div class="step-item"><div class="step-circle">4</div>แบบทดสอบ</div>
+        </div>
+        <h3 id="video-lesson-name" style="margin-bottom: 10px; color:var(--pastel-purple); font-size:1.05rem;"></h3>
+        
+        <div class="video-container" id="video-embed-box"></div>
+
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;">
+          <i class="fa-solid fa-clock"></i> บังคับดูวิดีโออย่างน้อย <span id="video-timer-count" style="font-weight:600; color:var(--pastel-purple);">10</span> วินาที ก่อนเปิดปุ่มถัดไป
+        </p>
+        <button id="btn-next-to-read" class="btn" disabled onclick="goToReadStep()">ถัดไป: อ่านเนื้อหาบทเรียน <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- 5. STEP 2: READING (Timeline Feed Post) -->
+    <div id="view-step-read" class="view">
+      <div class="card" style="padding: 16px 12px; background: #f0f2f5;">
+        <div class="step-indicator" style="margin-bottom: 12px;">
+          <div class="step-item completed"><div class="step-circle"><i class="fa-solid fa-check"></i></div>วิดีโอ</div>
+          <div class="step-item active"><div class="step-circle">2</div>อ่านเนื้อหา</div>
+          <div class="step-item"><div class="step-circle">3</div>ส่งใบงาน</div>
+          <div class="step-item"><div class="step-circle">4</div>แบบทดสอบ</div>
+        </div>
+
+        <div class="fb-post-card">
+          <div class="fb-post-header">
+            <div class="fb-avatar"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div class="fb-meta">
+              <h4>คุณครูผู้สอน • ศูนย์การเรียนชุมชน</h4>
+              <span><i class="fa-solid fa-book-bookmark"></i> <span id="fb-course-subinfo">บทเรียน</span> • <i class="fa-solid fa-earth-americas"></i> สาธารณะ</span>
+            </div>
+          </div>
+
+          <div class="fb-content">
+            <span id="fb-read-tag" class="fb-tags-badge">#สาระความรู้</span>
+            <div id="reading-content-box" style="white-space: pre-wrap; margin-top: 4px;"></div>
+          </div>
+
+          <div id="infographic-display-area" class="fb-read-media" style="display: none;" onclick="openLightbox(document.getElementById('reading-infographic-img').src)">
+            <img id="reading-infographic-img" src="" alt="ภาพอินโฟกราฟิกประกอบบทเรียน">
+            <div class="fb-read-media-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i> แตะเพื่อซูมภาพเต็มจอ</div>
+          </div>
+
+          <div class="fb-read-reactions">
+            <span><i class="fa-solid fa-thumbs-up" style="color:#1877f2;"></i> <i class="fa-solid fa-heart" style="color:#fa3e3e;"></i> นักศึกษาศึกษาเนื้อหาในโพสต์นี้</span>
+            <span><i class="fa-solid fa-eye"></i> กำลังศึกษา</span>
+          </div>
+
+          <div class="fb-read-actions">
+            <button type="button" class="fb-action-btn" id="fb-btn-read-like" onclick="toggleFbReadLike()">
+              <i class="fa-regular fa-thumbs-up" id="fb-read-like-icon"></i> <span id="fb-read-like-text">ถูกใจ</span>
+            </button>
+            <button type="button" class="fb-action-btn" onclick="goToAssignmentStep()">
+              <i class="fa-regular fa-pen-to-square"></i> ไปทำใบงาน
+            </button>
+            <span class="fb-action-btn" style="cursor:default;">
+              <i class="fa-solid fa-circle-check" style="color:var(--success);"></i> ระบบกำลังบันทึกเวลา
+            </span>
+          </div>
+        </div>
+
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 12px; text-align:center;">
+          <i class="fa-solid fa-book-reader"></i> บังคับอ่านเนื้อหาอย่างน้อย <span id="read-timer-count" style="font-weight:600; color:var(--pastel-purple);">10</span> วินาที
+        </p>
+        <button id="btn-next-to-assignment" class="btn" disabled onclick="goToAssignmentStep()">
+          ถัดไป: ทำใบงานประจำครั้ง <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- 6. STEP 3: ASSIGNMENT (Timeline Feed Style) -->
+    <div id="view-step-assignment" class="view">
+      <div class="card" style="padding: 16px 12px; background: #f0f2f5;">
+        <div class="step-indicator" style="margin-bottom: 12px;">
+          <div class="step-item completed"><div class="step-circle"><i class="fa-solid fa-check"></i></div>วิดีโอ</div>
+          <div class="step-item completed"><div class="step-circle"><i class="fa-solid fa-check"></i></div>อ่านเนื้อหา</div>
+          <div class="step-item active"><div class="step-circle">3</div>ส่งใบงาน</div>
+          <div class="step-item"><div class="step-circle">4</div>แบบทดสอบ</div>
+        </div>
+
+        <div class="fb-post-card">
+          <div class="fb-post-header">
+            <div class="fb-avatar"><i class="fa-solid fa-chalkboard-user"></i></div>
+            <div class="fb-meta">
+              <h4>คุณครูผู้สอน • ศูนย์การเรียนชุมชน</h4>
+              <span><i class="fa-solid fa-clock"></i> กิจกรรมมอบหมายประจำครั้ง • <i class="fa-solid fa-earth-americas"></i> สาธารณะ</span>
+            </div>
+          </div>
+
+          <div class="fb-content">
+            <div id="fb-post-tag" class="fb-tags-badge">#รายวิชา</div>
+            <p style="margin-bottom: 6px;">
+              สวัสดีนักศึกษาทุกคน ให้นักศึกษาตอบคำถามใบงานตามรายการภารกิจด้านล่างนี้ โดยพิมพ์คำตอบในช่องแสดงความคิดเห็นใต้โพสต์ได้เลยครับ 👇
+            </p>
+            <div id="assignment-questions-list"></div>
+          </div>
+
+          <div class="fb-actions-bar">
+            <button type="button" class="fb-action-btn" id="fb-btn-like" onclick="toggleFbLike()">
+              <i class="fa-regular fa-thumbs-up" id="fb-like-icon"></i> <span id="fb-like-text">ถูกใจ</span>
+            </button>
+            <button type="button" class="fb-action-btn" onclick="document.querySelector('#assignment-questions-list textarea')?.focus()">
+              <i class="fa-regular fa-comment"></i> ตอบงาน
+            </button>
+            <span class="fb-action-btn" style="cursor:default;">
+              <i class="fa-solid fa-cloud-arrow-up" style="color:var(--pastel-purple);"></i> เชื่อมต่อคลาวด์
+            </span>
+          </div>
+
+          <div style="background:#f7f8fa; padding:12px 14px; border-top:1px solid #e4e6eb;">
+            <label style="font-size:0.8rem; font-weight:600; color:#444; display:block; margin-bottom:4px;">
+              <i class="fa-solid fa-paperclip"></i> แนบไฟล์การบ้าน/ภาพถ่ายสมุดเพิ่มเติม:
+            </label>
+            <input type="file" id="assignment-file-input" style="font-size:0.82rem; width:100%; padding:6px; background:#fff; border:1px solid #ccd0d5; border-radius:8px;">
+            <small id="file-status-text" style="color:var(--text-muted); display:block; margin-top:3px;"></small>
+          </div>
+        </div>
+
+        <button class="btn" id="btn-save-assignment" onclick="saveAssignmentAndNext()">
+          <i class="fa-solid fa-paper-plane"></i> ส่งคำตอบใบงาน และทำแบบทดสอบ <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- 7. STEP 4: QUIZ (10 ข้อ) -->
+    <div id="view-step-quiz" class="view">
+      <div class="card">
+        <div class="step-indicator">
+          <div class="step-item completed"><div class="step-circle"><i class="fa-solid fa-check"></i></div>วิดีโอ</div>
+          <div class="step-item completed"><div class="step-circle"><i class="fa-solid fa-check"></i></div>อ่านเนื้อหา</div>
+          <div class="step-item completed"><div class="step-circle"><i class="fa-solid fa-check"></i></div>ส่งใบงาน</div>
+          <div class="step-item active"><div class="step-circle">4</div>แบบทดสอบ</div>
+        </div>
+
+        <div style="background:var(--pastel-cream); padding:10px; border-radius:8px; margin-bottom:15px; font-size:0.85rem;">
+          <i class="fa-solid fa-circle-info"></i> แบบทดสอบ 10 ข้อ (ข้อละ 1 คะแนน) | สอบได้ 2 ครั้ง (คิดคะแนนสูงสุด) | เกณฑ์ผ่าน 6 คะแนน
+          <div id="quiz-attempt-info" style="font-weight:600; margin-top:4px;"></div>
+        </div>
+
+        <form id="quiz-form">
+          <div id="quiz-questions-box"></div>
+          <button type="button" class="btn" id="btn-submit-quiz" onclick="submitQuiz()">ส่งคำตอบแบบทดสอบ</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 8. STUDENT LOGIN TO VIEW SCORE -->
+    <div id="view-student-login" class="view">
+      <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> กลับหน้าแรก</span>
+      <div class="card" style="text-align: center;">
+        <i class="fa-solid fa-award" style="font-size: 2.5rem; color: var(--pastel-pink); margin-bottom:10px;"></i>
+        <h2 style="font-size:1.2rem; margin-bottom: 5px;">ตรวจสอบผลการเรียนและคะแนน</h2>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;">เข้าสู่ระบบด้วยรหัสนักศึกษา (รหัสผ่านคือรหัสเดียวกัน)</p>
+
+        <div class="input-group">
+          <label>รหัสนักศึกษา</label>
+          <input type="text" id="std-check-id" placeholder="รหัสนักศึกษา">
+        </div>
+        <div class="input-group">
+          <label>รหัสผ่าน</label>
+          <input type="password" id="std-check-pwd" placeholder="รหัสผ่าน">
+        </div>
+        <button class="btn" id="btn-login-check" onclick="loginCheckScore()">เข้าสู่ระบบดูผลคะแนน</button>
+      </div>
+    </div>
+
+    <!-- 9. STUDENT SCORE RESULT VIEW -->
+    <div id="view-student-result" class="view">
+      <span class="back-btn" onclick="navigate('view-student-login')"><i class="fa-solid fa-arrow-left"></i> ออกจากระบบ</span>
+      <div class="card">
+        <h3 id="res-std-name" style="color:var(--pastel-purple); font-size:1.15rem;"></h3>
+        <p id="res-std-id" style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;"></p>
+
+        <h4 style="margin-bottom:10px; font-size:0.95rem;">ผลการเข้าเรียนและคะแนนสะสม</h4>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>วิชา / ครั้งที่</th>
+                <th>เช็คชื่อ</th>
+                <th>คะแนนสอบ (10)</th>
+                <th>ใบงาน (10)</th>
+                <th>คำแนะนำจากครู</th>
+              </tr>
+            </thead>
+            <tbody id="student-score-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. TEACHER LOGIN -->
+    <div id="view-teacher-login" class="view">
+      <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> กลับหน้าแรก</span>
+      <div class="card" style="text-align: center;">
+        <i class="fa-solid fa-shield-halved" style="font-size: 2.5rem; color: var(--pastel-purple); margin-bottom:10px;"></i>
+        <h2 style="font-size:1.2rem; margin-bottom: 6px;">ระบบจัดการศูนย์การเรียน (คุณครู)</h2>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;">ระบุรหัสผ่านประจำตัวเพื่อเข้าใช้งาน</p>
+
+        <div class="input-group">
+          <label>รหัสผ่านคุณครู</label>
+          <input type="password" id="teacher-pwd" placeholder="กรอกรหัสผ่านประจำตัวครู">
+        </div>
+        <button class="btn" onclick="loginTeacher()">เข้าสู่ระบบจัดการ</button>
+      </div>
+    </div>
+
+    <!-- 11. TEACHER DASHBOARD VIEW -->
+    <div id="view-teacher-dashboard" class="view">
+      <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> ออกจากระบบครู</span>
+      
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+          <h2 style="color:var(--pastel-purple); font-size:1.2rem;"><i class="fa-solid fa-gauge"></i> แผงควบคุมระบบคลาวด์</h2>
+          <button class="btn btn-sm" style="width:auto;" onclick="fetchCloudRecords(true)"><i class="fa-solid fa-arrows-rotate"></i> ซิงค์ข้อมูลล่าสุด</button>
+        </div>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;">เช็คชื่อ ตรวจใบงาน และจัดการบทเรียน</p>
+
+        <div style="display:flex; gap:8px; margin-bottom:15px; overflow-x:auto;">
+          <button class="btn-nav active" id="tab-btn-scores" onclick="switchTeacherTab('scores')"><i class="fa-solid fa-table-list"></i> ดูคะแนน & ตรวจงาน</button>
+          <button class="btn-nav" id="tab-btn-edit" onclick="switchTeacherTab('edit')"><i class="fa-solid fa-pen-to-square"></i> จัดการเนื้อหา/ใบงาน/ข้อสอบ</button>
+        </div>
+
+        <!-- Section 1: Scores & Grading -->
+        <div id="teacher-tab-scores">
+          <div style="background:var(--pastel-purple-light); padding:12px; border-radius:12px; margin-bottom:15px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label style="font-size:0.8rem; font-weight:600;">ระดับชั้น:</label>
+              <select id="filter-teacher-level" onchange="updateTeacherFilterCourses()">
+                <option value="all">-- ทุกระดับชั้น --</option>
+                <option value="m-ton">มัธยมศึกษาตอนต้น</option>
+                <option value="m-ปลาย">มัธยมศึกษาตอนปลาย</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.8rem; font-weight:600;">รายวิชาและครั้งที่:</label>
+              <select id="filter-teacher-session" onchange="renderFilteredTeacherTable()">
+                <option value="all">-- ทุกรายวิชา/ครั้งที่ --</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>รหัส / ผู้เรียน</th>
+                  <th>วิชา / ครั้งที่</th>
+                  <th>เช็คชื่อเมื่อ</th>
+                  <th>สอบ (10)</th>
+                  <th>ใบงาน (10)</th>
+                  <th>รวม (20)</th>
+                  <th>การตรวจงาน</th>
+                </tr>
+              </thead>
+              <tbody id="teacher-records-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Section 2: Manage Lessons -->
+        <div id="teacher-tab-edit" style="display:none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h4 style="font-size:1rem;">แก้ไขเนื้อหา อินโฟกราฟิก ใบงาน และข้อสอบ</h4>
+            <button class="btn btn-sm" onclick="startAddNewLesson()"><i class="fa-solid fa-plus"></i> + เพิ่มบทเรียนใหม่</button>
+          </div>
+
+          <div class="input-group">
+            <label>เลือกระดับชั้น</label>
+            <select id="edit-select-level" onchange="loadLessonEditDropdown()">
+              <option value="m-ton">ระดับ ม.ต้น</option>
+              <option value="m-ปลาย">ระดับ ม.ปลาย</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>เลือกบทเรียนที่ต้องการจัดการ</label>
+            <select id="edit-select-lesson" onchange="populateEditForm()"></select>
+          </div>
+
+          <hr style="border:0; border-top:1px dashed #ddd; margin:15px 0;">
+
+          <!-- สวิตช์ปุ่มล็อค / ปลดล็อค สำหรับครู -->
+          <div class="input-group" style="background:#FFF0F3; padding:12px; border-radius:12px; border:1px solid #FFD1DC;">
+            <label style="font-weight:600; color:#C2185B;"><i class="fa-solid fa-lock"></i> สถานะการเปิดบทเรียนนี้ (สั่งล็อค/ปลดล็อค)</label>
+            <select id="edit-lock-status" style="font-weight:600;">
+              <option value="unlocked">🟢 เปิดให้นักศึกษาเข้าเรียนได้ทันที (Unlocked)</option>
+              <option value="locked">🔴 ล็อคบทเรียนนี้ (ห้ามเข้าเรียน - Locked)</option>
+            </select>
+            <small style="color:var(--text-muted); display:block; margin-top:4px;">* ถ้าเลือกล็อค นักศึกษาจะเจอปุ่มสีเทาและแม่กุญแจ ไม่สามารถกดเข้าทำก่อนได้</small>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div class="input-group">
+              <label>รหัสวิชา (เช่น กอ22002)</label>
+              <input type="text" id="edit-code">
+            </div>
+            <div class="input-group">
+              <label>ครั้งที่เรียน (เช่น ครั้งที่ 1)</label>
+              <input type="text" id="edit-session">
+            </div>
+          </div>
+          
+          <div class="input-group">
+            <label>ชื่อวิชา</label>
+            <input type="text" id="edit-title">
+          </div>
+          
+          <div class="input-group">
+            <label>ที่อยู่ไฟล์วิดีโอ (โฟลเดอร์ video/ หรือ YouTube URL)</label>
+            <input type="text" id="edit-video">
+          </div>
+          
+          <div class="input-group">
+            <label>เนื้อหาบทเรียนที่บังคับอ่าน (จัดวรรคตอนเพื่อให้อ่านง่าย)</label>
+            <textarea id="edit-content" rows="6"></textarea>
+          </div>
+
+          <div class="input-group" style="background:#FAF7FC; padding:12px; border-radius:12px; border:1px solid #E4D9F0;">
+            <label><i class="fa-solid fa-image" style="color:var(--pastel-purple);"></i> ลิงก์รูปภาพอินโฟกราฟิก (เช่น images/info1.jpg หรือวาง URL รูปภาพ)</label>
+            <input type="text" id="edit-infographic" placeholder="images/infographic.jpg หรือ https://...">
+          </div>
+
+          <div style="background:#FFF9F2; padding:14px; border-radius:12px; border:1px solid #F5E6D3; margin:15px 0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <label style="font-weight:600; color:#5D4037;"><i class="fa-solid fa-list-check"></i> ข้อคำถามในใบงาน (สามารถเพิ่มหรือลดข้อได้)</label>
+              <button type="button" class="btn btn-sm btn-success" onclick="addAssignmentTaskField()"><i class="fa-solid fa-plus"></i> เพิ่มข้อ</button>
+            </div>
+            <div id="edit-tasks-container"></div>
+          </div>
+
+          <h5 style="margin: 20px 0 8px; color:var(--pastel-purple);"><i class="fa-solid fa-feather-pointed"></i> แก้ไขแบบทดสอบ 10 ข้อ (ข้อละ 1 คะแนน)</h5>
+          <div id="edit-quiz-container"></div>
+
+          <div style="display:flex; gap:10px; margin-top:20px;">
+            <button class="btn btn-danger btn-sm" onclick="deleteCurrentLesson()"><i class="fa-solid fa-trash"></i> ลบบทเรียนนี้</button>
+            <button class="btn" onclick="saveLessonEdits()"><i class="fa-solid fa-floppy-disk"></i> บันทึกข้อมูลบทเรียน</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODAL: ตรวจและให้คะแนนใบงาน -->
+  <div id="modal-grading" class="modal">
+    <div class="modal-content">
+      <h3 style="color:var(--pastel-purple); margin-bottom:8px;"><i class="fa-solid fa-pen-to-square"></i> ตรวจและให้คะแนนใบงาน</h3>
+      <p id="grade-modal-student" style="font-size:0.88rem; color:var(--text-muted); margin-bottom:12px;"></p>
+      
+      <div id="grade-modal-answers-container" style="margin-bottom:12px;"></div>
+
+      <div style="margin-bottom:15px; font-size:0.85rem; background:#FAF7FC; padding:10px; border-radius:8px;">
+        <strong><i class="fa-solid fa-paperclip"></i> ไฟล์แนบเสริม:</strong> <span id="grade-modal-file-link"></span>
+      </div>
+
+      <div class="input-group">
+        <label>คะแนนใบงาน (เต็ม 10 คะแนน)</label>
+        <input type="number" id="grade-modal-score" min="0" max="10" placeholder="0 - 10">
+      </div>
+
+      <div class="input-group">
+        <label>คำแนะนำ / ข้อเสนอแนะของคุณครู</label>
+        <textarea id="grade-modal-feedback" rows="3" placeholder="เขียนคำแนะนำ..."></textarea>
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-secondary" onclick="closeGradingModal()">ยกเลิก</button>
+        <button class="btn" onclick="saveAssignmentGrade()">บันทึกผลการตรวจ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: LIGHTBOX ขยายอินโฟกราฟิกเต็มจอ -->
+  <div id="modal-lightbox" class="modal" onclick="closeLightbox()">
+    <div style="position:relative; max-width:92%; max-height:92%;">
+      <img id="lightbox-img" src="" style="width:100%; height:auto; max-height:85vh; object-fit:contain; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+      <p style="color:white; text-align:center; font-size:0.85rem; margin-top:10px;">(คลิกพื้นที่ว่างเพื่อปิดหน้าต่าง)</p>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // ==========================================
+    // 🔗 ตั้งค่า URL GOOGLE APPS SCRIPT คลาวด์
+    // นำ Web App URL ที่ลงท้ายด้วย /exec มาวางในเครื่องหมายคำพูดด้านล่างนี้
+    // ==========================================
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx_gxrzJNeDoOYooEboPXdubTWjgqP8MuzxchN878CMTl51aoGHi58EShn9q0xn9A5j/exec";
+
+    async function syncToCloud(recordData) {
+      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("วาง_URL")) return;
+      try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "save", data: recordData })
+        });
+      } catch (err) {
+        console.error("ส่งข้อมูลล้มเหลว:", err);
+      }
+    }
+
+    async function fetchCloudRecords(showAlert = false) {
+      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("วาง_URL")) return false;
+      try {
+        const res = await fetch(GOOGLE_SCRIPT_URL + "?nocache=" + new Date().getTime());
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          data.forEach(r => {
+            r.stdId = String(r.stdId || r.stdid || "").trim();
+            let ans = r.assignmentAnswers || r.assignmentanswers;
+            if (typeof ans === 'string' && ans.startsWith('{')) {
+              try { r.assignmentAnswers = JSON.parse(ans); } catch(e){}
+            }
+          });
+          appData.records = data;
+          saveStorage();
+          renderFilteredTeacherTable();
+          if (showAlert) alert('ดึงข้อมูลล่าสุดจาก Google Sheets สำเร็จ! (' + data.length + ' รายการ)');
+          return true;
+        }
+      } catch (err) {
+        console.error("ดึงข้อมูลจากคลาวด์ไม่สำเร็จ:", err);
+      }
+      return false;
+    }
+
+    // =======================================================
+    // 📚 โครงสร้างรายวิชาแจกแจงแยกรายครั้ง ครบ 7 วิชา 36 ครั้ง
+    // มีฟิลด์ isLocked: false (เปิดเรียน) / true (ล็อค)
+    // =======================================================
+    function generateInitialCourses() {
+      function buildCourse(prefix, code, title, count, topic) {
+        const list = [];
+        for (let i = 1; i <= count; i++) {
+          list.push({
+            id: `${prefix}_s${i}`,
+            code: code,
+            title: title,
+            session: `ครั้งที่ ${i}`,
+            isLocked: i > 1, // 👉 ครั้งที่ 1 เปิดเรียนทันที, ครั้งที่ 2 เป็นต้นไป ล็อคไว้ก่อน
+            videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            infographicUrl: 'images/cover.jpg',
+            content: `เนื้อหาการเรียนรู้วิชา ${title} (${code}) ครั้งที่ ${i}:\n\nหัวข้อ: ${topic}\n\n1. ให้นักศึกษาศึกษาเนื้อหาในคลิปวิดีโอและทำความเข้าใจประเด็นสำคัญ\n2. พิจารณาภาพสรุปความรู้ด้านล่างประกอบความเข้าใจ\n3. เมื่อศึกษาเรียบร้อยแล้ว ให้ตอบคำถามใบงานประจำครั้งและทำแบบทดสอบหลังเรียน`,
+            assignmentTasks: [
+              `ข้อ 1: สรุปสิ่งที่ได้เรียนรู้จากวิชา ${title} ครั้งที่ ${i}`,
+              `ข้อ 2: ยกตัวอย่างการนำความรู้ไปประยุกต์ใช้ 1 ตัวอย่าง`
+            ],
+            questions: generateSampleQuiz(title, i)
+          });
+        }
+        return list;
+      }
+
+      return {
+        // ม.ต้น (3 วิชา รวม 18 ครั้ง)
+        'm-ton': [
+          ...buildCourse('mt1', 'กอ22002', 'วิชาการค้าขายออนไลน์', 5, 'การเปิดร้านค้าและการตลาดออนไลน์เบื้องต้น'),
+          ...buildCourse('mt2', 'สค210001', 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง', 7, 'ประวัติศาสตร์ชาติไทย หน้าที่พลเมือง และการปกครองระบอบประชาธิปไตย'),
+          ...buildCourse('mt3', 'พต210001', 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)', 6, 'English Communication in Daily Life and Greetings')
+        ],
+
+        // ม.ปลาย (4 วิชา รวม 18 ครั้ง)
+        'm-ปลาย': [
+          ...buildCourse('mp1', 'สค310001', 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง', 6, 'เหตุการณ์สำคัญทางประวัติศาสตร์ไทยและสากล และกฎหมายที่ควรรู้'),
+          ...buildCourse('mp2', 'กอ320003', 'คุณธรรมและจริยธรรมในการประกอบอาชีพการบริการ', 3, 'จรรยาบรรณวิชาชีพและจิตบริการในการทำงานร่วมกับผู้อื่น'),
+          ...buildCourse('mp3', 'สศ320001', 'วิชาสุขภาพและความปลอดภัยในชีวิต', 3, 'การดูแลสุขภาพองค์รวม การปฐมพยาบาล และความปลอดภัยในการใช้ชีวิต'),
+          ...buildCourse('mp4', 'พต310001', 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)', 6, 'English for Career and International Communication')
+        ]
+      };
+    }
+
+    function generateSampleQuiz(title, sessionNum) {
+      const questions = [];
+      for (let i = 1; i <= 10; i++) {
+        questions.push({
+          q: `ข้อที่ ${i}: จากบทเรียนวิชา ${title} ครั้งที่ ${sessionNum} ข้อใดถูกต้องที่สุด?`,
+          options: [
+            `ก. คำตอบที่ 1 (ถูกต้องตามหลักการ)`,
+            `ข. คำตอบที่ 2`,
+            `ค. คำตอบที่ 3`,
+            `ง. คำตอบที่ 4`
+          ],
+          ans: 0
+        });
+      }
+      return questions;
+    }
+
+    // 🌟 ดึงข้อมูลสดจากโค้ดเสมอ ไม่ต้องเปลี่ยนเลข v อีกต่อไป
+    let appData = {
+      lessons: generateInitialCourses(),
+      records: JSON.parse(localStorage.getItem('clc_records_cloud')) || []
+    };
+
+    let currentLevel = 'm-ton';
+    let currentLesson = null;
+    let currentStudent = null;
+    let videoTimerInterval = null;
+    let readTimerInterval = null;
+    let selectedGradingRecord = null;
+    let tempUploadedFile = null;
+
+    function navigate(viewId) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      const target = document.getElementById(viewId);
+      if(target) target.classList.add('active');
+      window.scrollTo(0,0);
+    }
+
+    function openLevel(lvl) {
+      currentLevel = lvl;
+      document.getElementById('level-title').innerText = lvl === 'm-ton' ? 'ระดับมัธยมศึกษาตอนต้น' : 'ระดับมัธยมศึกษาตอนปลาย';
+      renderLessonListGrouped();
+      navigate('view-lessons');
+    }
+
+    function renderLessonListGrouped() {
+      const container = document.getElementById('lesson-list-container');
+      container.innerHTML = '';
+      const list = appData.lessons[currentLevel] || [];
+
+      const grouped = {};
+      list.forEach(item => {
+        if(!grouped[item.code]) {
+          grouped[item.code] = {
+            code: item.code,
+            title: item.title,
+            sessions: []
+          };
+        }
+        grouped[item.code].sessions.push(item);
+      });
+
+      Object.values(grouped).forEach(course => {
+        const div = document.createElement('div');
+        div.className = 'course-card';
+        div.innerHTML = `
+          <div class="course-header">
+            <span><i class="fa-solid fa-book-bookmark"></i> ${course.title} (${course.code})</span>
+            <small style="font-size:0.8rem; color:var(--text-muted);">เรียน ${course.sessions.length} ครั้ง</small>
+          </div>
+          <div class="session-badge-list" id="sessions-${course.code}"></div>
+        `;
+        container.appendChild(div);
+
+        const badgeBox = div.querySelector(`#sessions-${course.code}`);
+        course.sessions.forEach(s => {
+          const btn = document.createElement('button');
+          
+          if (s.isLocked) {
+            btn.className = 'session-btn locked';
+            btn.innerHTML = `<i class="fa-solid fa-lock"></i> ${s.session} <small style="font-size:0.7rem;">(ล็อค)</small>`;
+            btn.onclick = () => {
+              alert(`🔒 บทเรียนนี้ยังไม่เปิดให้เข้าเรียน\n\nวิชา: ${s.title}\n${s.session}\nกรุณารอคุณครูผู้สอนเปิดบทเรียนตามกำหนดการครับ`);
+            };
+          } else {
+            btn.className = 'session-btn';
+            btn.innerHTML = `<i class="fa-solid fa-play" style="font-size:0.7rem;"></i> ${s.session}`;
+            btn.onclick = () => selectLesson(s);
+          }
+
+          badgeBox.appendChild(btn);
+        });
+      });
+    }
+
+    function selectLesson(lesson) {
+      if (lesson.isLocked) {
+        alert(`🔒 บทเรียนนี้ยังไม่เปิดให้เข้าเรียน กรุณารอคุณครูผู้สอนเปิดบทเรียนครับ`);
+        return;
+      }
+
+      currentLesson = lesson;
+      if (!currentLesson.assignmentTasks) {
+        currentLesson.assignmentTasks = [currentLesson.assignmentTask || 'ให้นักศึกษาสรุปสิ่งที่ได้เรียนรู้'];
+      }
+      document.getElementById('login-lesson-title').innerText = `${lesson.title} (${lesson.code}) - ${lesson.session}`;
+      navigate('view-lesson-login');
+    }
+
+    // 1. เช็คชื่อเข้าเรียน + ยิงเข้า Google Sheets ทันที
+    async function startLearningLesson() {
+      const id = document.getElementById('lesson-std-id').value.trim();
+      const name = document.getElementById('lesson-std-name').value.trim();
+
+      if (!id || !name) {
+        alert('กรุณากรอกรหัสนักศึกษาและชื่อ-นามสกุลให้ครบถ้วน');
+        return;
+      }
+
+      currentStudent = { id, name };
+
+      let record = appData.records.find(r => String(r.stdId).trim() === String(id).trim() && r.lessonId === currentLesson.id);
+      if (!record) {
+        record = {
+          stdId: id,
+          stdName: name,
+          level: currentLevel,
+          lessonId: currentLesson.id,
+          courseCode: currentLesson.code,
+          session: currentLesson.session,
+          lessonTitle: `${currentLesson.title} (${currentLesson.code})`,
+          attendedAt: new Date().toLocaleString('th-TH'),
+          quizAttempts: 0,
+          bestQuizScore: 0,
+          quizPassed: false,
+          assignmentAnswers: {},
+          assignmentFile: null,
+          assignmentScore: null,
+          teacherFeedback: ''
+        };
+        appData.records.push(record);
+        saveStorage();
+      }
+
+      syncToCloud(record);
+      startVideoStep();
+    }
+
+    // Step 1: Video Player (แก้ปัญหานับเวลาค้าง)
+    function startVideoStep() {
+      navigate('view-step-video');
+      document.getElementById('video-lesson-name').innerText = `${currentLesson.title} (${currentLesson.code}) - ${currentLesson.session}`;
+      
+      const vBox = document.getElementById('video-embed-box');
+      const vUrl = currentLesson.videoUrl || '';
+
+      if (vUrl.includes('youtube.com') || vUrl.includes('youtu.be')) {
+        let embedUrl = vUrl;
+        if (vUrl.includes('watch?v=')) {
+          embedUrl = vUrl.replace('watch?v=', 'embed/');
+        } else if (vUrl.includes('youtu.be/')) {
+          embedUrl = vUrl.replace('youtu.be/', 'www.youtube.com/embed/');
+        }
+        vBox.innerHTML = `
+          <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:12px;">
+            <iframe src="${embedUrl}" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+          </div>
+        `;
+      } else {
+        vBox.innerHTML = `
+          <video id="lesson-html5-video" controls playsinline controlslist="nodownload" style="width:100%; max-height:420px; border-radius:12px; background:#000;">
+            <source src="${vUrl}" type="video/mp4">
+            <source src="${vUrl}" type="video/webm">
+            <p style="color:#fff; padding:20px; text-align:center;">
+              ไม่พบไฟล์วิดีโอ (${vUrl})<br>
+              <small>สามารถเปลี่ยนที่อยู่วิดีโอได้ในหน้าจัดการสำหรับครู</small>
+            </p>
+          </video>
+        `;
+      }
+
+      if (videoTimerInterval) {
+        clearInterval(videoTimerInterval);
+        videoTimerInterval = null;
+      }
+
+      const btn = document.getElementById('btn-next-to-read');
+      const timerSpan = document.getElementById('video-timer-count');
+      btn.disabled = true;
+
+      let countdown = 10;
+      timerSpan.innerText = countdown;
+
+      videoTimerInterval = setInterval(() => {
+        countdown--;
+        if (countdown <= 0) {
+          clearInterval(videoTimerInterval);
+          videoTimerInterval = null;
+          timerSpan.innerText = "0";
+          btn.disabled = false;
+          btn.innerHTML = `ถัดไป: อ่านเนื้อหาบทเรียน <i class="fa-solid fa-arrow-right"></i>`;
+        } else {
+          timerSpan.innerText = countdown;
+        }
+      }, 1000);
+    }
+
+    // Step 2: Reading Timeline
+    let isFbReadLiked = false;
+    function toggleFbReadLike() {
+      isFbReadLiked = !isFbReadLiked;
+      const btn = document.getElementById('fb-btn-read-like');
+      const icon = document.getElementById('fb-read-like-icon');
+      const txt = document.getElementById('fb-read-like-text');
+      if (isFbReadLiked) {
+        btn.classList.add('liked');
+        icon.className = 'fa-solid fa-thumbs-up';
+        txt.innerText = 'ถูกใจแล้ว (1)';
+      } else {
+        btn.classList.remove('liked');
+        icon.className = 'fa-regular fa-thumbs-up';
+        txt.innerText = 'ถูกใจ';
+      }
+    }
+
+    function goToReadStep() {
+      const video = document.getElementById('lesson-html5-video');
+      if (video) video.pause();
+
+      navigate('view-step-read');
+
+      document.getElementById('fb-course-subinfo').innerText = `${currentLesson.code} • ${currentLesson.session}`;
+      document.getElementById('fb-read-tag').innerText = `#${currentLesson.title} (${currentLesson.session})`;
+      document.getElementById('reading-content-box').innerText = currentLesson.content;
+
+      const infoBox = document.getElementById('infographic-display-area');
+      const infoImg = document.getElementById('reading-infographic-img');
+      if (currentLesson.infographicUrl && currentLesson.infographicUrl.trim() !== '') {
+        infoImg.src = currentLesson.infographicUrl;
+        infoBox.style.display = 'block';
+      } else {
+        infoBox.style.display = 'none';
+      }
+
+      if (readTimerInterval) {
+        clearInterval(readTimerInterval);
+        readTimerInterval = null;
+      }
+
+      const btn = document.getElementById('btn-next-to-assignment');
+      const timerSpan = document.getElementById('read-timer-count');
+      btn.disabled = true;
+      let timeLeft = 10;
+      timerSpan.innerText = timeLeft;
+
+      readTimerInterval = setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) {
+          clearInterval(readTimerInterval);
+          readTimerInterval = null;
+          timerSpan.innerText = "0";
+          btn.disabled = false;
+          btn.innerHTML = `ถัดไป: ทำใบงานประจำครั้ง <i class="fa-solid fa-arrow-right"></i>`;
+        } else {
+          timerSpan.innerText = timeLeft;
+        }
+      }, 1000);
+    }
+
+    // Step 3: Assignment Timeline & ส่งงาน
+    let isFbLiked = false;
+    function toggleFbLike() {
+      isFbLiked = !isFbLiked;
+      const btn = document.getElementById('fb-btn-like');
+      const icon = document.getElementById('fb-like-icon');
+      const txt = document.getElementById('fb-like-text');
+      if (isFbLiked) {
+        btn.classList.add('liked');
+        icon.className = 'fa-solid fa-thumbs-up';
+        txt.innerText = 'ถูกใจแล้ว (1)';
+      } else {
+        btn.classList.remove('liked');
+        icon.className = 'fa-regular fa-thumbs-up';
+        txt.innerText = 'ถูกใจ';
+      }
+    }
+
+    function goToAssignmentStep() {
+      navigate('view-step-assignment');
+      document.getElementById('fb-post-tag').innerText = `#${currentLesson.code} • ${currentLesson.session}`;
+
+      const questionsBox = document.getElementById('assignment-questions-list');
+      questionsBox.innerHTML = '';
+
+      let record = appData.records.find(r => String(r.stdId).trim() === String(currentStudent.id).trim() && r.lessonId === currentLesson.id);
+      const studentAnswers = (record && record.assignmentAnswers) ? record.assignmentAnswers : {};
+      const tasks = currentLesson.assignmentTasks || ['ให้นักศึกษาสรุปสิ่งที่ได้เรียนรู้'];
+
+      tasks.forEach((taskText, index) => {
+        const prevAnswer = studentAnswers[index] || '';
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'fb-task-callout';
+        itemDiv.innerHTML = `
+          <div style="font-weight:600; font-size:0.88rem; color:#1c1e21; margin-bottom:6px;">
+            📌 ภารกิจข้อที่ ${index + 1}:
+          </div>
+          <div style="font-size:0.88rem; color:#4b4f56; margin-bottom:8px; line-height:1.5;">
+            ${taskText}
+          </div>
+          <div class="fb-comment-box">
+            <textarea id="task-answer-${index}" placeholder="เขียนคำตอบข้อที่ ${index + 1}...">${prevAnswer}</textarea>
+            <div class="fb-comment-footer">
+              <span style="color:#8a8d91;"><i class="fa-solid fa-pen-nib"></i> คำตอบของ: ${currentStudent ? currentStudent.name : 'นักศึกษา'}</span>
+              <span style="color:var(--pastel-purple); font-weight:500;">ข้อที่ ${index + 1}</span>
+            </div>
+          </div>
+        `;
+        questionsBox.appendChild(itemDiv);
+      });
+
+      const fileStatus = document.getElementById('file-status-text');
+      if (record && record.assignmentFile) {
+        fileStatus.innerHTML = `<span style="color:var(--success);"><i class="fa-solid fa-circle-check"></i> มีไฟล์เดิมที่เคยส่ง: ${record.assignmentFile.name}</span>`;
+      } else {
+        fileStatus.innerHTML = '';
+      }
+
+      const fileInput = document.getElementById('assignment-file-input');
+      fileInput.value = '';
+      tempUploadedFile = null;
+      fileInput.onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (file.size > 3 * 1024 * 1024) {
+          alert('ไฟล์มีขนาดเกิน 3MB กรุณาเลือกไฟล์ที่เล็กลง');
+          fileInput.value = '';
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          tempUploadedFile = { name: file.name, type: file.type, data: evt.target.result };
+          fileStatus.innerHTML = `<span style="color:var(--success);"><i class="fa-solid fa-check"></i> แนบไฟล์เรียบร้อย: ${file.name}</span>`;
+        };
+        reader.readAsDataURL(file);
+      };
+    }
+
+    async function saveAssignmentAndNext() {
+      const btn = document.getElementById('btn-save-assignment');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกงาน...`;
+      }
+
+      let record = appData.records.find(r => String(r.stdId).trim() === String(currentStudent.id).trim() && r.lessonId === currentLesson.id);
+      const tasks = currentLesson.assignmentTasks || [];
+      const answersObj = {};
+
+      tasks.forEach((_, index) => {
+        const inputElem = document.getElementById(`task-answer-${index}`);
+        answersObj[index] = inputElem ? inputElem.value.trim() : '';
+      });
+
+      if (record) {
+        record.assignmentAnswers = answersObj;
+        if (tempUploadedFile) {
+          record.assignmentFile = tempUploadedFile;
+        }
+        saveStorage();
+        await syncToCloud(record);
+      }
+
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> ส่งคำตอบใบงาน และทำแบบทดสอบ <i class="fa-solid fa-arrow-right"></i>`;
+      }
+
+      goToQuizStep();
+    }
+
+    // Step 4: Quiz & ส่งคะแนนสอบ
+    function goToQuizStep() {
+      let record = appData.records.find(r => String(r.stdId).trim() === String(currentStudent.id).trim() && r.lessonId === currentLesson.id);
+      const attempts = record ? record.quizAttempts : 0;
+
+      if (attempts >= 2) {
+        alert(`ท่านใช้สิทธิ์สอบครบ 2 ครั้งแล้ว คะแนนสอบสูงสุด: ${record.bestQuizScore}/10 (${record.quizPassed ? 'ผ่าน' : 'ไม่ผ่าน'})`);
+        navigate('view-home');
+        return;
+      }
+
+      navigate('view-step-quiz');
+      document.getElementById('quiz-attempt-info').innerText = `สิทธิ์การสอบ: ครั้งที่ ${attempts + 1} จาก 2 ครั้ง (คะแนนสูงสุดเดิม: ${record ? record.bestQuizScore : 0}/10)`;
+
+      const box = document.getElementById('quiz-questions-box');
+      box.innerHTML = '';
+      currentLesson.questions.forEach((q, qIndex) => {
+        const qCard = document.createElement('div');
+        qCard.className = 'question-card';
+        qCard.innerHTML = `<p style="font-weight:500; margin-bottom:8px;">${q.q}</p>`;
+
+        q.options.forEach((opt, optIndex) => {
+          qCard.innerHTML += `
+            <label class="option-label">
+              <input type="radio" name="question_${qIndex}" value="${optIndex}" required>
+              <span>${opt}</span>
+            </label>
+          `;
+        });
+        box.appendChild(qCard);
+      });
+    }
+
+    async function submitQuiz() {
+      const form = document.getElementById('quiz-form');
+      let score = 0;
+      let allAnswered = true;
+
+      for (let i = 0; i < currentLesson.questions.length; i++) {
+        const selected = form.querySelector(`input[name="question_${i}"]:checked`);
+        if (!selected) {
+          allAnswered = false;
+          break;
+        }
+        if (parseInt(selected.value) === currentLesson.questions[i].ans) {
+          score++;
+        }
+      }
+
+      if (!allAnswered) {
+        alert('กรุณาตอบคำถามให้ครบทั้ง 10 ข้อ ก่อนกดส่งแบบทดสอบ');
+        return;
+      }
+
+      const submitBtn = document.getElementById('btn-submit-quiz');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกคะแนนลงระบบ...`;
+      }
+
+      let record = appData.records.find(r => String(r.stdId).trim() === String(currentStudent.id).trim() && r.lessonId === currentLesson.id);
+      if (record) {
+        record.quizAttempts += 1;
+        if (score > record.bestQuizScore) {
+          record.bestQuizScore = score;
+        }
+        if (record.bestQuizScore >= 6) {
+          record.quizPassed = true;
+        }
+        saveStorage();
+        await syncToCloud(record);
+      }
+
+      alert(`บันทึกการส่งงานและสอบสำเร็จ!\nคะแนนสอบครั้งนี้: ${score}/10 คะแนน\nคะแนนสูงสุดสะสม: ${record.bestQuizScore}/10`);
+      
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `ส่งคำตอบแบบทดสอบ`;
+      }
+
+      navigate('view-home');
+    }
+
+    // นักศึกษาตรวจผลคะแนน
+    async function loginCheckScore() {
+      const idInput = document.getElementById('std-check-id').value.trim();
+      const pwdInput = document.getElementById('std-check-pwd').value.trim();
+
+      if (!idInput || !pwdInput) {
+        alert('กรุณากรอกรหัสนักศึกษาและรหัสผ่าน');
+        return;
+      }
+      if (idInput !== pwdInput) {
+        alert('รหัสผ่านไม่ถูกต้อง (รหัสผ่านใช้รหัสเดียวกับรหัสนักศึกษา)');
+        return;
+      }
+
+      const loginBtn = document.getElementById('btn-login-check');
+      if (loginBtn) {
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังค้นหาข้อมูล...`;
+      }
+
+      await fetchCloudRecords();
+
+      if (loginBtn) {
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = `เข้าสู่ระบบดูผลคะแนน`;
+      }
+
+      const records = appData.records.filter(r => String(r.stdId).trim() === String(idInput).trim());
+      if (records.length === 0) {
+        alert('ไม่พบข้อมูลประวัติการเรียนของรหัสนักศึกษานี้ ในระบบออนไลน์');
+        return;
+      }
+
+      document.getElementById('res-std-name').innerText = `ผู้เรียน: ${records[0].stdName}`;
+      document.getElementById('res-std-id').innerText = `รหัสนักศึกษา: ${records[0].stdId}`;
+
+      const tbody = document.getElementById('student-score-table-body');
+      tbody.innerHTML = '';
+      records.forEach(r => {
+        const isPassed = (r.quizPassed === true || r.quizPassed === "ผ่าน" || Number(r.bestQuizScore) >= 6);
+        const quizBadge = isPassed ? `<span class="badge badge-pass">${r.bestQuizScore}/10 (ผ่าน)</span>` : `<span class="badge badge-fail">${r.bestQuizScore}/10 (ไม่ผ่าน)</span>`;
+        const assignBadge = (r.assignmentScore !== null && r.assignmentScore !== "") ? `<span class="badge badge-pass">${r.assignmentScore}/10 คะแนน</span>` : `<span class="badge badge-wait">รอครูตรวจ</span>`;
+        const feedback = r.teacherFeedback ? `<small style="color:var(--pastel-purple);">${r.teacherFeedback}</small>` : '<small style="color:var(--text-muted);">-</small>';
+
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${r.lessonTitle}</strong><br><small>${r.session}</small></td>
+            <td><i class="fa-solid fa-circle-check" style="color:var(--success)"></i> ${r.attendedAt}</td>
+            <td>${quizBadge}</td>
+            <td>${assignBadge}</td>
+            <td>${feedback}</td>
+          </tr>
+        `;
+      });
+
+      navigate('view-student-result');
+    }
+
+    // ครูผู้สอน (รหัสลับ 031212)
+    async function loginTeacher() {
+      const pwd = document.getElementById('teacher-pwd').value.trim();
+      if (pwd === '031212') {
+        document.getElementById('teacher-pwd').value = '';
+        updateTeacherFilterCourses();
+        navigate('view-teacher-dashboard');
+        await fetchCloudRecords();
+        renderFilteredTeacherTable();
+      } else {
+        alert('รหัสผ่านครูไม่ถูกต้อง!');
+      }
+    }
+
+    function switchTeacherTab(tab) {
+      if (tab === 'scores') {
+        document.getElementById('teacher-tab-scores').style.display = 'block';
+        document.getElementById('teacher-tab-edit').style.display = 'none';
+        document.getElementById('tab-btn-scores').classList.add('active');
+        document.getElementById('tab-btn-edit').classList.remove('active');
+        renderFilteredTeacherTable();
+      } else {
+        document.getElementById('teacher-tab-scores').style.display = 'none';
+        document.getElementById('teacher-tab-edit').style.display = 'block';
+        document.getElementById('tab-btn-scores').classList.remove('active');
+        document.getElementById('tab-btn-edit').classList.add('active');
+        loadLessonEditDropdown();
+      }
+    }
+
+    function updateTeacherFilterCourses() {
+      const lvl = document.getElementById('filter-teacher-level').value;
+      const select = document.getElementById('filter-teacher-session');
+      select.innerHTML = '<option value="all">-- ทุกรายวิชา/ครั้งที่ --</option>';
+
+      let lessons = [];
+      if (lvl === 'all') {
+        lessons = [...(appData.lessons['m-ton'] || []), ...(appData.lessons['m-ปลาย'] || [])];
+      } else {
+        lessons = appData.lessons[lvl] || [];
+      }
+
+      lessons.forEach(l => {
+        select.innerHTML += `<option value="${l.id}">${l.code} - ${l.session}: ${l.title}</option>`;
+      });
+
+      renderFilteredTeacherTable();
+    }
+
+    function renderFilteredTeacherTable() {
+      const lvl = document.getElementById('filter-teacher-level').value;
+      const sessionFilter = document.getElementById('filter-teacher-session').value;
+      const tbody = document.getElementById('teacher-records-tbody');
+      tbody.innerHTML = '';
+
+      let list = appData.records;
+      list = list.filter(r => r && (r.stdId || r.stdname || r.lessonTitle || r.lessontitle));
+
+      if (lvl !== 'all') {
+        list = list.filter(r => (r.level || '') === lvl);
+      }
+      if (sessionFilter !== 'all') {
+        list = list.filter(r => (r.lessonId || '') === sessionFilter);
+      }
+
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:15px; color:var(--text-muted);">ยังไม่มีข้อมูลการเข้าเรียน หรือยังไม่ได้ซิงค์ข้อมูล</td></tr>';
+        return;
+      }
+
+      list.forEach(r => {
+        const stdId = r.stdId || r.stdid || '-';
+        const stdName = r.stdName || r.stdname || 'ไม่ระบุชื่อ';
+        const session = r.session || '-';
+        const lessonTitle = r.lessonTitle || r.lessontitle || '-';
+        const attendedAt = r.attendedAt || r.attendedat || '-';
+        const bestQuizScore = (r.bestQuizScore !== undefined && r.bestQuizScore !== "") ? r.bestQuizScore : 0;
+        const assignmentScore = (r.assignmentScore !== "" && r.assignmentScore !== null && r.assignmentScore !== undefined) ? r.assignmentScore : null;
+
+        const assignScoreNum = assignmentScore !== null ? Number(assignmentScore) : 0;
+        const total = Number(bestQuizScore) + assignScoreNum;
+        
+        let hasAnswers = false;
+        let answersObj = r.assignmentAnswers || r.assignmentanswers;
+        if (typeof answersObj === 'object' && answersObj !== null) {
+          hasAnswers = Object.values(answersObj).some(val => String(val).trim() !== '');
+        } else if (typeof answersObj === 'string') {
+          hasAnswers = answersObj.trim() !== '' && answersObj !== '{}';
+        }
+
+        const hasAssignment = hasAnswers || r.assignmentFile;
+        let gradingBtn = '';
+
+        if (!hasAssignment) {
+          gradingBtn = '<span style="color:var(--text-muted); font-size:0.75rem;">ยังไม่ส่งงาน</span>';
+        } else if (assignmentScore === null) {
+          gradingBtn = `<button class="btn btn-sm" style="background:var(--warning); color:#333;" onclick="openGradingModal('${stdId}', '${r.lessonId || ''}')"><i class="fa-solid fa-pen"></i> รอตรวจ</button>`;
+        } else {
+          gradingBtn = `<button class="btn btn-sm" style="background:var(--pastel-purple);" onclick="openGradingModal('${stdId}', '${r.lessonId || ''}')"><i class="fa-solid fa-check"></i> ตรวจแล้ว (${assignmentScore})</button>`;
+        }
+
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${stdId}</strong><br><small>${stdName}</small></td>
+            <td><span class="badge" style="background:var(--pastel-purple-light);">${session}</span><br><small>${lessonTitle}</small></td>
+            <td><small>${attendedAt}</small></td>
+            <td><strong>${bestQuizScore}</strong>/10</td>
+            <td>${assignmentScore !== null ? `<strong>${assignmentScore}</strong>/10` : '-'}</td>
+            <td><strong style="color:var(--pastel-purple);">${total}</strong>/20</td>
+            <td>${gradingBtn}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function openGradingModal(stdId, lessonId) {
+      selectedGradingRecord = appData.records.find(r => String(r.stdId).trim() === String(stdId).trim() && r.lessonId === lessonId);
+      if (!selectedGradingRecord) return;
+
+      let lesson = null;
+      for (const lvl in appData.lessons) {
+        const found = appData.lessons[lvl].find(l => l.id === lessonId);
+        if (found) { lesson = found; break; }
+      }
+
+      document.getElementById('grade-modal-student').innerText = `ผู้เรียน: ${selectedGradingRecord.stdName} (${selectedGradingRecord.stdId}) - ${selectedGradingRecord.lessonTitle} ${selectedGradingRecord.session}`;
+      
+      const answersContainer = document.getElementById('grade-modal-answers-container');
+      answersContainer.innerHTML = '';
+
+      const tasks = lesson ? (lesson.assignmentTasks || []) : [];
+      let answers = selectedGradingRecord.assignmentAnswers || selectedGradingRecord.assignmentanswers || {};
+
+      if (typeof answers === 'string') {
+        try { answers = JSON.parse(answers); } catch(e){}
+      }
+
+      if (tasks.length === 0 && (!answers || Object.keys(answers).length === 0)) {
+        answersContainer.innerHTML = '<p style="font-size:0.85rem; color:var(--text-muted);">(ไม่มีคำตอบในใบงาน)</p>';
+      } else {
+        tasks.forEach((taskText, idx) => {
+          const ans = answers[idx] || (typeof answers === 'string' ? answers : '(ยังไม่ได้ตอบข้อนี้)');
+          answersContainer.innerHTML += `
+            <div style="background:#FDF9F2; border:1px solid #EFE4D2; border-radius:8px; padding:10px; margin-bottom:8px; font-size:0.88rem;">
+              <strong style="color:#6D4C41;"><i class="fa-solid fa-angle-right"></i> ${taskText}</strong>
+              <p style="margin-top:4px; color:#222; white-space:pre-wrap; background:#fff; padding:6px 10px; border-radius:6px; border:1px solid #eee;">${ans}</p>
+            </div>
+          `;
+        });
+      }
+
+      const fileBox = document.getElementById('grade-modal-file-link');
+      if (selectedGradingRecord.assignmentFile) {
+        fileBox.innerHTML = `<a href="${selectedGradingRecord.assignmentFile.data}" download="${selectedGradingRecord.assignmentFile.name}" style="color:var(--pastel-purple); font-weight:600;"><i class="fa-solid fa-download"></i> ดาวน์โหลด/เปิดไฟล์ (${selectedGradingRecord.assignmentFile.name})</a>`;
+      } else {
+        fileBox.innerText = 'ไม่มีไฟล์แนบ';
+      }
+
+      document.getElementById('grade-modal-score').value = (selectedGradingRecord.assignmentScore !== null && selectedGradingRecord.assignmentScore !== "" && selectedGradingRecord.assignmentScore !== undefined) ? selectedGradingRecord.assignmentScore : '';
+      document.getElementById('grade-modal-feedback').value = selectedGradingRecord.teacherFeedback || '';
+
+      document.getElementById('modal-grading').classList.add('active');
+    }
+
+    function closeGradingModal() {
+      document.getElementById('modal-grading').classList.remove('active');
+    }
+
+    async function saveAssignmentGrade() {
+      const scoreVal = document.getElementById('grade-modal-score').value;
+      if (scoreVal === '' || scoreVal < 0 || scoreVal > 10) {
+        alert('กรุณาระบุคะแนนระหว่าง 0 ถึง 10');
+        return;
+      }
+
+      selectedGradingRecord.assignmentScore = parseInt(scoreVal);
+      selectedGradingRecord.teacherFeedback = document.getElementById('grade-modal-feedback').value;
+
+      saveStorage();
+      await syncToCloud(selectedGradingRecord);
+
+      closeGradingModal();
+      renderFilteredTeacherTable();
+      alert('บันทึกผลการตรวจใบงานเรียบร้อย');
+    }
+
+    function renderEditAssignmentTasks(tasks) {
+      const container = document.getElementById('edit-tasks-container');
+      container.innerHTML = '';
+      
+      tasks.forEach((taskText, index) => {
+        const div = document.createElement('div');
+        div.style.cssText = 'display:flex; gap:8px; margin-bottom:8px; align-items:center;';
+        div.innerHTML = `
+          <span style="font-weight:600; font-size:0.85rem; color:#6D4C41; white-space:nowrap;">ข้อ ${index + 1}:</span>
+          <input type="text" class="edit-task-input" value="${taskText}" style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-size:0.88rem;">
+          <button type="button" class="btn btn-sm btn-danger" onclick="removeAssignmentTaskField(${index})"><i class="fa-solid fa-trash"></i></button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function addAssignmentTaskField() {
+      const inputs = document.querySelectorAll('.edit-task-input');
+      const currentTasks = Array.from(inputs).map(inp => inp.value);
+      currentTasks.push(`ข้อ ${currentTasks.length + 1}: พิมพ์คำถามใหม่...`);
+      renderEditAssignmentTasks(currentTasks);
+    }
+
+    function removeAssignmentTaskField(index) {
+      const inputs = document.querySelectorAll('.edit-task-input');
+      const currentTasks = Array.from(inputs).map(inp => inp.value);
+      if (currentTasks.length <= 1) {
+        alert('ต้องมีโจทย์ใบงานอย่างน้อย 1 ข้อ');
+        return;
+      }
+      currentTasks.splice(index, 1);
+      renderEditAssignmentTasks(currentTasks);
+    }
+
+    function loadLessonEditDropdown() {
+      const lvl = document.getElementById('edit-select-level').value;
+      const select = document.getElementById('edit-select-lesson');
+      select.innerHTML = '';
+
+      const lessons = appData.lessons[lvl] || [];
+      lessons.forEach((l, idx) => {
+        const lockLabel = l.isLocked ? '🔒 [ล็อค]' : '🟢 [เปิด]';
+        select.innerHTML += `<option value="${idx}">${lockLabel} [${l.code}] ${l.session}: ${l.title}</option>`;
+      });
+
+      populateEditForm();
+    }
+
+    function populateEditForm() {
+      const lvl = document.getElementById('edit-select-level').value;
+      const idx = document.getElementById('edit-select-lesson').value;
+      const lesson = appData.lessons[lvl][idx];
+      if (!lesson) return;
+
+      document.getElementById('edit-lock-status').value = lesson.isLocked ? 'locked' : 'unlocked';
+      document.getElementById('edit-code').value = lesson.code || '';
+      document.getElementById('edit-title').value = lesson.title || '';
+      document.getElementById('edit-session').value = lesson.session || '';
+      document.getElementById('edit-video').value = lesson.videoUrl || '';
+      document.getElementById('edit-content').value = lesson.content || '';
+      document.getElementById('edit-infographic').value = lesson.infographicUrl || '';
+
+      const tasks = lesson.assignmentTasks || [lesson.assignmentTask || 'ให้นักศึกษาสรุปสิ่งที่ได้เรียนรู้'];
+      renderEditAssignmentTasks(tasks);
+
+      const qBox = document.getElementById('edit-quiz-container');
+      qBox.innerHTML = '';
+      (lesson.questions || []).forEach((q, qIndex) => {
+        qBox.innerHTML += `
+          <div style="background:#fff; border:1px solid #ddd; padding:10px; border-radius:8px; margin-bottom:10px;">
+            <div class="input-group">
+              <label>ข้อที่ ${qIndex + 1}</label>
+              <input type="text" id="q_text_${qIndex}" value="${q.q}">
+            </div>
+            <div class="input-group">
+              <label>ตัวเลือก (ก, ข, ค, ง คั่นด้วยเครื่องหมายจุลภาค ",")</label>
+              <input type="text" id="q_opts_${qIndex}" value="${q.options.join(', ')}">
+            </div>
+            <div class="input-group">
+              <label>เฉลยข้อถูก (0=ก, 1=ข, 2=ค, 3=ง)</label>
+              <input type="number" min="0" max="3" id="q_ans_${qIndex}" value="${q.ans}">
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function startAddNewLesson() {
+      const lvl = document.getElementById('edit-select-level').value;
+      const newLesson = {
+        id: 'lesson_' + Date.now(),
+        code: 'ใหม่001',
+        title: 'วิชาใหม่',
+        session: 'ครั้งที่ 1',
+        isLocked: false,
+        videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        infographicUrl: '',
+        content: 'เนื้อหาบทเรียนใหม่...',
+        assignmentTasks: ['ข้อ 1: ให้นักศึกษาตอบคำถามที่ 1', 'ข้อ 2: ให้นักศึกษาตอบคำถามที่ 2'],
+        questions: generateSampleQuiz('วิชาใหม่', 1)
+      };
+
+      appData.lessons[lvl].push(newLesson);
+      loadLessonEditDropdown();
+      document.getElementById('edit-select-lesson').value = appData.lessons[lvl].length - 1;
+      populateEditForm();
+      alert('เพิ่มโครงสร้างบทเรียนใหม่เรียบร้อย กรุณากรอกรายละเอียดแล้วกดบันทึก');
+    }
+
+    function deleteCurrentLesson() {
+      const lvl = document.getElementById('edit-select-level').value;
+      const idx = document.getElementById('edit-select-lesson').value;
+
+      if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบบทเรียนนี้?')) {
+        appData.lessons[lvl].splice(idx, 1);
+        loadLessonEditDropdown();
+        alert('ลบบทเรียนเรียบร้อย');
+      }
+    }
+
+    function saveLessonEdits() {
+      const lvl = document.getElementById('edit-select-level').value;
+      const idx = document.getElementById('edit-select-lesson').value;
+      const lesson = appData.lessons[lvl][idx];
+      if (!lesson) return;
+
+      lesson.isLocked = document.getElementById('edit-lock-status').value === 'locked';
+      lesson.code = document.getElementById('edit-code').value.trim();
+      lesson.title = document.getElementById('edit-title').value.trim();
+      lesson.session = document.getElementById('edit-session').value.trim();
+      lesson.videoUrl = document.getElementById('edit-video').value.trim();
+      lesson.content = document.getElementById('edit-content').value.trim();
+      lesson.infographicUrl = document.getElementById('edit-infographic').value.trim();
+
+      const taskInputs = document.querySelectorAll('.edit-task-input');
+      lesson.assignmentTasks = Array.from(taskInputs).map(inp => inp.value.trim()).filter(val => val !== '');
+
+      for (let i = 0; i < 10; i++) {
+        const qText = document.getElementById(`q_text_${i}`).value;
+        const optsText = document.getElementById(`q_opts_${i}`).value;
+        const ansVal = parseInt(document.getElementById(`q_ans_${i}`).value);
+
+        lesson.questions[i] = {
+          q: qText,
+          options: optsText.split(',').map(item => item.trim()),
+          ans: isNaN(ansVal) ? 0 : ansVal
+        };
+      }
+
+      loadLessonEditDropdown();
+      alert('บันทึกข้อมูลบทเรียนและสถานะการล็อคสำเร็จเรียบร้อย!');
+    }
+
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('modal-lightbox').classList.add('active');
+    }
+
+    function closeLightbox() {
+      document.getElementById('modal-lightbox').classList.remove('active');
+    }
+
+    // แคชเฉพาะข้อมูลคะแนน
+    function saveStorage() {
+      localStorage.setItem('clc_records_cloud', JSON.stringify(appData.records));
+    }
+  </script>
+</body>
+</html>
