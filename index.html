@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- ป้องกันเบราว์เซอร์ในมือถือจำแคชเก่า ทำให้เห็นข้อมูลใหม่ทันทีที่ครูอัปเดตขึ้น Netlify -->
+  <!-- ป้องกันแคชค้างในมือถือ โหลดโค้ดใหม่ล่าสุดเสมอ -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -148,7 +148,6 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: transform 0.4s ease;
     }
 
     .hero-banner-overlay {
@@ -253,19 +252,11 @@
       border-color: var(--pastel-purple);
     }
 
-    /* ปุ่มที่ถูกล็อค */
     .session-btn.locked {
       background: #f1f3f5 !important;
       color: #868e96 !important;
       border-color: #dee2e6 !important;
       cursor: not-allowed !important;
-      opacity: 0.9;
-    }
-    .session-btn.locked:hover {
-      background: #e9ecef !important;
-      color: #868e96 !important;
-      border-color: #ced4da !important;
-      transform: none !important;
     }
 
     /* Step Bar */
@@ -314,13 +305,6 @@
       border-radius: 12px;
       overflow: hidden;
       margin-bottom: 15px;
-    }
-
-    .video-container video {
-      width: 100%;
-      height: auto;
-      max-height: 420px;
-      display: block;
     }
 
     /* โพสต์ไทม์ไลน์โซเชียล (Facebook Style) */
@@ -449,7 +433,6 @@
       font-size: 0.75rem;
       padding: 4px 10px;
       border-radius: 14px;
-      pointer-events: none;
     }
 
     .fb-read-reactions {
@@ -483,10 +466,7 @@
       font-size: 0.85rem;
       padding: 6px 12px;
       border-radius: 6px;
-      transition: background 0.15s;
     }
-
-    .fb-action-btn:hover { background: #f2f2f2; }
     .fb-action-btn.liked { color: #1877f2; font-weight: 600; }
 
     .btn {
@@ -516,10 +496,6 @@
       width: auto;
     }
 
-    .btn-danger { background: #dc3545; }
-    .btn-secondary { background: #6c757d; }
-    .btn-success { background: #28a745; }
-
     .input-group {
       margin-bottom: 15px;
       text-align: left;
@@ -542,10 +518,6 @@
       background: white;
     }
 
-    .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
-      border-color: var(--pastel-purple);
-    }
-
     .question-card {
       background: white;
       border-radius: 12px;
@@ -564,10 +536,6 @@
       margin-top: 8px;
       cursor: pointer;
       font-size: 0.9rem;
-    }
-
-    .option-label:hover {
-      background: var(--pastel-pink-light);
     }
 
     .table-container {
@@ -608,7 +576,6 @@
     .badge-fail { background: #f8d7da; color: #721c24; }
     .badge-wait { background: #fff3cd; color: #856404; }
 
-    /* Modal */
     .modal {
       display: none;
       position: fixed;
@@ -619,9 +586,7 @@
       justify-content: center;
       padding: 15px;
     }
-    .modal.active {
-      display: flex;
-    }
+    .modal.active { display: flex; }
     .modal-content {
       background: white;
       border-radius: 18px;
@@ -635,7 +600,7 @@
 </head>
 <body>
 
-  <!-- Navigation Bar -->
+  <!-- Header -->
   <header>
     <div class="brand" onclick="navigate('view-home')">
       <i class="fa-solid fa-graduation-cap"></i>
@@ -649,13 +614,10 @@
 
   <div class="container">
 
-    <!-- 1. HOME VIEW (รูปปกใหญ่ + เลือกระดับชั้น) -->
+    <!-- 1. HOME VIEW -->
     <div id="view-home" class="view active">
       <div class="hero-banner-wrapper">
-        <img src="images/cover.png" 
-             onerror="this.src='https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop'" 
-             alt="ภาพปกห้องเรียนออนไลน์" 
-             class="hero-banner-img">
+        <img src="images/cover.png" onerror="this.src='https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop'" alt="ภาพปก" class="hero-banner-img">
         <div class="hero-banner-overlay">
           <span style="background: rgba(255,255,255,0.25); backdrop-filter: blur(4px); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; width: fit-content; margin-bottom: 8px;">
             <i class="fa-solid fa-graduation-cap"></i> ยินดีต้อนรับสู่ห้องเรียนออนไลน์
@@ -722,7 +684,7 @@
       </div>
     </div>
 
-    <!-- 4. STEP 1: VIDEO (นับถอยหลังแม่นยำ ไม่ค้าง 1 วินาที) -->
+    <!-- 4. STEP 1: VIDEO -->
     <div id="view-step-video" class="view">
       <div class="card">
         <div class="step-indicator">
@@ -732,9 +694,7 @@
           <div class="step-item"><div class="step-circle">4</div>แบบทดสอบ</div>
         </div>
         <h3 id="video-lesson-name" style="margin-bottom: 10px; color:var(--pastel-purple); font-size:1.05rem;"></h3>
-        
         <div class="video-container" id="video-embed-box"></div>
-
         <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;">
           <i class="fa-solid fa-clock"></i> บังคับดูวิดีโออย่างน้อย <span id="video-timer-count" style="font-weight:600; color:var(--pastel-purple);">10</span> วินาที ก่อนเปิดปุ่มถัดไป
         </p>
@@ -760,22 +720,18 @@
               <span><i class="fa-solid fa-book-bookmark"></i> <span id="fb-course-subinfo">บทเรียน</span> • <i class="fa-solid fa-earth-americas"></i> สาธารณะ</span>
             </div>
           </div>
-
           <div class="fb-content">
             <span id="fb-read-tag" class="fb-tags-badge">#สาระความรู้</span>
             <div id="reading-content-box" style="white-space: pre-wrap; margin-top: 4px;"></div>
           </div>
-
           <div id="infographic-display-area" class="fb-read-media" style="display: none;" onclick="openLightbox(document.getElementById('reading-infographic-img').src)">
-            <img id="reading-infographic-img" src="" alt="ภาพอินโฟกราฟิกประกอบบทเรียน">
+            <img id="reading-infographic-img" src="" alt="ภาพอินโฟกราฟิก">
             <div class="fb-read-media-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i> แตะเพื่อซูมภาพเต็มจอ</div>
           </div>
-
           <div class="fb-read-reactions">
             <span><i class="fa-solid fa-thumbs-up" style="color:#1877f2;"></i> <i class="fa-solid fa-heart" style="color:#fa3e3e;"></i> นักศึกษาศึกษาเนื้อหาในโพสต์นี้</span>
             <span><i class="fa-solid fa-eye"></i> กำลังศึกษา</span>
           </div>
-
           <div class="fb-read-actions">
             <button type="button" class="fb-action-btn" id="fb-btn-read-like" onclick="toggleFbReadLike()">
               <i class="fa-regular fa-thumbs-up" id="fb-read-like-icon"></i> <span id="fb-read-like-text">ถูกใจ</span>
@@ -816,7 +772,6 @@
               <span><i class="fa-solid fa-clock"></i> กิจกรรมมอบหมายประจำครั้ง • <i class="fa-solid fa-earth-americas"></i> สาธารณะ</span>
             </div>
           </div>
-
           <div class="fb-content">
             <div id="fb-post-tag" class="fb-tags-badge">#รายวิชา</div>
             <p style="margin-bottom: 6px;">
@@ -824,7 +779,6 @@
             </p>
             <div id="assignment-questions-list"></div>
           </div>
-
           <div class="fb-actions-bar">
             <button type="button" class="fb-action-btn" id="fb-btn-like" onclick="toggleFbLike()">
               <i class="fa-regular fa-thumbs-up" id="fb-like-icon"></i> <span id="fb-like-text">ถูกใจ</span>
@@ -836,7 +790,6 @@
               <i class="fa-solid fa-cloud-arrow-up" style="color:var(--pastel-purple);"></i> เชื่อมต่อคลาวด์
             </span>
           </div>
-
           <div style="background:#f7f8fa; padding:12px 14px; border-top:1px solid #e4e6eb;">
             <label style="font-size:0.8rem; font-weight:600; color:#444; display:block; margin-bottom:4px;">
               <i class="fa-solid fa-paperclip"></i> แนบไฟล์การบ้าน/ภาพถ่ายสมุดเพิ่มเติม:
@@ -900,7 +853,6 @@
       <div class="card">
         <h3 id="res-std-name" style="color:var(--pastel-purple); font-size:1.15rem;"></h3>
         <p id="res-std-id" style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;"></p>
-
         <h4 style="margin-bottom:10px; font-size:0.95rem;">ผลการเข้าเรียนและคะแนนสะสม</h4>
         <div class="table-container">
           <table>
@@ -919,14 +871,13 @@
       </div>
     </div>
 
-    <!-- 10. TEACHER LOGIN -->
+    <!-- 10. TEACHER LOGIN (รหัส 031212) -->
     <div id="view-teacher-login" class="view">
       <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> กลับหน้าแรก</span>
       <div class="card" style="text-align: center;">
         <i class="fa-solid fa-shield-halved" style="font-size: 2.5rem; color: var(--pastel-purple); margin-bottom:10px;"></i>
         <h2 style="font-size:1.2rem; margin-bottom: 6px;">ระบบจัดการศูนย์การเรียน (คุณครู)</h2>
         <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;">ระบุรหัสผ่านประจำตัวเพื่อเข้าใช้งาน</p>
-
         <div class="input-group">
           <label>รหัสผ่านคุณครู</label>
           <input type="password" id="teacher-pwd" placeholder="กรอกรหัสผ่านประจำตัวครู">
@@ -938,133 +889,45 @@
     <!-- 11. TEACHER DASHBOARD VIEW -->
     <div id="view-teacher-dashboard" class="view">
       <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> ออกจากระบบครู</span>
-      
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
           <h2 style="color:var(--pastel-purple); font-size:1.2rem;"><i class="fa-solid fa-gauge"></i> แผงควบคุมระบบคลาวด์</h2>
           <button class="btn btn-sm" style="width:auto;" onclick="fetchCloudRecords(true)"><i class="fa-solid fa-arrows-rotate"></i> ซิงค์ข้อมูลล่าสุด</button>
         </div>
-        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;">เช็คชื่อ ตรวจใบงาน และจัดการบทเรียน</p>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;">เช็คชื่อ ตรวจใบงาน และดูคะแนนนักศึกษา</p>
 
-        <div style="display:flex; gap:8px; margin-bottom:15px; overflow-x:auto;">
-          <button class="btn-nav active" id="tab-btn-scores" onclick="switchTeacherTab('scores')"><i class="fa-solid fa-table-list"></i> ดูคะแนน & ตรวจงาน</button>
-          <button class="btn-nav" id="tab-btn-edit" onclick="switchTeacherTab('edit')"><i class="fa-solid fa-pen-to-square"></i> จัดการเนื้อหา/ใบงาน/ข้อสอบ</button>
-        </div>
-
-        <!-- Section 1: Scores & Grading -->
-        <div id="teacher-tab-scores">
-          <div style="background:var(--pastel-purple-light); padding:12px; border-radius:12px; margin-bottom:15px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <div>
-              <label style="font-size:0.8rem; font-weight:600;">ระดับชั้น:</label>
-              <select id="filter-teacher-level" onchange="updateTeacherFilterCourses()">
-                <option value="all">-- ทุกระดับชั้น --</option>
-                <option value="m-ton">มัธยมศึกษาตอนต้น</option>
-                <option value="m-ปลาย">มัธยมศึกษาตอนปลาย</option>
-              </select>
-            </div>
-            <div>
-              <label style="font-size:0.8rem; font-weight:600;">รายวิชาและครั้งที่:</label>
-              <select id="filter-teacher-session" onchange="renderFilteredTeacherTable()">
-                <option value="all">-- ทุกรายวิชา/ครั้งที่ --</option>
-              </select>
-            </div>
+        <div style="background:var(--pastel-purple-light); padding:12px; border-radius:12px; margin-bottom:15px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div>
+            <label style="font-size:0.8rem; font-weight:600;">ระดับชั้น:</label>
+            <select id="filter-teacher-level" onchange="updateTeacherFilterCourses()">
+              <option value="all">-- ทุกระดับชั้น --</option>
+              <option value="m-ton">มัธยมศึกษาตอนต้น</option>
+              <option value="m-ปลาย">มัธยมศึกษาตอนปลาย</option>
+            </select>
           </div>
-
-          <div class="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>รหัส / ผู้เรียน</th>
-                  <th>วิชา / ครั้งที่</th>
-                  <th>เช็คชื่อเมื่อ</th>
-                  <th>สอบ (10)</th>
-                  <th>ใบงาน (10)</th>
-                  <th>รวม (20)</th>
-                  <th>การตรวจงาน</th>
-                </tr>
-              </thead>
-              <tbody id="teacher-records-tbody"></tbody>
-            </table>
+          <div>
+            <label style="font-size:0.8rem; font-weight:600;">รายวิชาและครั้งที่:</label>
+            <select id="filter-teacher-session" onchange="renderFilteredTeacherTable()">
+              <option value="all">-- ทุกรายวิชา/ครั้งที่ --</option>
+            </select>
           </div>
         </div>
 
-        <!-- Section 2: Manage Lessons -->
-        <div id="teacher-tab-edit" style="display:none;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h4 style="font-size:1rem;">แก้ไขเนื้อหา อินโฟกราฟิก ใบงาน และข้อสอบ</h4>
-            <button class="btn btn-sm" onclick="startAddNewLesson()"><i class="fa-solid fa-plus"></i> + เพิ่มบทเรียนใหม่</button>
-          </div>
-
-          <div class="input-group">
-            <label>เลือกระดับชั้น</label>
-            <select id="edit-select-level" onchange="loadLessonEditDropdown()">
-              <option value="m-ton">ระดับ ม.ต้น</option>
-              <option value="m-ปลาย">ระดับ ม.ปลาย</option>
-            </select>
-          </div>
-          <div class="input-group">
-            <label>เลือกบทเรียนที่ต้องการจัดการ</label>
-            <select id="edit-select-lesson" onchange="populateEditForm()"></select>
-          </div>
-
-          <hr style="border:0; border-top:1px dashed #ddd; margin:15px 0;">
-
-          <!-- สวิตช์ปุ่มล็อค / ปลดล็อค สำหรับครู -->
-          <div class="input-group" style="background:#FFF0F3; padding:12px; border-radius:12px; border:1px solid #FFD1DC;">
-            <label style="font-weight:600; color:#C2185B;"><i class="fa-solid fa-lock"></i> สถานะการเปิดบทเรียนนี้ (สั่งล็อค/ปลดล็อค)</label>
-            <select id="edit-lock-status" style="font-weight:600;">
-              <option value="unlocked">🟢 เปิดให้นักศึกษาเข้าเรียนได้ทันที (Unlocked)</option>
-              <option value="locked">🔴 ล็อคบทเรียนนี้ (ห้ามเข้าเรียน - Locked)</option>
-            </select>
-            <small style="color:var(--text-muted); display:block; margin-top:4px;">* ถ้าเลือกล็อค นักศึกษาจะเจอปุ่มสีเทาและแม่กุญแจ ไม่สามารถกดเข้าทำก่อนได้</small>
-          </div>
-
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <div class="input-group">
-              <label>รหัสวิชา (เช่น กอ22002)</label>
-              <input type="text" id="edit-code">
-            </div>
-            <div class="input-group">
-              <label>ครั้งที่เรียน (เช่น ครั้งที่ 1)</label>
-              <input type="text" id="edit-session">
-            </div>
-          </div>
-          
-          <div class="input-group">
-            <label>ชื่อวิชา</label>
-            <input type="text" id="edit-title">
-          </div>
-          
-          <div class="input-group">
-            <label>ที่อยู่ไฟล์วิดีโอ (โฟลเดอร์ video/ หรือ YouTube URL)</label>
-            <input type="text" id="edit-video">
-          </div>
-          
-          <div class="input-group">
-            <label>เนื้อหาบทเรียนที่บังคับอ่าน (จัดวรรคตอนเพื่อให้อ่านง่าย)</label>
-            <textarea id="edit-content" rows="6"></textarea>
-          </div>
-
-          <div class="input-group" style="background:#FAF7FC; padding:12px; border-radius:12px; border:1px solid #E4D9F0;">
-            <label><i class="fa-solid fa-image" style="color:var(--pastel-purple);"></i> ลิงก์รูปภาพอินโฟกราฟิก (เช่น images/info1.jpg หรือวาง URL รูปภาพ)</label>
-            <input type="text" id="edit-infographic" placeholder="images/infographic.jpg หรือ https://...">
-          </div>
-
-          <div style="background:#FFF9F2; padding:14px; border-radius:12px; border:1px solid #F5E6D3; margin:15px 0;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-              <label style="font-weight:600; color:#5D4037;"><i class="fa-solid fa-list-check"></i> ข้อคำถามในใบงาน (สามารถเพิ่มหรือลดข้อได้)</label>
-              <button type="button" class="btn btn-sm btn-success" onclick="addAssignmentTaskField()"><i class="fa-solid fa-plus"></i> เพิ่มข้อ</button>
-            </div>
-            <div id="edit-tasks-container"></div>
-          </div>
-
-          <h5 style="margin: 20px 0 8px; color:var(--pastel-purple);"><i class="fa-solid fa-feather-pointed"></i> แก้ไขแบบทดสอบ 10 ข้อ (ข้อละ 1 คะแนน)</h5>
-          <div id="edit-quiz-container"></div>
-
-          <div style="display:flex; gap:10px; margin-top:20px;">
-            <button class="btn btn-danger btn-sm" onclick="deleteCurrentLesson()"><i class="fa-solid fa-trash"></i> ลบบทเรียนนี้</button>
-            <button class="btn" onclick="saveLessonEdits()"><i class="fa-solid fa-floppy-disk"></i> บันทึกข้อมูลบทเรียน</button>
-          </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>รหัส / ผู้เรียน</th>
+                <th>วิชา / ครั้งที่</th>
+                <th>เช็คชื่อเมื่อ</th>
+                <th>สอบ (10)</th>
+                <th>ใบงาน (10)</th>
+                <th>รวม (20)</th>
+                <th>การตรวจงาน</th>
+              </tr>
+            </thead>
+            <tbody id="teacher-records-tbody"></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -1076,23 +939,18 @@
     <div class="modal-content">
       <h3 style="color:var(--pastel-purple); margin-bottom:8px;"><i class="fa-solid fa-pen-to-square"></i> ตรวจและให้คะแนนใบงาน</h3>
       <p id="grade-modal-student" style="font-size:0.88rem; color:var(--text-muted); margin-bottom:12px;"></p>
-      
       <div id="grade-modal-answers-container" style="margin-bottom:12px;"></div>
-
       <div style="margin-bottom:15px; font-size:0.85rem; background:#FAF7FC; padding:10px; border-radius:8px;">
         <strong><i class="fa-solid fa-paperclip"></i> ไฟล์แนบเสริม:</strong> <span id="grade-modal-file-link"></span>
       </div>
-
       <div class="input-group">
         <label>คะแนนใบงาน (เต็ม 10 คะแนน)</label>
         <input type="number" id="grade-modal-score" min="0" max="10" placeholder="0 - 10">
       </div>
-
       <div class="input-group">
         <label>คำแนะนำ / ข้อเสนอแนะของคุณครู</label>
         <textarea id="grade-modal-feedback" rows="3" placeholder="เขียนคำแนะนำ..."></textarea>
       </div>
-
       <div style="display:flex; gap:10px;">
         <button class="btn btn-secondary" onclick="closeGradingModal()">ยกเลิก</button>
         <button class="btn" onclick="saveAssignmentGrade()">บันทึกผลการตรวจ</button>
@@ -1100,7 +958,7 @@
     </div>
   </div>
 
-  <!-- MODAL: LIGHTBOX ขยายอินโฟกราฟิกเต็มจอ -->
+  <!-- MODAL: LIGHTBOX -->
   <div id="modal-lightbox" class="modal" onclick="closeLightbox()">
     <div style="position:relative; max-width:92%; max-height:92%;">
       <img id="lightbox-img" src="" style="width:100%; height:auto; max-height:85vh; object-fit:contain; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
@@ -1111,116 +969,953 @@
   <!-- JAVASCRIPT LOGIC -->
   <script>
     // ==========================================
-    // 🔗 ตั้งค่า URL GOOGLE APPS SCRIPT คลาวด์
-    // นำ Web App URL ที่ลงท้ายด้วย /exec มาวางในเครื่องหมายคำพูดด้านล่างนี้
+    // 🔗 วาง Web App URL จาก Google Apps Script ตรงนี้
     // ==========================================
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx_gxrzJNeDoOYooEboPXdubTWjgqP8MuzxchN878CMTl51aoGHi58EShn9q0xn9A5j/exec";
 
-    async function syncToCloud(recordData) {
-      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("วาง_URL")) return;
-      try {
-        await fetch(GOOGLE_SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "save", data: recordData })
-        });
-      } catch (err) {
-        console.error("ส่งข้อมูลล้มเหลว:", err);
-      }
+    // ฟังก์ชันช่วยเขียนข้อสอบแบบสั้น (ข้อ, ก, ข, ค, ง, เฉลย: 0=ก, 1=ข, 2=ค, 3=ง)
+    function q(question, a, b, c, d, correctAns) {
+      return { q: question, options: ['ก. ' + a, 'ข. ' + b, 'ค. ' + c, 'ง. ' + d], ans: correctAns };
     }
 
-    async function fetchCloudRecords(showAlert = false) {
-      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("วาง_URL")) return false;
-      try {
-        const res = await fetch(GOOGLE_SCRIPT_URL + "?nocache=" + new Date().getTime());
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          data.forEach(r => {
-            r.stdId = String(r.stdId || r.stdid || "").trim();
-            let ans = r.assignmentAnswers || r.assignmentanswers;
-            if (typeof ans === 'string' && ans.startsWith('{')) {
-              try { r.assignmentAnswers = JSON.parse(ans); } catch(e){}
-            }
-          });
-          appData.records = data;
-          saveStorage();
-          renderFilteredTeacherTable();
-          if (showAlert) alert('ดึงข้อมูลล่าสุดจาก Google Sheets สำเร็จ! (' + data.length + ' รายการ)');
-          return true;
-        }
-      } catch (err) {
-        console.error("ดึงข้อมูลจากคลาวด์ไม่สำเร็จ:", err);
-      }
-      return false;
-    }
+    // =========================================================================
+    // 📚 ฐานข้อมูลหลัก: แจกแจงครบ 7 วิชา รวม 36 ครั้ง (คุณครูแก้ตรงนี้ได้โดยตรง!)
+    // 👉 isLocked: false = เปิดเรียนได้ทันที
+    // 👉 isLocked: true  = ล็อคบทเรียนไว้ (นักศึกษาจะกดไม่ได้)
+    // =========================================================================
+    const ALL_COURSES_DATA = {
 
-    // =======================================================
-    // 📚 โครงสร้างรายวิชาแจกแจงแยกรายครั้ง ครบ 7 วิชา 36 ครั้ง
-    // มีฟิลด์ isLocked: false (เปิดเรียน) / true (ล็อค)
-    // =======================================================
-    function generateInitialCourses() {
-      function buildCourse(prefix, code, title, count, topic) {
-        const list = [];
-        for (let i = 1; i <= count; i++) {
-          list.push({
-            id: `${prefix}_s${i}`,
-            code: code,
-            title: title,
-            session: `ครั้งที่ ${i}`,
-            isLocked: i > 1, // 👉 ครั้งที่ 1 เปิดเรียนทันที, ครั้งที่ 2 เป็นต้นไป ล็อคไว้ก่อน
-            videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-            infographicUrl: 'images/cover.jpg',
-            content: `เนื้อหาการเรียนรู้วิชา ${title} (${code}) ครั้งที่ ${i}:\n\nหัวข้อ: ${topic}\n\n1. ให้นักศึกษาศึกษาเนื้อหาในคลิปวิดีโอและทำความเข้าใจประเด็นสำคัญ\n2. พิจารณาภาพสรุปความรู้ด้านล่างประกอบความเข้าใจ\n3. เมื่อศึกษาเรียบร้อยแล้ว ให้ตอบคำถามใบงานประจำครั้งและทำแบบทดสอบหลังเรียน`,
-            assignmentTasks: [
-              `ข้อ 1: สรุปสิ่งที่ได้เรียนรู้จากวิชา ${title} ครั้งที่ ${i}`,
-              `ข้อ 2: ยกตัวอย่างการนำความรู้ไปประยุกต์ใช้ 1 ตัวอย่าง`
-            ],
-            questions: generateSampleQuiz(title, i)
-          });
-        }
-        return list;
-      }
+      // =====================================================================
+      // 1. ระดับมัธยมศึกษาตอนต้น (ม.ต้น) - รวม 3 วิชา (18 ครั้ง)
+      // =====================================================================
+      'm-ton': [
 
-      return {
-        // ม.ต้น (3 วิชา รวม 18 ครั้ง)
-        'm-ton': [
-          ...buildCourse('mt1', 'กอ22002', 'วิชาการค้าขายออนไลน์', 5, 'การเปิดร้านค้าและการตลาดออนไลน์เบื้องต้น'),
-          ...buildCourse('mt2', 'สค210001', 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง', 7, 'ประวัติศาสตร์ชาติไทย หน้าที่พลเมือง และการปกครองระบอบประชาธิปไตย'),
-          ...buildCourse('mt3', 'พต210001', 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)', 6, 'English Communication in Daily Life and Greetings')
-        ],
-
-        // ม.ปลาย (4 วิชา รวม 18 ครั้ง)
-        'm-ปลาย': [
-          ...buildCourse('mp1', 'สค310001', 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง', 6, 'เหตุการณ์สำคัญทางประวัติศาสตร์ไทยและสากล และกฎหมายที่ควรรู้'),
-          ...buildCourse('mp2', 'กอ320003', 'คุณธรรมและจริยธรรมในการประกอบอาชีพการบริการ', 3, 'จรรยาบรรณวิชาชีพและจิตบริการในการทำงานร่วมกับผู้อื่น'),
-          ...buildCourse('mp3', 'สศ320001', 'วิชาสุขภาพและความปลอดภัยในชีวิต', 3, 'การดูแลสุขภาพองค์รวม การปฐมพยาบาล และความปลอดภัยในการใช้ชีวิต'),
-          ...buildCourse('mp4', 'พต310001', 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)', 6, 'English for Career and International Communication')
-        ]
-      };
-    }
-
-    function generateSampleQuiz(title, sessionNum) {
-      const questions = [];
-      for (let i = 1; i <= 10; i++) {
-        questions.push({
-          q: `ข้อที่ ${i}: จากบทเรียนวิชา ${title} ครั้งที่ ${sessionNum} ข้อใดถูกต้องที่สุด?`,
-          options: [
-            `ก. คำตอบที่ 1 (ถูกต้องตามหลักการ)`,
-            `ข. คำตอบที่ 2`,
-            `ค. คำตอบที่ 3`,
-            `ง. คำตอบที่ 4`
+        // -------------------------------------------------------------------
+        // วิชาที่ 1: การค้าขายออนไลน์ (กอ22002) - เรียนทั้งหมด 5 ครั้ง
+        // -------------------------------------------------------------------
+        {
+          id: 'mt1_s1',
+          code: 'กอ22002',
+          title: 'วิชาการค้าขายออนไลน์',
+          session: 'ครั้งที่ 1',
+          isLocked: false, // 🔓 เปิดให้เรียน
+          videoUrl: 'video/มต้น1.mp4',
+          infographicUrl: 'images/info1.png',
+          content: `คำชี้แจงในการเรียนรู้ให้นักศึกษาอ่านและศึกษาบทเรียนเรื่องความรู้เบื้องต้นเกี่ยวกับการขายสินค้าออนไลน์ โดยศึกษาเนื้อหาให้ครบทุกหัวข้อ ทำกิจกรรมระหว่างเรียน และทบทวนความรู้จากตัวอย่างที่กำหนดให้ เมื่อศึกษาเนื้อหาจบแล้วให้ทำแบบทดสอบหลังเรียนเพื่อประเมินความรู้และความเข้าใจของตนเองจุดประสงค์การเรียนรู้เมื่อศึกษาเนื้อหาบทเรียนนี้จบแล้ว นักศึกษาสามารถ
+1. อธิบายความหมายและความสำคัญของการขายสินค้าออนไลน์ได้
+2. อธิบายช่องทางและรูปแบบการขายสินค้าออนไลน์ได้
+3. อธิบายหลักการเลือกสินค้าและการวิเคราะห์กลุ่มลูกค้าเป้าหมายได้
+4. อธิบายหลักการตลาดออนไลน์เบื้องต้นได้
+5. อธิบายขั้นตอนการดำเนินงานขายสินค้าออนไลน์ได้
+6. อธิบายแนวทางการสร้างความน่าเชื่อถือให้กับร้านค้าออนไลน์ได้
+7. ปฏิบัติตนเป็นผู้ขายสินค้าออนไลน์ที่มีคุณธรรม จริยธรรม และความรับผิดชอบได้`,
+          assignmentTasks: [
+            'ข้อ 1: อธิบายช่องทางการขายออนไลน์ มา 2 ข้อ',
           ],
-          ans: 0
-        });
-      }
-      return questions;
-    }
+questions: [
+  q('ข้อที่ 1: ข้อใดอธิบายความหมายของการขายสินค้าออนไลน์ได้ถูกต้องที่สุด?',
+    'การจำหน่ายสินค้าผ่านเครือข่ายอินเทอร์เน็ต',
+    'การจำหน่ายสินค้าเฉพาะในตลาดสด',
+    'การแลกเปลี่ยนสินค้าโดยไม่ใช้เงิน',
+    'การผลิตสินค้าเพื่อเก็บไว้ในคลัง', 0),
 
-    // 🌟 ดึงข้อมูลสดจากโค้ดเสมอ ไม่ต้องเปลี่ยนเลข v อีกต่อไป
+  q('ข้อที่ 2: ข้อใดเป็นตัวอย่างช่องทางสำหรับขายสินค้าออนไลน์?',
+    'ตลาดนัดและร้านค้าหน้าบ้าน',
+    'Facebook และ TikTok',
+    'โรงงานและโกดังสินค้า',
+    'ห้องเรียนและห้องประชุม', 1),
+
+  q('ข้อที่ 3: ข้อใดเป็นองค์ประกอบสำคัญของการขายสินค้าออนไลน์?',
+    'สินค้า ลูกค้า ช่องทาง และการจัดส่ง',
+    'อาคาร โรงงาน และเครื่องจักรเท่านั้น',
+    'การเดินทางและการท่องเที่ยว',
+    'การตกแต่งบ้านและสวน', 0),
+
+  q('ข้อที่ 4: ข้อใดเป็นประโยชน์สำคัญของการขายสินค้าออนไลน์?',
+    'ทำให้ไม่ต้องรับผิดชอบต่อลูกค้า',
+    'ทำให้ขายสินค้าได้โดยไม่ต้องมีข้อมูลสินค้า',
+    'ช่วยเข้าถึงลูกค้าได้หลายพื้นที่',
+    'ทำให้ไม่มีการแข่งขันทางการค้า', 2),
+
+  q('ข้อที่ 5: กลุ่มลูกค้าเป้าหมายหมายถึงข้อใด?',
+    'บุคคลที่ผลิตสินค้าให้ร้านค้า',
+    'กลุ่มบุคคลที่ผู้ขายต้องการจำหน่ายสินค้าให้',
+    'บุคคลที่ทำหน้าที่ขนส่งสินค้า',
+    'กลุ่มบุคคลที่ไม่สนใจสินค้า', 1),
+
+  q('ข้อที่ 6: หากต้องการขายกระเป๋านักเรียน กลุ่มลูกค้าใดเหมาะสมที่สุด?',
+    'ผู้ที่กำลังมองหาอุปกรณ์สำหรับเดินทางไปโรงเรียน',
+    'ผู้ที่ต้องการซื้ออุปกรณ์ทำสวน',
+    'ผู้ที่กำลังมองหาอะไหล่รถยนต์',
+    'ผู้ที่ต้องการซื้อเครื่องมือช่าง', 0),
+
+  q('ข้อที่ 7: ก่อนนำสินค้าไปขายออนไลน์ ผู้ขายควรปฏิบัติอย่างไร?',
+    'ตั้งราคาโดยไม่คำนึงถึงต้นทุน',
+    'คัดลอกรูปภาพสินค้าจากร้านอื่นทุกครั้ง',
+    'ศึกษาสินค้า ต้นทุน และกลุ่มลูกค้า',
+    'เริ่มขายโดยไม่ต้องเตรียมข้อมูล', 2),
+
+  q('ข้อที่ 8: ข้อใดเป็นวิธีสร้างความน่าเชื่อถือให้ร้านค้าออนไลน์?',
+    'โฆษณาสินค้าเกินจริงเพื่อดึงดูดลูกค้า',
+    'แจ้งรายละเอียดสินค้า ราคา และเงื่อนไขอย่างชัดเจน',
+    'ไม่ตอบคำถามของลูกค้า',
+    'ใช้ภาพสินค้าที่ไม่ตรงกับสินค้าจริง', 1),
+
+  q('ข้อที่ 9: หากลูกค้าโอนเงินซื้อสินค้าแล้ว ผู้ขายควรทำสิ่งใดต่อไป?',
+    'ยกเลิกการติดต่อกับลูกค้า',
+    'ส่งสินค้าโดยไม่ตรวจสอบคำสั่งซื้อ',
+    'ตรวจสอบยอดชำระและเตรียมจัดส่งสินค้า',
+    'นำข้อมูลลูกค้าไปเผยแพร่', 2),
+
+  q('ข้อที่ 10: ข้อใดเป็นความเสี่ยงที่อาจเกิดขึ้นจากการขายสินค้าออนไลน์?',
+    'ลูกค้าสามารถเลือกซื้อสินค้าได้สะดวก',
+    'ร้านค้าสามารถเข้าถึงลูกค้าหลายพื้นที่',
+    'ผู้ขายสามารถนำเสนอสินค้าได้ตลอดเวลา',
+    'การถูกหลอกลวงและข้อมูลส่วนบุคคลรั่วไหล', 3)
+]
+        },
+        {
+          id: 'mt1_s2',
+          code: 'กอ22002',
+          title: 'วิชาการค้าขายออนไลน์',
+          session: 'ครั้งที่ 2',
+          isLocked: true, // 🔒 ล็อคไว้
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหาครั้งที่ 2: การถ่ายภาพสินค้าและการเขียนแคปชันสินค้าให้น่าสนใจ...',
+          assignmentTasks: ['ข้อ 1: จงเขียนแคปชันขายสินค้าชุมชน 1 ชิ้น'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1 ของครั้งที่ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mt1_s3',
+          code: 'กอ22002',
+          title: 'วิชาการค้าขายออนไลน์',
+          session: 'ครั้งที่ 3',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหาครั้งที่ 3: การตั้งราคาสินค้า การคิดต้นทุน และกำไร...',
+          assignmentTasks: ['ข้อ 1: คำนวณต้นทุนสินค้าจำลองมา 1 ชิ้น'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1 ของครั้งที่ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mt1_s4',
+          code: 'กอ22002',
+          title: 'วิชาการค้าขายออนไลน์',
+          session: 'ครั้งที่ 4',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหาครั้งที่ 4: การจัดส่งสินค้าและการเลือกขนส่ง...',
+          assignmentTasks: ['ข้อ 1: บอกวิธีการแพ็คสินค้าประเภทของแตกหักง่าย'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1 ของครั้งที่ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mt1_s5',
+          code: 'กอ22002',
+          title: 'วิชาการค้าขายออนไลน์',
+          session: 'ครั้งที่ 5',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหาครั้งที่ 5: กฎหมายและจริยธรรมในการค้าขายออนไลน์...',
+          assignmentTasks: ['ข้อ 1: สรุปข้อควรระวังทางกฎหมายในการขายของออนไลน์'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1 ของครั้งที่ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+
+        // -------------------------------------------------------------------
+        // วิชาที่ 2: สังคมศึกษาฯ (สค210001) - เรียนทั้งหมด 7 ครั้ง
+        // -------------------------------------------------------------------
+        {
+          id: 'mt2_s1',
+          code: 'สค210001',
+          title: 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง',
+          session: 'ครั้งที่ 1',
+          isLocked: true,
+          videoUrl: 'video/มต้น1.mp4',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา สค210001 ครั้งที่ 1: ประวัติศาสตร์ชาติไทย ยุคสุโขทัย...',
+          assignmentTasks: ['ข้อ 1: สรุปลักษณะการปกครองสมัยสุโขทัย'],
+          questions: [
+            q('ข้อที่ 1: การปกครองสมัยสุโขทัยตอนต้นเป็นแบบใด?', 'พ่อปกครองลูก', 'สมบูรณาญาสิทธิราชย์', 'ประชาธิปไตย', 'เผด็จการ', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mt2_s2',
+          code: 'สค210001',
+          title: 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง',
+          session: 'ครั้งที่ 2',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา สค210001 ครั้งที่ 2: ยุคอยุธยาและการค้าต่างประเทศ...',
+          assignmentTasks: ['ข้อ 1: อธิบายบทบาทของอยุธยาในการเป็นเมืองท่าการค้า'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mt2_s3',
+          code: 'สค210001',
+          title: 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง',
+          session: 'ครั้งที่ 3',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา สค210001 ครั้งที่ 3: ยุคธนบุรีและการกอบกู้เอกราช...',
+          assignmentTasks: ['ข้อ 1: วีรกรรมสำคัญของสมเด็จพระเจ้าตากสินมหาราช'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mt2_s4',
+          code: 'สค210001',
+          title: 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง',
+          session: 'ครั้งที่ 4',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา สค210001 ครั้งที่ 4: ยุครัตนโกสินทร์ตอนต้นและการสร้างบ้านแปงเมือง...',
+          assignmentTasks: ['ข้อ 1: การสถาปนากรุงเทพมหานครเป็นราชธานี'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mt2_s5',
+          code: 'สค210001',
+          title: 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง',
+          session: 'ครั้งที่ 5',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา สค210001 ครั้งที่ 5: การปฏิรูปประเทศในสมัยรัชกาลที่ 5...',
+          assignmentTasks: ['ข้อ 1: สรุปประโยชน์ของการเลิกทาสในประเทศไทย'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mt2_s6',
+          code: 'สค210001',
+          title: 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง',
+          session: 'ครั้งที่ 6',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา สค210001 ครั้งที่ 6: บทบาทหน้าที่ของพลเมืองที่ดีตามระบอบประชาธิปไตย...',
+          assignmentTasks: ['ข้อ 1: นักศึกษาปฏิบัติตนเป็นพลเมืองที่ดีอย่างไรบ้าง?'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mt2_s7',
+          code: 'สค210001',
+          title: 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง',
+          session: 'ครั้งที่ 7',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา สค210001 ครั้งที่ 7: กฎหมายเบื้องต้นที่เกี่ยวข้องกับชีวิตประจำวัน...',
+          assignmentTasks: ['ข้อ 1: กฎหมายทะเบียนราษฎรและการทำบัตรประชาชน'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+
+        // -------------------------------------------------------------------
+        // วิชาที่ 3: ภาษาอังกฤษ (พต210001) - เรียนทั้งหมด 6 ครั้ง
+        // -------------------------------------------------------------------
+        {
+          id: 'mt3_s1',
+          code: 'พต210001',
+          title: 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)',
+          session: 'ครั้งที่ 1',
+          isLocked: false,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา พต210001 ครั้งที่ 1: การทักทายและการแนะนำตนเอง (Greetings and Self-introduction)...',
+          assignmentTasks: ['ข้อ 1: จงเขียนประโยคแนะนำตนเองภาษาอังกฤษ 3 ประโยค'],
+          questions: [
+            q('ข้อที่ 1: Good morning ใช้ทักทายเวลาใด?', 'ตอนเช้า', 'ตอนเที่ยง', 'ตอนเย็น', 'ตอนกลางคืน', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mt3_s2',
+          code: 'พต210001',
+          title: 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)',
+          session: 'ครั้งที่ 2',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา พต210001 ครั้งที่ 2: การบอกเวลาและกิจวัตรประจำวัน (Telling Time & Daily Routines)...',
+          assignmentTasks: ['ข้อ 1: เขียนกิจกรรมประจำวันของตนเอง 2 กิจกรรม'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mt3_s3',
+          code: 'พต210001',
+          title: 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)',
+          session: 'ครั้งที่ 3',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา พต210001 ครั้งที่ 3: ครอบครัวและความสัมพันธ์ (Family & Relationships)...',
+          assignmentTasks: ['ข้อ 1: บอกคำศัพท์สมาชิกในครอบครัว 5 คำ'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mt3_s4',
+          code: 'พต210001',
+          title: 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)',
+          session: 'ครั้งที่ 4',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา พต210001 ครั้งที่ 4: การซื้อขายและถามราคา (Shopping & Asking Prices)...',
+          assignmentTasks: ['ข้อ 1: เขียนบทสนทนาถามราคาสินค้าแบบสั้น'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mt3_s5',
+          code: 'พต210001',
+          title: 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)',
+          session: 'ครั้งที่ 5',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา พต210001 ครั้งที่ 5: การถามทิศทางและสถานที่ (Directions & Places)...',
+          assignmentTasks: ['ข้อ 1: คำศัพท์บอกทิศทาง (เช่น เลี้ยวซ้าย, เลี้ยวขวา)'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mt3_s6',
+          code: 'พต210001',
+          title: 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)',
+          session: 'ครั้งที่ 6',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา พต210001 ครั้งที่ 6: ภาษาอังกฤษเพื่อการทำงานและอาชีพ...',
+          assignmentTasks: ['ข้อ 1: บอกชื่ออาชีพภาษาอังกฤษที่ตนเองสนใจ 3 อาชีพ'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        }
+      ],
+
+      // =====================================================================
+      // 2. ระดับมัธยมศึกษาตอนปลาย (ม.ปลาย) - รวม 4 วิชา (18 ครั้ง)
+      // =====================================================================
+      'm-ปลาย': [
+
+        // -------------------------------------------------------------------
+        // วิชาที่ 1: สังคมศึกษาฯ (สค310001) - เรียนทั้งหมด 6 ครั้ง
+        // -------------------------------------------------------------------
+        {
+          id: 'mp1_s1',
+          code: 'สค310001',
+          title: 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง',
+          session: 'ครั้งที่ 1',
+          isLocked: false,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา สค310001 ครั้งที่ 1: ประวัติศาสตร์สากลและอารยธรรมโบราณ...',
+          assignmentTasks: ['ข้อ 1: อารยธรรมเมโสโปเตเมียมีความสำคัญอย่างไร?'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mp1_s2',
+          code: 'สค310001',
+          title: 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง',
+          session: 'ครั้งที่ 2',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา สค310001 ครั้งที่ 2: การปฏิวัติอุตสาหกรรมและการเปลี่ยนแปลงของโลก...',
+          assignmentTasks: ['ข้อ 1: ผลกระทบของการปฏิวัติอุตสาหกรรมต่อสิ่งแวดล้อม'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mp1_s3',
+          code: 'สค310001',
+          title: 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง',
+          session: 'ครั้งที่ 3',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา สค310001 ครั้งที่ 3: สงครามโลกครั้งที่ 1 และ 2...',
+          assignmentTasks: ['ข้อ 1: สาเหตุสำคัญของการเกิดสงครามโลก'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mp1_s4',
+          code: 'สค310001',
+          title: 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง',
+          session: 'ครั้งที่ 4',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา สค310001 ครั้งที่ 4: สิทธิมนุษยชนและกฎหมายระหว่างประเทศ...',
+          assignmentTasks: ['ข้อ 1: ยกตัวอย่างสิทธิขั้นพื้นฐานของประชาชนตามรัฐธรรมนูญ'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mp1_s5',
+          code: 'สค310001',
+          title: 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง',
+          session: 'ครั้งที่ 5',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา สค310001 ครั้งที่ 5: ระบอบการปกครองและระบบเศรษฐกิจโลก...',
+          assignmentTasks: ['ข้อ 1: เปรียบเทียบข้อดีของระบบเศรษฐกิจแบบผสม'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mp1_s6',
+          code: 'สค310001',
+          title: 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง',
+          session: 'ครั้งที่ 6',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา สค310001 ครั้งที่ 6: กฎหมายแพ่งและอาญาที่ควรรู้...',
+          assignmentTasks: ['ข้อ 1: ข้อแตกต่างระหว่างคดีแพ่งและคดีอาญา'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+
+        // -------------------------------------------------------------------
+        // วิชาที่ 2: คุณธรรมและจริยธรรมฯ (กอ320003) - เรียนทั้งหมด 3 ครั้ง
+        // -------------------------------------------------------------------
+        {
+          id: 'mp2_s1',
+          code: 'กอ320003',
+          title: 'คุณธรรมและจริยธรรมในการประกอบอาชีพการบริการ',
+          session: 'ครั้งที่ 1',
+          isLocked: false,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา กอ320003 ครั้งที่ 1: จิตบริการและจรรยาบรรณวิชาชีพ...',
+          assignmentTasks: ['ข้อ 1: หัวใจสำคัญของงานบริการมีอะไรบ้าง?'],
+          questions: [
+            q('ข้อที่ 1: Service Mind หมายถึงอะไร?', 'จิตใจที่รักในงานบริการ', 'การบังคับให้ทำงาน', 'การคิดเงินแพงๆ', 'การเลือกปฏิบัติ', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mp2_s2',
+          code: 'กอ320003',
+          title: 'คุณธรรมและจริยธรรมในการประกอบอาชีพการบริการ',
+          session: 'ครั้งที่ 2',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา กอ320003 ครั้งที่ 2: การสื่อสารและการแก้ปัญหาเฉพาะหน้าในงานบริการ...',
+          assignmentTasks: ['ข้อ 1: วิธีการรับมือเมื่อลูกค้าไม่พอใจในบริการ'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mp2_s3',
+          code: 'กอ320003',
+          title: 'คุณธรรมและจริยธรรมในการประกอบอาชีพการบริการ',
+          session: 'ครั้งที่ 3',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา กอ320003 ครั้งที่ 3: ความรับผิดชอบต่อสังคมและสิ่งแวดล้อม (CSR)...',
+          assignmentTasks: ['ข้อ 1: กิจกรรม CSR ที่ธุรกิจบริการสามารถทำได้ในชุมชน'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+
+        // -------------------------------------------------------------------
+        // วิชาที่ 3: สุขภาพและความปลอดภัยฯ (สศ320001) - เรียนทั้งหมด 3 ครั้ง
+        // -------------------------------------------------------------------
+        {
+          id: 'mp3_s1',
+          code: 'สศ320001',
+          title: 'วิชาสุขภาพและความปลอดภัยในชีวิต',
+          session: 'ครั้งที่ 1',
+          isLocked: false,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา สศ320001 ครั้งที่ 1: การดูแลสุขภาพองค์รวมและโภชนาการที่เหมาะสม...',
+          assignmentTasks: ['ข้อ 1: การรับประทานอาหารตามหลักโภชนาการ 5 หมู่'],
+          questions: [
+            q('ข้อที่ 1: ข้อใดเป็นการดูแลสุขภาพที่ถูกต้อง?', 'ทานอาหารครบ 5 หมู่และพักผ่อนเพียงพอ', 'อดอาหารเช้า', 'ดื่มน้ำน้อยๆ', 'ไม่ออกกำลังกาย', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mp3_s2',
+          code: 'สศ320001',
+          title: 'วิชาสุขภาพและความปลอดภัยในชีวิต',
+          session: 'ครั้งที่ 2',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา สศ320001 ครั้งที่ 2: การปฐมพยาบาลเบื้องต้น (First Aid & CPR)...',
+          assignmentTasks: ['ข้อ 1: ขั้นตอนการช่วยฟื้นคืนชีพขั้นพื้นฐาน (CPR)'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mp3_s3',
+          code: 'สศ320001',
+          title: 'วิชาสุขภาพและความปลอดภัยในชีวิต',
+          session: 'ครั้งที่ 3',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา สศ320001 ครั้งที่ 3: ความปลอดภัยในการทำงานและสิ่งแวดล้อม...',
+          assignmentTasks: ['ข้อ 1: การป้องกันอุบัติเหตุในสถานที่ทำงาน'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+
+        // -------------------------------------------------------------------
+        // วิชาที่ 4: ภาษาอังกฤษ (พต310001) - เรียนทั้งหมด 6 ครั้ง
+        // -------------------------------------------------------------------
+        {
+          id: 'mp4_s1',
+          code: 'พต310001',
+          title: 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)',
+          session: 'ครั้งที่ 1',
+          isLocked: false,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา พต310001 ครั้งที่ 1: การเขียนประวัติย่อ (Resume / CV)...',
+          assignmentTasks: ['ข้อ 1: องค์ประกอบสำคัญในการเขียน Resume'],
+          questions: [
+            q('ข้อที่ 1: Resume คือเอกสารเกี่ยวกับอะไร?', 'ประวัติการศึกษาและการทำงาน', 'สูตรอาหาร', 'แผนที่ท่องเที่ยว', 'ใบเสร็จรับเงิน', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mp4_s2',
+          code: 'พต310001',
+          title: 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)',
+          session: 'ครั้งที่ 2',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา พต310001 ครั้งที่ 2: การสัมภาษณ์งานภาษาอังกฤษ (Job Interview)...',
+          assignmentTasks: ['ข้อ 1: ประโยคตอบคำถาม Tell me about yourself'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mp4_s3',
+          code: 'พต310001',
+          title: 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)',
+          session: 'ครั้งที่ 3',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา พต310001 ครั้งที่ 3: การเขียนอีเมลสมัครงานและการติดต่อธุรกิจ (Business Email)...',
+          assignmentTasks: ['ข้อ 1: โครงสร้างการเขียนอีเมลทางการภาษาอังกฤษ'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mp4_s4',
+          code: 'พต310001',
+          title: 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)',
+          session: 'ครั้งที่ 4',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา พต310001 ครั้งที่ 4: การสนทนาทางโทรศัพท์ในการทำงาน (Telephone English)...',
+          assignmentTasks: ['ข้อ 1: สำนวนการรับสายและขอฝากข้อความ'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mp4_s5',
+          code: 'พต310001',
+          title: 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)',
+          session: 'ครั้งที่ 5',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา พต310001 ครั้งที่ 5: การนำเสนอผลงานภาษาอังกฤษ (English Presentation)...',
+          assignmentTasks: ['ข้อ 1: ประโยคเปิดการนำเสนอภาษาอังกฤษ'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        },
+        {
+          id: 'mp4_s6',
+          code: 'พต310001',
+          title: 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)',
+          session: 'ครั้งที่ 6',
+          isLocked: true,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          infographicUrl: 'images/cover.jpg',
+          content: 'เนื้อหา พต310001 ครั้งที่ 6: การสื่อสารข้ามวัฒนธรรมและการเจรจาต่อรอง...',
+          assignmentTasks: ['ข้อ 1: ข้อควรระวังในการติดต่อสื่อสารกับชาวต่างชาติ'],
+          questions: [
+            q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 3: โจทย์ข้อ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 4: โจทย์ข้อ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 5: โจทย์ข้อ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 3),
+            q('ข้อที่ 6: โจทย์ข้อ 6...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 7: โจทย์ข้อ 7...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
+            q('ข้อที่ 8: โจทย์ข้อ 8...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 2),
+            q('ข้อที่ 9: โจทย์ข้อ 9...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
+            q('ข้อที่ 10: โจทย์ข้อ 10...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0)
+          ]
+        }
+      ]
+    };
+
+    // 🌟 ดึงข้อมูลสดจากโค้ดตรงนี้เสมอ จบปัญหาแคชค้างแน่นอน
     let appData = {
-      lessons: generateInitialCourses(),
-      records: JSON.parse(localStorage.getItem('clc_records_cloud')) || []
+      lessons: ALL_COURSES_DATA,
+      records: JSON.parse(localStorage.getItem('clc_records_cache')) || []
     };
 
     let currentLevel = 'm-ton';
@@ -1245,6 +1940,7 @@
       navigate('view-lessons');
     }
 
+    // แสดงรายการบทเรียน พร้อมระบบตรวจสอบการล็อค
     function renderLessonListGrouped() {
       const container = document.getElementById('lesson-list-container');
       container.innerHTML = '';
@@ -1277,19 +1973,15 @@
         const badgeBox = div.querySelector(`#sessions-${course.code}`);
         course.sessions.forEach(s => {
           const btn = document.createElement('button');
-          
           if (s.isLocked) {
             btn.className = 'session-btn locked';
             btn.innerHTML = `<i class="fa-solid fa-lock"></i> ${s.session} <small style="font-size:0.7rem;">(ล็อค)</small>`;
-            btn.onclick = () => {
-              alert(`🔒 บทเรียนนี้ยังไม่เปิดให้เข้าเรียน\n\nวิชา: ${s.title}\n${s.session}\nกรุณารอคุณครูผู้สอนเปิดบทเรียนตามกำหนดการครับ`);
-            };
+            btn.onclick = () => alert(`🔒 บทเรียนนี้ยังไม่เปิดให้เข้าเรียน\n\nวิชา: ${s.title}\n${s.session}\nกรุณารอคุณครูผู้สอนเปิดบทเรียนตามกำหนดการครับ`);
           } else {
             btn.className = 'session-btn';
             btn.innerHTML = `<i class="fa-solid fa-play" style="font-size:0.7rem;"></i> ${s.session}`;
             btn.onclick = () => selectLesson(s);
           }
-
           badgeBox.appendChild(btn);
         });
       });
@@ -1300,10 +1992,9 @@
         alert(`🔒 บทเรียนนี้ยังไม่เปิดให้เข้าเรียน กรุณารอคุณครูผู้สอนเปิดบทเรียนครับ`);
         return;
       }
-
       currentLesson = lesson;
       if (!currentLesson.assignmentTasks) {
-        currentLesson.assignmentTasks = [currentLesson.assignmentTask || 'ให้นักศึกษาสรุปสิ่งที่ได้เรียนรู้'];
+        currentLesson.assignmentTasks = ['ให้นักศึกษาสรุปสิ่งที่ได้เรียนรู้'];
       }
       document.getElementById('login-lesson-title').innerText = `${lesson.title} (${lesson.code}) - ${lesson.session}`;
       navigate('view-lesson-login');
@@ -1348,7 +2039,7 @@
       startVideoStep();
     }
 
-    // Step 1: Video Player (แก้ปัญหานับเวลาค้าง)
+    // Step 1: Video Player
     function startVideoStep() {
       navigate('view-step-video');
       document.getElementById('video-lesson-name').innerText = `${currentLesson.title} (${currentLesson.code}) - ${currentLesson.session}`;
@@ -1373,10 +2064,7 @@
           <video id="lesson-html5-video" controls playsinline controlslist="nodownload" style="width:100%; max-height:420px; border-radius:12px; background:#000;">
             <source src="${vUrl}" type="video/mp4">
             <source src="${vUrl}" type="video/webm">
-            <p style="color:#fff; padding:20px; text-align:center;">
-              ไม่พบไฟล์วิดีโอ (${vUrl})<br>
-              <small>สามารถเปลี่ยนที่อยู่วิดีโอได้ในหน้าจัดการสำหรับครู</small>
-            </p>
+            <p style="color:#fff; padding:20px; text-align:center;">ไม่พบไฟล์วิดีโอ (${vUrl})</p>
           </video>
         `;
       }
@@ -1469,7 +2157,7 @@
       }, 1000);
     }
 
-    // Step 3: Assignment Timeline & ส่งงาน
+    // Step 3: Assignment Timeline
     let isFbLiked = false;
     function toggleFbLike() {
       isFbLiked = !isFbLiked;
@@ -1580,7 +2268,7 @@
       goToQuizStep();
     }
 
-    // Step 4: Quiz & ส่งคะแนนสอบ
+    // Step 4: Quiz
     function goToQuizStep() {
       let record = appData.records.find(r => String(r.stdId).trim() === String(currentStudent.id).trim() && r.lessonId === currentLesson.id);
       const attempts = record ? record.quizAttempts : 0;
@@ -1732,22 +2420,6 @@
         renderFilteredTeacherTable();
       } else {
         alert('รหัสผ่านครูไม่ถูกต้อง!');
-      }
-    }
-
-    function switchTeacherTab(tab) {
-      if (tab === 'scores') {
-        document.getElementById('teacher-tab-scores').style.display = 'block';
-        document.getElementById('teacher-tab-edit').style.display = 'none';
-        document.getElementById('tab-btn-scores').classList.add('active');
-        document.getElementById('tab-btn-edit').classList.remove('active');
-        renderFilteredTeacherTable();
-      } else {
-        document.getElementById('teacher-tab-scores').style.display = 'none';
-        document.getElementById('teacher-tab-edit').style.display = 'block';
-        document.getElementById('tab-btn-scores').classList.remove('active');
-        document.getElementById('tab-btn-edit').classList.add('active');
-        loadLessonEditDropdown();
       }
     }
 
@@ -1907,157 +2579,44 @@
       alert('บันทึกผลการตรวจใบงานเรียบร้อย');
     }
 
-    function renderEditAssignmentTasks(tasks) {
-      const container = document.getElementById('edit-tasks-container');
-      container.innerHTML = '';
-      
-      tasks.forEach((taskText, index) => {
-        const div = document.createElement('div');
-        div.style.cssText = 'display:flex; gap:8px; margin-bottom:8px; align-items:center;';
-        div.innerHTML = `
-          <span style="font-weight:600; font-size:0.85rem; color:#6D4C41; white-space:nowrap;">ข้อ ${index + 1}:</span>
-          <input type="text" class="edit-task-input" value="${taskText}" style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-size:0.88rem;">
-          <button type="button" class="btn btn-sm btn-danger" onclick="removeAssignmentTaskField(${index})"><i class="fa-solid fa-trash"></i></button>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function addAssignmentTaskField() {
-      const inputs = document.querySelectorAll('.edit-task-input');
-      const currentTasks = Array.from(inputs).map(inp => inp.value);
-      currentTasks.push(`ข้อ ${currentTasks.length + 1}: พิมพ์คำถามใหม่...`);
-      renderEditAssignmentTasks(currentTasks);
-    }
-
-    function removeAssignmentTaskField(index) {
-      const inputs = document.querySelectorAll('.edit-task-input');
-      const currentTasks = Array.from(inputs).map(inp => inp.value);
-      if (currentTasks.length <= 1) {
-        alert('ต้องมีโจทย์ใบงานอย่างน้อย 1 ข้อ');
-        return;
-      }
-      currentTasks.splice(index, 1);
-      renderEditAssignmentTasks(currentTasks);
-    }
-
-    function loadLessonEditDropdown() {
-      const lvl = document.getElementById('edit-select-level').value;
-      const select = document.getElementById('edit-select-lesson');
-      select.innerHTML = '';
-
-      const lessons = appData.lessons[lvl] || [];
-      lessons.forEach((l, idx) => {
-        const lockLabel = l.isLocked ? '🔒 [ล็อค]' : '🟢 [เปิด]';
-        select.innerHTML += `<option value="${idx}">${lockLabel} [${l.code}] ${l.session}: ${l.title}</option>`;
-      });
-
-      populateEditForm();
-    }
-
-    function populateEditForm() {
-      const lvl = document.getElementById('edit-select-level').value;
-      const idx = document.getElementById('edit-select-lesson').value;
-      const lesson = appData.lessons[lvl][idx];
-      if (!lesson) return;
-
-      document.getElementById('edit-lock-status').value = lesson.isLocked ? 'locked' : 'unlocked';
-      document.getElementById('edit-code').value = lesson.code || '';
-      document.getElementById('edit-title').value = lesson.title || '';
-      document.getElementById('edit-session').value = lesson.session || '';
-      document.getElementById('edit-video').value = lesson.videoUrl || '';
-      document.getElementById('edit-content').value = lesson.content || '';
-      document.getElementById('edit-infographic').value = lesson.infographicUrl || '';
-
-      const tasks = lesson.assignmentTasks || [lesson.assignmentTask || 'ให้นักศึกษาสรุปสิ่งที่ได้เรียนรู้'];
-      renderEditAssignmentTasks(tasks);
-
-      const qBox = document.getElementById('edit-quiz-container');
-      qBox.innerHTML = '';
-      (lesson.questions || []).forEach((q, qIndex) => {
-        qBox.innerHTML += `
-          <div style="background:#fff; border:1px solid #ddd; padding:10px; border-radius:8px; margin-bottom:10px;">
-            <div class="input-group">
-              <label>ข้อที่ ${qIndex + 1}</label>
-              <input type="text" id="q_text_${qIndex}" value="${q.q}">
-            </div>
-            <div class="input-group">
-              <label>ตัวเลือก (ก, ข, ค, ง คั่นด้วยเครื่องหมายจุลภาค ",")</label>
-              <input type="text" id="q_opts_${qIndex}" value="${q.options.join(', ')}">
-            </div>
-            <div class="input-group">
-              <label>เฉลยข้อถูก (0=ก, 1=ข, 2=ค, 3=ง)</label>
-              <input type="number" min="0" max="3" id="q_ans_${qIndex}" value="${q.ans}">
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    function startAddNewLesson() {
-      const lvl = document.getElementById('edit-select-level').value;
-      const newLesson = {
-        id: 'lesson_' + Date.now(),
-        code: 'ใหม่001',
-        title: 'วิชาใหม่',
-        session: 'ครั้งที่ 1',
-        isLocked: false,
-        videoUrl: 'https://youtu.be/hy_lgLj0vVE',
-        infographicUrl: '',
-        content: '',
-        assignmentTasks: ['ข้อ 1: ให้นักศึกษาตอบคำถามที่ 1', 'ข้อ 2: ให้นักศึกษาตอบคำถามที่ 2'],
-        questions: generateSampleQuiz('วิชาใหม่', 1)
-      };
-
-      appData.lessons[lvl].push(newLesson);
-      loadLessonEditDropdown();
-      document.getElementById('edit-select-lesson').value = appData.lessons[lvl].length - 1;
-      populateEditForm();
-      alert('เพิ่มโครงสร้างบทเรียนใหม่เรียบร้อย กรุณากรอกรายละเอียดแล้วกดบันทึก');
-    }
-
-    function deleteCurrentLesson() {
-      const lvl = document.getElementById('edit-select-level').value;
-      const idx = document.getElementById('edit-select-lesson').value;
-
-      if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบบทเรียนนี้?')) {
-        appData.lessons[lvl].splice(idx, 1);
-        loadLessonEditDropdown();
-        alert('ลบบทเรียนเรียบร้อย');
+    // ฟังก์ชันซิงค์คลาวด์
+    async function syncToCloud(recordData) {
+      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("วาง_URL")) return;
+      try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "save", data: recordData })
+        });
+      } catch (err) {
+        console.error("ส่งข้อมูลล้มเหลว:", err);
       }
     }
 
-    function saveLessonEdits() {
-      const lvl = document.getElementById('edit-select-level').value;
-      const idx = document.getElementById('edit-select-lesson').value;
-      const lesson = appData.lessons[lvl][idx];
-      if (!lesson) return;
-
-      lesson.isLocked = document.getElementById('edit-lock-status').value === 'locked';
-      lesson.code = document.getElementById('edit-code').value.trim();
-      lesson.title = document.getElementById('edit-title').value.trim();
-      lesson.session = document.getElementById('edit-session').value.trim();
-      lesson.videoUrl = document.getElementById('edit-video').value.trim();
-      lesson.content = document.getElementById('edit-content').value.trim();
-      lesson.infographicUrl = document.getElementById('edit-infographic').value.trim();
-
-      const taskInputs = document.querySelectorAll('.edit-task-input');
-      lesson.assignmentTasks = Array.from(taskInputs).map(inp => inp.value.trim()).filter(val => val !== '');
-
-      for (let i = 0; i < 10; i++) {
-        const qText = document.getElementById(`q_text_${i}`).value;
-        const optsText = document.getElementById(`q_opts_${i}`).value;
-        const ansVal = parseInt(document.getElementById(`q_ans_${i}`).value);
-
-        lesson.questions[i] = {
-          q: qText,
-          options: optsText.split(',').map(item => item.trim()),
-          ans: isNaN(ansVal) ? 0 : ansVal
-        };
+    async function fetchCloudRecords(showAlert = false) {
+      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("วาง_URL")) return false;
+      try {
+        const res = await fetch(GOOGLE_SCRIPT_URL + "?nocache=" + new Date().getTime());
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          data.forEach(r => {
+            r.stdId = String(r.stdId || r.stdid || "").trim();
+            let ans = r.assignmentAnswers || r.assignmentanswers;
+            if (typeof ans === 'string' && ans.startsWith('{')) {
+              try { r.assignmentAnswers = JSON.parse(ans); } catch(e){}
+            }
+          });
+          appData.records = data;
+          saveStorage();
+          renderFilteredTeacherTable();
+          if (showAlert) alert('ดึงข้อมูลล่าสุดจาก Google Sheets สำเร็จ! (' + data.length + ' รายการ)');
+          return true;
+        }
+      } catch (err) {
+        console.error("ดึงข้อมูลจากคลาวด์ไม่สำเร็จ:", err);
       }
-
-      loadLessonEditDropdown();
-      alert('บันทึกข้อมูลบทเรียนและสถานะการล็อคสำเร็จเรียบร้อย!');
+      return false;
     }
 
     function openLightbox(src) {
@@ -2069,9 +2628,8 @@
       document.getElementById('modal-lightbox').classList.remove('active');
     }
 
-    // แคชเฉพาะข้อมูลคะแนน
     function saveStorage() {
-      localStorage.setItem('clc_records_cloud', JSON.stringify(appData.records));
+      localStorage.setItem('clc_records_cache', JSON.stringify(appData.records));
     }
   </script>
 </body>
