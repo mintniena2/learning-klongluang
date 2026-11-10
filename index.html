@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
+    <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- ป้องกันแคชค้างในมือถือ โหลดโค้ดใหม่ล่าสุดเสมอ -->
+  <!-- ป้องกันแคชค้างในมือถือ ทำให้เห็นข้อมูลใหม่ล่าสุดที่ครูแก้ไขทันที -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -301,7 +302,7 @@
 
     .video-container {
       position: relative;
-      background: #111;
+      background: #000;
       border-radius: 12px;
       overflow: hidden;
       margin-bottom: 15px;
@@ -496,6 +497,10 @@
       width: auto;
     }
 
+    .btn-danger { background: #dc3545; }
+    .btn-secondary { background: #6c757d; }
+    .btn-success { background: #28a745; }
+
     .input-group {
       margin-bottom: 15px;
       text-align: left;
@@ -684,7 +689,7 @@
       </div>
     </div>
 
-    <!-- 4. STEP 1: VIDEO -->
+    <!-- 4. STEP 1: VIDEO (เล่นบนหน้าเว็บทันที ไม่เด้งหลุด) -->
     <div id="view-step-video" class="view">
       <div class="card">
         <div class="step-indicator">
@@ -775,7 +780,7 @@
           <div class="fb-content">
             <div id="fb-post-tag" class="fb-tags-badge">#รายวิชา</div>
             <p style="margin-bottom: 6px;">
-              สวัสดีนักศึกษาทุกคน ให้นักศึกษาตอบคำถามใบงานตามรายการภารกิจด้านล่างนี้ โดยพิมพ์คำตอบในช่องแสดงความคิดเห็นใต้โพสต์ได้เลยครับ 👇
+              สวัสดีนักศึกษาทุกคน ให้นักศึกษาตอบคำถามใบงานตามรายการภารกิจด้านล่างนี้ โดยพิมพ์คำตอบในช่องแสดงความคิดเห็นใต้โพสต์ได้เลยค่ะ 👇
             </p>
             <div id="assignment-questions-list"></div>
           </div>
@@ -971,7 +976,15 @@
     // ==========================================
     // 🔗 วาง Web App URL จาก Google Apps Script ตรงนี้
     // ==========================================
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx_gxrzJNeDoOYooEboPXdubTWjgqP8MuzxchN878CMTl51aoGHi58EShn9q0xn9A5j/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDgW6Fwgt6OJtnxURoeApPNcdSFk3sKHEQbjJyLN04vWouS4sNm2yyNMtwZMIEu3sR/exec";
+
+    // ฟังก์ชันช่วยสกัดรหัส YouTube ID ได้แม่นยำทุกรูปแบบ (ลิงก์สั้น, ลิงก์มือถือ, ลิงก์ Shorts)
+    function extractYouTubeId(url) {
+      if (!url) return null;
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : null;
+    }
 
     // ฟังก์ชันช่วยเขียนข้อสอบแบบสั้น (ข้อ, ก, ข, ค, ง, เฉลย: 0=ก, 1=ข, 2=ค, 3=ง)
     function q(question, a, b, c, d, correctAns) {
@@ -999,80 +1012,25 @@
           title: 'วิชาการค้าขายออนไลน์',
           session: 'ครั้งที่ 1',
           isLocked: false, // 🔓 เปิดให้เรียน
-          videoUrl: 'video/มต้น1.webp',
-          infographicUrl: 'images/info1.png',
-          content: `คำชี้แจงในการเรียนรู้ให้นักศึกษาอ่านและศึกษาบทเรียนเรื่องความรู้เบื้องต้นเกี่ยวกับการขายสินค้าออนไลน์ โดยศึกษาเนื้อหาให้ครบทุกหัวข้อ ทำกิจกรรมระหว่างเรียน และทบทวนความรู้จากตัวอย่างที่กำหนดให้ เมื่อศึกษาเนื้อหาจบแล้วให้ทำแบบทดสอบหลังเรียนเพื่อประเมินความรู้และความเข้าใจของตนเองจุดประสงค์การเรียนรู้เมื่อศึกษาเนื้อหาบทเรียนนี้จบแล้ว นักศึกษาสามารถ
-1. อธิบายความหมายและความสำคัญของการขายสินค้าออนไลน์ได้
-2. อธิบายช่องทางและรูปแบบการขายสินค้าออนไลน์ได้
-3. อธิบายหลักการเลือกสินค้าและการวิเคราะห์กลุ่มลูกค้าเป้าหมายได้
-4. อธิบายหลักการตลาดออนไลน์เบื้องต้นได้
-5. อธิบายขั้นตอนการดำเนินงานขายสินค้าออนไลน์ได้
-6. อธิบายแนวทางการสร้างความน่าเชื่อถือให้กับร้านค้าออนไลน์ได้
-7. ปฏิบัติตนเป็นผู้ขายสินค้าออนไลน์ที่มีคุณธรรม จริยธรรม และความรับผิดชอบได้`,
+          videoUrl: 'https://youtu.be/hy_lgLj0vVE',
+          infographicUrl: 'images/cover.jpg',
+          content: `เนื้อหาครั้งที่ 1: ความรู้เบื้องต้นเกี่ยวกับการเปิดร้านค้าออนไลน์และแพลตฟอร์มต่างๆ ให้นักศึกษาทำความเข้าใจประโยชน์และช่องทางการตลาดออนไลน์ในปัจจุบัน`,
           assignmentTasks: [
-            'ข้อ 1: อธิบายช่องทางการขายออนไลน์ มา 2 ข้อ',
+            'ข้อ 1: จงบอกข้อดีของการค้าขายออนไลน์มา 3 ข้อ',
+            'ข้อ 2: สินค้าใดในชุมชนที่เหมาะกับการขายออนไลน์ พร้อมบอกเหตุผล'
           ],
-questions: [
-  q('ข้อที่ 1: ข้อใดอธิบายความหมายของการขายสินค้าออนไลน์ได้ถูกต้องที่สุด?',
-    'การจำหน่ายสินค้าผ่านเครือข่ายอินเทอร์เน็ต',
-    'การจำหน่ายสินค้าเฉพาะในตลาดสด',
-    'การแลกเปลี่ยนสินค้าโดยไม่ใช้เงิน',
-    'การผลิตสินค้าเพื่อเก็บไว้ในคลัง', 0),
-
-  q('ข้อที่ 2: ข้อใดเป็นตัวอย่างช่องทางสำหรับขายสินค้าออนไลน์?',
-    'ตลาดนัดและร้านค้าหน้าบ้าน',
-    'Facebook และ TikTok',
-    'โรงงานและโกดังสินค้า',
-    'ห้องเรียนและห้องประชุม', 1),
-
-  q('ข้อที่ 3: ข้อใดเป็นองค์ประกอบสำคัญของการขายสินค้าออนไลน์?',
-    'สินค้า ลูกค้า ช่องทาง และการจัดส่ง',
-    'อาคาร โรงงาน และเครื่องจักรเท่านั้น',
-    'การเดินทางและการท่องเที่ยว',
-    'การตกแต่งบ้านและสวน', 0),
-
-  q('ข้อที่ 4: ข้อใดเป็นประโยชน์สำคัญของการขายสินค้าออนไลน์?',
-    'ทำให้ไม่ต้องรับผิดชอบต่อลูกค้า',
-    'ทำให้ขายสินค้าได้โดยไม่ต้องมีข้อมูลสินค้า',
-    'ช่วยเข้าถึงลูกค้าได้หลายพื้นที่',
-    'ทำให้ไม่มีการแข่งขันทางการค้า', 2),
-
-  q('ข้อที่ 5: กลุ่มลูกค้าเป้าหมายหมายถึงข้อใด?',
-    'บุคคลที่ผลิตสินค้าให้ร้านค้า',
-    'กลุ่มบุคคลที่ผู้ขายต้องการจำหน่ายสินค้าให้',
-    'บุคคลที่ทำหน้าที่ขนส่งสินค้า',
-    'กลุ่มบุคคลที่ไม่สนใจสินค้า', 1),
-
-  q('ข้อที่ 6: หากต้องการขายกระเป๋านักเรียน กลุ่มลูกค้าใดเหมาะสมที่สุด?',
-    'ผู้ที่กำลังมองหาอุปกรณ์สำหรับเดินทางไปโรงเรียน',
-    'ผู้ที่ต้องการซื้ออุปกรณ์ทำสวน',
-    'ผู้ที่กำลังมองหาอะไหล่รถยนต์',
-    'ผู้ที่ต้องการซื้อเครื่องมือช่าง', 0),
-
-  q('ข้อที่ 7: ก่อนนำสินค้าไปขายออนไลน์ ผู้ขายควรปฏิบัติอย่างไร?',
-    'ตั้งราคาโดยไม่คำนึงถึงต้นทุน',
-    'คัดลอกรูปภาพสินค้าจากร้านอื่นทุกครั้ง',
-    'ศึกษาสินค้า ต้นทุน และกลุ่มลูกค้า',
-    'เริ่มขายโดยไม่ต้องเตรียมข้อมูล', 2),
-
-  q('ข้อที่ 8: ข้อใดเป็นวิธีสร้างความน่าเชื่อถือให้ร้านค้าออนไลน์?',
-    'โฆษณาสินค้าเกินจริงเพื่อดึงดูดลูกค้า',
-    'แจ้งรายละเอียดสินค้า ราคา และเงื่อนไขอย่างชัดเจน',
-    'ไม่ตอบคำถามของลูกค้า',
-    'ใช้ภาพสินค้าที่ไม่ตรงกับสินค้าจริง', 1),
-
-  q('ข้อที่ 9: หากลูกค้าโอนเงินซื้อสินค้าแล้ว ผู้ขายควรทำสิ่งใดต่อไป?',
-    'ยกเลิกการติดต่อกับลูกค้า',
-    'ส่งสินค้าโดยไม่ตรวจสอบคำสั่งซื้อ',
-    'ตรวจสอบยอดชำระและเตรียมจัดส่งสินค้า',
-    'นำข้อมูลลูกค้าไปเผยแพร่', 2),
-
-  q('ข้อที่ 10: ข้อใดเป็นความเสี่ยงที่อาจเกิดขึ้นจากการขายสินค้าออนไลน์?',
-    'ลูกค้าสามารถเลือกซื้อสินค้าได้สะดวก',
-    'ร้านค้าสามารถเข้าถึงลูกค้าหลายพื้นที่',
-    'ผู้ขายสามารถนำเสนอสินค้าได้ตลอดเวลา',
-    'การถูกหลอกลวงและข้อมูลส่วนบุคคลรั่วไหล', 3)
-]
+          questions: [
+            q('ข้อที่ 1: ตลาดออนไลน์มีข้อดีอย่างไร?', 'เปิดร้านได้ 24 ชั่วโมง', 'ไม่ต้องมีสินค้า', 'ไม่ต้องส่งของ', 'ไม่มีคู่แข่ง', 0),
+            q('ข้อที่ 2: แพลตฟอร์มใดเน้นคลิปวิดีโอสั้น?', 'TikTok Shop', 'อีเมล', 'วิทยุ', 'โทรเลข', 0),
+            q('ข้อที่ 3: ข้อใดคือสิ่งสำคัญที่สุดในการขายของออนไลน์?', 'ความซื่อสัตย์', 'การขายตัดราคา', 'การไม่ตอบแชท', 'การปกปิดข้อมูล', 0),
+            q('ข้อที่ 4: การถ่ายรูปสินค้าควรคำนึงถึงเรื่องใด?', 'แสงสว่างที่ชัดเจน', 'ความมืด', 'ถ่ายให้เบลอ', 'ใส่ฟิลเตอร์จัด', 0),
+            q('ข้อที่ 5: ข้อความพาดหัวสินค้าควรเป็นอย่างไร?', 'กระชับ น่าสนใจ', 'ยาวหลายหน้า', 'ใช้ภาษาโบราณ', 'ไม่บอกชื่อสินค้า', 0),
+            q('ข้อที่ 6: การคิดต้นทุนสินค้าควรคิดสิ่งใดบ้าง?', 'ค่าสินค้าและค่าแพ็คของ', 'คิดเฉพาะกำไร', 'ไม่ต้องคิดต้นทุน', 'คิดเฉพาะค่าส่ง', 0),
+            q('ข้อที่ 7: ข้อใดเป็นการบริการลูกค้าที่ดี?', 'ตอบคำถามสุภาพ รวดเร็ว', 'เหวี่ยงใส่ลูกค้า', 'ไม่อ่านแชท', 'บล็อกลูกค้า', 0),
+            q('ข้อที่ 8: การแพ็คสินค้าที่ดีควรทำอย่างไร?', 'ห่อกันกระแทกแน่นหนา', 'ใส่ถุงบางๆ', 'ไม่ติดเทป', 'โยนกล่อง', 0),
+            q('ข้อที่ 9: หากส่งสินค้าผิดควรทำอย่างไร?', 'ขอโทษและรีบเปลี่ยนให้ทันที', 'เถียงลูกค้า', 'บล็อกหนี', 'เงียบหาย', 0),
+            q('ข้อที่ 10: การรักษาข้อมูลส่วนตัวของลูกค้าเป็นไปตามกฎหมายใด?', 'พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล (PDPA)', 'พ.ร.บ.จราจร', 'พ.ร.บ.ป่าไม้', 'พ.ร.บ.ประมง', 0)
+          ]
         },
         {
           id: 'mt1_s2',
@@ -1082,7 +1040,7 @@ questions: [
           isLocked: true, // 🔒 ล็อคไว้
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหาครั้งที่ 2: การถ่ายภาพสินค้าและการเขียนแคปชันสินค้าให้น่าสนใจ...',
+          content: `เนื้อหาครั้งที่ 2: การถ่ายภาพสินค้าและการเขียนแคปชันสินค้าให้น่าสนใจ การเลือกใช้มุมกล้องและการเขียนเพื่อดึงดูดใจลูกค้า`,
           assignmentTasks: ['ข้อ 1: จงเขียนแคปชันขายสินค้าชุมชน 1 ชิ้น'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1 ของครั้งที่ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1105,7 +1063,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหาครั้งที่ 3: การตั้งราคาสินค้า การคิดต้นทุน และกำไร...',
+          content: `เนื้อหาครั้งที่ 3: การตั้งราคาสินค้า การคิดต้นทุน กำไร และค่าธรรมเนียมแพลตฟอร์มต่างๆ เพื่อให้ธุรกิจเติบโตได้อย่างยั่งยืน`,
           assignmentTasks: ['ข้อ 1: คำนวณต้นทุนสินค้าจำลองมา 1 ชิ้น'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1 ของครั้งที่ 3...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1128,7 +1086,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหาครั้งที่ 4: การจัดส่งสินค้าและการเลือกขนส่ง...',
+          content: `เนื้อหาครั้งที่ 4: การจัดส่งสินค้าและการเลือกใช้บริษัทขนส่ง รวมถึงเทคนิคการแพ็คสินค้าให้ปลอดภัย`,
           assignmentTasks: ['ข้อ 1: บอกวิธีการแพ็คสินค้าประเภทของแตกหักง่าย'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1 ของครั้งที่ 4...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1151,7 +1109,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหาครั้งที่ 5: กฎหมายและจริยธรรมในการค้าขายออนไลน์...',
+          content: `เนื้อหาครั้งที่ 5: กฎหมายและจริยธรรมในการค้าขายออนไลน์ การคุ้มครองผู้บริโภคและ พ.ร.บ.คอมพิวเตอร์`,
           assignmentTasks: ['ข้อ 1: สรุปข้อควรระวังทางกฎหมายในการขายของออนไลน์'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1 ของครั้งที่ 5...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1175,10 +1133,10 @@ questions: [
           code: 'สค210001',
           title: 'วิชาสังคมศึกษา ประวัติศาสตร์และหน้าที่พลเมือง',
           session: 'ครั้งที่ 1',
-          isLocked: true,
-          videoUrl: 'video/มต้น1.mp4',
+          isLocked: false,
+          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา สค210001 ครั้งที่ 1: ประวัติศาสตร์ชาติไทย ยุคสุโขทัย...',
+          content: `เนื้อหา สค210001 ครั้งที่ 1: ประวัติศาสตร์ชาติไทย ยุคสุโขทัยและการก่อตั้งราชธานี...`,
           assignmentTasks: ['ข้อ 1: สรุปลักษณะการปกครองสมัยสุโขทัย'],
           questions: [
             q('ข้อที่ 1: การปกครองสมัยสุโขทัยตอนต้นเป็นแบบใด?', 'พ่อปกครองลูก', 'สมบูรณาญาสิทธิราชย์', 'ประชาธิปไตย', 'เผด็จการ', 0),
@@ -1201,7 +1159,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา สค210001 ครั้งที่ 2: ยุคอยุธยาและการค้าต่างประเทศ...',
+          content: `เนื้อหา สค210001 ครั้งที่ 2: ยุคอยุธยาและการค้าต่างประเทศ รวมถึงศิลปวัฒนธรรมที่สำคัญ...`,
           assignmentTasks: ['ข้อ 1: อธิบายบทบาทของอยุธยาในการเป็นเมืองท่าการค้า'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1224,7 +1182,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา สค210001 ครั้งที่ 3: ยุคธนบุรีและการกอบกู้เอกราช...',
+          content: `เนื้อหา สค210001 ครั้งที่ 3: ยุคธนบุรีและการกอบกู้เอกราชของสมเด็จพระเจ้าตากสินมหาราช...`,
           assignmentTasks: ['ข้อ 1: วีรกรรมสำคัญของสมเด็จพระเจ้าตากสินมหาราช'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1247,7 +1205,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา สค210001 ครั้งที่ 4: ยุครัตนโกสินทร์ตอนต้นและการสร้างบ้านแปงเมือง...',
+          content: `เนื้อหา สค210001 ครั้งที่ 4: ยุครัตนโกสินทร์ตอนต้นและการสร้างบ้านแปงเมือง...`,
           assignmentTasks: ['ข้อ 1: การสถาปนากรุงเทพมหานครเป็นราชธานี'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1270,7 +1228,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา สค210001 ครั้งที่ 5: การปฏิรูปประเทศในสมัยรัชกาลที่ 5...',
+          content: `เนื้อหา สค210001 ครั้งที่ 5: การปฏิรูปประเทศในสมัยรัชกาลที่ 5 และการรักษาเอกราชของชาติ...`,
           assignmentTasks: ['ข้อ 1: สรุปประโยชน์ของการเลิกทาสในประเทศไทย'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1293,7 +1251,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา สค210001 ครั้งที่ 6: บทบาทหน้าที่ของพลเมืองที่ดีตามระบอบประชาธิปไตย...',
+          content: `เนื้อหา สค210001 ครั้งที่ 6: บทบาทหน้าที่ของพลเมืองที่ดีตามระบอบประชาธิปไตยอันมีพระมหากษัตริย์ทรงเป็นประมุข...`,
           assignmentTasks: ['ข้อ 1: นักศึกษาปฏิบัติตนเป็นพลเมืองที่ดีอย่างไรบ้าง?'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1316,7 +1274,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา สค210001 ครั้งที่ 7: กฎหมายเบื้องต้นที่เกี่ยวข้องกับชีวิตประจำวัน...',
+          content: `เนื้อหา สค210001 ครั้งที่ 7: กฎหมายเบื้องต้นที่เกี่ยวข้องกับชีวิตประจำวัน และการอยู่ร่วมกันในสังคม...`,
           assignmentTasks: ['ข้อ 1: กฎหมายทะเบียนราษฎรและการทำบัตรประชาชน'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1340,10 +1298,10 @@ questions: [
           code: 'พต210001',
           title: 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)',
           session: 'ครั้งที่ 1',
-          isLocked: true,
+          isLocked: false,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา พต210001 ครั้งที่ 1: การทักทายและการแนะนำตนเอง (Greetings and Self-introduction)...',
+          content: `เนื้อหา พต210001 ครั้งที่ 1: การทักทายและการแนะนำตนเอง (Greetings and Self-introduction)...`,
           assignmentTasks: ['ข้อ 1: จงเขียนประโยคแนะนำตนเองภาษาอังกฤษ 3 ประโยค'],
           questions: [
             q('ข้อที่ 1: Good morning ใช้ทักทายเวลาใด?', 'ตอนเช้า', 'ตอนเที่ยง', 'ตอนเย็น', 'ตอนกลางคืน', 0),
@@ -1366,7 +1324,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา พต210001 ครั้งที่ 2: การบอกเวลาและกิจวัตรประจำวัน (Telling Time & Daily Routines)...',
+          content: `เนื้อหา พต210001 ครั้งที่ 2: การบอกเวลาและกิจวัตรประจำวัน (Telling Time & Daily Routines)...`,
           assignmentTasks: ['ข้อ 1: เขียนกิจกรรมประจำวันของตนเอง 2 กิจกรรม'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1389,7 +1347,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา พต210001 ครั้งที่ 3: ครอบครัวและความสัมพันธ์ (Family & Relationships)...',
+          content: `เนื้อหา พต210001 ครั้งที่ 3: ครอบครัวและความสัมพันธ์ (Family & Relationships)...`,
           assignmentTasks: ['ข้อ 1: บอกคำศัพท์สมาชิกในครอบครัว 5 คำ'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1412,7 +1370,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา พต210001 ครั้งที่ 4: การซื้อขายและถามราคา (Shopping & Asking Prices)...',
+          content: `เนื้อหา พต210001 ครั้งที่ 4: การซื้อขายและถามราคา (Shopping & Asking Prices)...`,
           assignmentTasks: ['ข้อ 1: เขียนบทสนทนาถามราคาสินค้าแบบสั้น'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1435,7 +1393,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา พต210001 ครั้งที่ 5: การถามทิศทางและสถานที่ (Directions & Places)...',
+          content: `เนื้อหา พต210001 ครั้งที่ 5: การถามทิศทางและสถานที่ (Directions & Places)...`,
           assignmentTasks: ['ข้อ 1: คำศัพท์บอกทิศทาง (เช่น เลี้ยวซ้าย, เลี้ยวขวา)'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1458,7 +1416,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา พต210001 ครั้งที่ 6: ภาษาอังกฤษเพื่อการทำงานและอาชีพ...',
+          content: `เนื้อหา พต210001 ครั้งที่ 6: ภาษาอังกฤษเพื่อการทำงานและอาชีพในชีวิตประจำวัน...`,
           assignmentTasks: ['ข้อ 1: บอกชื่ออาชีพภาษาอังกฤษที่ตนเองสนใจ 3 อาชีพ'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1491,8 +1449,8 @@ questions: [
           isLocked: false,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา สค310001 ครั้งที่ 1: ประวัติศาสตร์สากลและอารยธรรมโบราณ...',
-          assignmentTasks: ['ข้อ 1: อารยธรรมเมโสโปเตเมียมีความสำคัญอย่างไร?'],
+          content: `เนื้อหา สค310001 ครั้งที่ 1: ประวัติศาสตร์สากลและอารยธรรมโบราณของโลก...`,
+          assignmentTasks: ['ข้อ 1: อารยธรรมเมโสโปเตเมียมีความสำคัญอย่างไรต่อโลก?'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
             q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
@@ -1514,7 +1472,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา สค310001 ครั้งที่ 2: การปฏิวัติอุตสาหกรรมและการเปลี่ยนแปลงของโลก...',
+          content: `เนื้อหา สค310001 ครั้งที่ 2: การปฏิวัติอุตสาหกรรมและการเปลี่ยนแปลงของเศรษฐกิจโลก...`,
           assignmentTasks: ['ข้อ 1: ผลกระทบของการปฏิวัติอุตสาหกรรมต่อสิ่งแวดล้อม'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1537,7 +1495,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา สค310001 ครั้งที่ 3: สงครามโลกครั้งที่ 1 และ 2...',
+          content: `เนื้อหา สค310001 ครั้งที่ 3: สงครามโลกครั้งที่ 1 และครั้งที่ 2 และบทเรียนทางประวัติศาสตร์...`,
           assignmentTasks: ['ข้อ 1: สาเหตุสำคัญของการเกิดสงครามโลก'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1560,7 +1518,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา สค310001 ครั้งที่ 4: สิทธิมนุษยชนและกฎหมายระหว่างประเทศ...',
+          content: `เนื้อหา สค310001 ครั้งที่ 4: สิทธิมนุษยชนสากลและกฎหมายระหว่างประเทศ...`,
           assignmentTasks: ['ข้อ 1: ยกตัวอย่างสิทธิขั้นพื้นฐานของประชาชนตามรัฐธรรมนูญ'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1583,7 +1541,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา สค310001 ครั้งที่ 5: ระบอบการปกครองและระบบเศรษฐกิจโลก...',
+          content: `เนื้อหา สค310001 ครั้งที่ 5: ระบอบการปกครองและระบบเศรษฐกิจโลกในยุคปัจจุบัน...`,
           assignmentTasks: ['ข้อ 1: เปรียบเทียบข้อดีของระบบเศรษฐกิจแบบผสม'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1606,8 +1564,8 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา สค310001 ครั้งที่ 6: กฎหมายแพ่งและอาญาที่ควรรู้...',
-          assignmentTasks: ['ข้อ 1: ข้อแตกต่างระหว่างคดีแพ่งและคดีอาญา'],
+          content: `เนื้อหา สค310001 ครั้งที่ 6: กฎหมายแพ่ง กฎหมายอาญา และการพิทักษ์สิทธิของตนเอง...`,
+          assignmentTasks: ['ข้อ 1: สรุปข้อแตกต่างระหว่างคดีแพ่งและคดีอาญา'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
             q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
@@ -1630,10 +1588,10 @@ questions: [
           code: 'กอ320003',
           title: 'คุณธรรมและจริยธรรมในการประกอบอาชีพการบริการ',
           session: 'ครั้งที่ 1',
-          isLocked: true,
+          isLocked: false,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา กอ320003 ครั้งที่ 1: จิตบริการและจรรยาบรรณวิชาชีพ...',
+          content: `เนื้อหา กอ320003 ครั้งที่ 1: จิตบริการ (Service Mind) และจรรยาบรรณวิชาชีพ...`,
           assignmentTasks: ['ข้อ 1: หัวใจสำคัญของงานบริการมีอะไรบ้าง?'],
           questions: [
             q('ข้อที่ 1: Service Mind หมายถึงอะไร?', 'จิตใจที่รักในงานบริการ', 'การบังคับให้ทำงาน', 'การคิดเงินแพงๆ', 'การเลือกปฏิบัติ', 0),
@@ -1656,7 +1614,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา กอ320003 ครั้งที่ 2: การสื่อสารและการแก้ปัญหาเฉพาะหน้าในงานบริการ...',
+          content: `เนื้อหา กอ320003 ครั้งที่ 2: การสื่อสารเชิงบวกและการแก้ปัญหาเฉพาะหน้าในงานบริการ...`,
           assignmentTasks: ['ข้อ 1: วิธีการรับมือเมื่อลูกค้าไม่พอใจในบริการ'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1679,7 +1637,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา กอ320003 ครั้งที่ 3: ความรับผิดชอบต่อสังคมและสิ่งแวดล้อม (CSR)...',
+          content: `เนื้อหา กอ320003 ครั้งที่ 3: ความรับผิดชอบต่อสังคม สิ่งแวดล้อม และจรรยาบรรณวิชาชีพ...`,
           assignmentTasks: ['ข้อ 1: กิจกรรม CSR ที่ธุรกิจบริการสามารถทำได้ในชุมชน'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1703,10 +1661,10 @@ questions: [
           code: 'สศ320001',
           title: 'วิชาสุขภาพและความปลอดภัยในชีวิต',
           session: 'ครั้งที่ 1',
-          isLocked: true,
+          isLocked: false,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา สศ320001 ครั้งที่ 1: การดูแลสุขภาพองค์รวมและโภชนาการที่เหมาะสม...',
+          content: `เนื้อหา สศ320001 ครั้งที่ 1: การดูแลสุขภาพองค์รวมและโภชนาการที่เหมาะสมตามวัย...`,
           assignmentTasks: ['ข้อ 1: การรับประทานอาหารตามหลักโภชนาการ 5 หมู่'],
           questions: [
             q('ข้อที่ 1: ข้อใดเป็นการดูแลสุขภาพที่ถูกต้อง?', 'ทานอาหารครบ 5 หมู่และพักผ่อนเพียงพอ', 'อดอาหารเช้า', 'ดื่มน้ำน้อยๆ', 'ไม่ออกกำลังกาย', 0),
@@ -1729,7 +1687,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา สศ320001 ครั้งที่ 2: การปฐมพยาบาลเบื้องต้น (First Aid & CPR)...',
+          content: `เนื้อหา สศ320001 ครั้งที่ 2: การปฐมพยาบาลเบื้องต้น (First Aid & CPR) และการช่วยชีวิตฉุกเฉิน...`,
           assignmentTasks: ['ข้อ 1: ขั้นตอนการช่วยฟื้นคืนชีพขั้นพื้นฐาน (CPR)'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1752,7 +1710,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา สศ320001 ครั้งที่ 3: ความปลอดภัยในการทำงานและสิ่งแวดล้อม...',
+          content: `เนื้อหา สศ320001 ครั้งที่ 3: ความปลอดภัยในการทำงาน สภาพแวดล้อม และการป้องกันอุบัติเหตุ...`,
           assignmentTasks: ['ข้อ 1: การป้องกันอุบัติเหตุในสถานที่ทำงาน'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1776,11 +1734,11 @@ questions: [
           code: 'พต310001',
           title: 'วิชาภาษาต่างประเทศ (ภาษาอังกฤษ)',
           session: 'ครั้งที่ 1',
-          isLocked: true,
+          isLocked: false,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา พต310001 ครั้งที่ 1: การเขียนประวัติย่อ (Resume / CV)...',
-          assignmentTasks: ['ข้อ 1: องค์ประกอบสำคัญในการเขียน Resume'],
+          content: `เนื้อหา พต310001 ครั้งที่ 1: การเขียนประวัติย่อ (Resume / CV) เพื่อการสมัครงาน...`,
+          assignmentTasks: ['ข้อ 1: องค์ประกอบสำคัญในการเขียน Resume สมัครงาน'],
           questions: [
             q('ข้อที่ 1: Resume คือเอกสารเกี่ยวกับอะไร?', 'ประวัติการศึกษาและการทำงาน', 'สูตรอาหาร', 'แผนที่ท่องเที่ยว', 'ใบเสร็จรับเงิน', 0),
             q('ข้อที่ 2: โจทย์ข้อ 2...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 1),
@@ -1802,7 +1760,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา พต310001 ครั้งที่ 2: การสัมภาษณ์งานภาษาอังกฤษ (Job Interview)...',
+          content: `เนื้อหา พต310001 ครั้งที่ 2: การสัมภาษณ์งานภาษาอังกฤษ (Job Interview)...`,
           assignmentTasks: ['ข้อ 1: ประโยคตอบคำถาม Tell me about yourself'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1825,7 +1783,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา พต310001 ครั้งที่ 3: การเขียนอีเมลสมัครงานและการติดต่อธุรกิจ (Business Email)...',
+          content: `เนื้อหา พต310001 ครั้งที่ 3: การเขียนอีเมลสมัครงานและการติดต่อธุรกิจ (Business Email)...`,
           assignmentTasks: ['ข้อ 1: โครงสร้างการเขียนอีเมลทางการภาษาอังกฤษ'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1848,7 +1806,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา พต310001 ครั้งที่ 4: การสนทนาทางโทรศัพท์ในการทำงาน (Telephone English)...',
+          content: `เนื้อหา พต310001 ครั้งที่ 4: การสนทนาทางโทรศัพท์ในการทำงาน (Telephone English)...`,
           assignmentTasks: ['ข้อ 1: สำนวนการรับสายและขอฝากข้อความ'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1871,7 +1829,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา พต310001 ครั้งที่ 5: การนำเสนอผลงานภาษาอังกฤษ (English Presentation)...',
+          content: `เนื้อหา พต310001 ครั้งที่ 5: การนำเสนอผลงานภาษาอังกฤษ (English Presentation)...`,
           assignmentTasks: ['ข้อ 1: ประโยคเปิดการนำเสนอภาษาอังกฤษ'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -1894,7 +1852,7 @@ questions: [
           isLocked: true,
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           infographicUrl: 'images/cover.jpg',
-          content: 'เนื้อหา พต310001 ครั้งที่ 6: การสื่อสารข้ามวัฒนธรรมและการเจรจาต่อรอง...',
+          content: `เนื้อหา พต310001 ครั้งที่ 6: การสื่อสารข้ามวัฒนธรรมและการเจรจาต่อรองในระดับสากล...`,
           assignmentTasks: ['ข้อ 1: ข้อควรระวังในการติดต่อสื่อสารกับชาวต่างชาติ'],
           questions: [
             q('ข้อที่ 1: โจทย์ข้อ 1...', 'ตัวเลือก ก', 'ตัวเลือก ข', 'ตัวเลือก ค', 'ตัวเลือก ง', 0),
@@ -2039,26 +1997,33 @@ questions: [
       startVideoStep();
     }
 
-    // Step 1: Video Player
+    // Step 1: Video Player (เล่นในหน้าเว็บทันที ไม่เด้งหลุด)
     function startVideoStep() {
       navigate('view-step-video');
       document.getElementById('video-lesson-name').innerText = `${currentLesson.title} (${currentLesson.code}) - ${currentLesson.session}`;
       
       const vBox = document.getElementById('video-embed-box');
       const vUrl = currentLesson.videoUrl || '';
+      const ytId = extractYouTubeId(vUrl);
 
-      if (vUrl.includes('youtube.com') || vUrl.includes('youtu.be')) {
-        let embedUrl = vUrl;
-        if (vUrl.includes('watch?v=')) {
-          embedUrl = vUrl.replace('watch?v=', 'embed/');
-        } else if (vUrl.includes('youtu.be/')) {
-          embedUrl = vUrl.replace('youtu.be/', 'www.youtube.com/embed/');
-        }
+      if (ytId) {
+        // playsinline=1 บังคับให้เล่นในหน้าเว็บทันที ไม่เด้งเปิดแอป YouTube
+        const embedUrl = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&playsinline=1&rel=0&enablejsapi=1`;
         vBox.innerHTML = `
-          <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:12px;">
-            <iframe src="${embedUrl}" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+          <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:12px; background:#000;">
+            <iframe 
+              src="${embedUrl}" 
+              style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen>
+            </iframe>
           </div>
+          <p style="font-size:0.75rem; color:var(--text-muted); margin-top:6px; text-align:center;">
+            * หากวิดีโอเริ่มเล่นโดยไม่มีเสียง ให้แตะที่รูปลำโพงในวิดีโอเพื่อเปิดเสียงได้เลยครับ
+          </p>
         `;
+        
       } else {
         vBox.innerHTML = `
           <video id="lesson-html5-video" controls playsinline controlslist="nodownload" style="width:100%; max-height:420px; border-radius:12px; background:#000;">
@@ -2284,12 +2249,12 @@ questions: [
 
       const box = document.getElementById('quiz-questions-box');
       box.innerHTML = '';
-      currentLesson.questions.forEach((q, qIndex) => {
+      currentLesson.questions.forEach((qItem, qIndex) => {
         const qCard = document.createElement('div');
         qCard.className = 'question-card';
-        qCard.innerHTML = `<p style="font-weight:500; margin-bottom:8px;">${q.q}</p>`;
+        qCard.innerHTML = `<p style="font-weight:500; margin-bottom:8px;">${qItem.q}</p>`;
 
-        q.options.forEach((opt, optIndex) => {
+        qItem.options.forEach((opt, optIndex) => {
           qCard.innerHTML += `
             <label class="option-label">
               <input type="radio" name="question_${qIndex}" value="${optIndex}" required>
@@ -2579,7 +2544,7 @@ questions: [
       alert('บันทึกผลการตรวจใบงานเรียบร้อย');
     }
 
-    // ฟังก์ชันซิงค์คลาวด์
+    // ฟังก์ชันซิงค์คลาวด์กับ Google Sheets
     async function syncToCloud(recordData) {
       if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("วาง_URL")) return;
       try {
@@ -2634,3 +2599,4 @@ questions: [
   </script>
 </body>
 </html>
+```
