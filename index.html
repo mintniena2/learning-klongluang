@@ -2548,9 +2548,18 @@
         });
       }
 
+      // 🌟 ช่องแสดงลิงก์ไฟล์แนบ: รองรับทั้ง Google Drive URL และไฟล์ในเครื่อง
       const fileBox = document.getElementById('grade-modal-file-link');
-      if (selectedGradingRecord.assignmentFile) {
-        fileBox.innerHTML = `<a href="${selectedGradingRecord.assignmentFile.data}" download="${selectedGradingRecord.assignmentFile.name}" style="color:var(--pastel-purple); font-weight:600;"><i class="fa-solid fa-download"></i> ดาวน์โหลด/เปิดไฟล์ (${selectedGradingRecord.assignmentFile.name})</a>`;
+      const fileData = selectedGradingRecord.assignmentFile || selectedGradingRecord.assignmentfile;
+
+      if (fileData) {
+        if (typeof fileData === 'string' && fileData.startsWith('http')) {
+          fileBox.innerHTML = `<a href="${fileData}" target="_blank" rel="noopener noreferrer" style="color:var(--pastel-purple); font-weight:600; text-decoration:underline;"><i class="fa-solid fa-arrow-up-right-from-square"></i> คลิกเปิดดูรูปภาพ/ไฟล์ใน Google Drive</a>`;
+        } else if (typeof fileData === 'object' && fileData.data) {
+          fileBox.innerHTML = `<a href="${fileData.data}" target="_blank" download="${fileData.name || 'file'}" style="color:var(--pastel-purple); font-weight:600; text-decoration:underline;"><i class="fa-solid fa-download"></i> ดาวน์โหลด/เปิดไฟล์ (${fileData.name || 'ไฟล์แนบ'})</a>`;
+        } else {
+          fileBox.innerText = 'ไม่มีไฟล์แนบ';
+        }
       } else {
         fileBox.innerText = 'ไม่มีไฟล์แนบ';
       }
@@ -2559,10 +2568,6 @@
       document.getElementById('grade-modal-feedback').value = selectedGradingRecord.teacherFeedback || '';
 
       document.getElementById('modal-grading').classList.add('active');
-    }
-
-    function closeGradingModal() {
-      document.getElementById('modal-grading').classList.remove('active');
     }
 
     async function saveAssignmentGrade() {
