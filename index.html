@@ -2180,26 +2180,65 @@
         fileStatus.innerHTML = '';
       }
 
-      const fileInput = document.getElementById('assignment-file-input');
+     const fileInput = document.getElementById('assignment-file-input');
       fileInput.value = '';
       tempUploadedFile = null;
       fileInput.onchange = function(e) {
         const file = e.target.files[0];
         if (!file) return;
-        if (file.size > 3 * 1024 * 1024) {
-          alert('ไฟล์มีขนาดเกิน 3MB กรุณาเลือกไฟล์ที่เล็กลง');
+
+        // 🌟 1. ขยายให้เลือกไฟล์ได้ถึง 10 MB (10 * 1024 * 1024)
+        if (file.size > 10 * 1024 * 1024) {
+          alert('ไฟล์มีขนาดเกิน 10MB กรุณาเลือกไฟล์ที่เล็กลง');
           fileInput.value = '';
           return;
         }
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          tempUploadedFile = { name: file.name, type: file.type, data: evt.target.result };
-          fileStatus.innerHTML = `<span style="color:var(--success);"><i class="fa-solid fa-check"></i> แนบไฟล์เรียบร้อย: ${file.name}</span>`;
-        };
-        reader.readAsDataURL(file);
-      };
-    }
 
+        // 🌟 2. ถ้ารูปภาพ ให้ย่อขนาดอัตโนมัติ (ป้องกันความจำเบราว์เซอร์เต็ม)
+        if (file.type.startsWith('image/')) {
+          fileStatus.innerHTML = `<span style="color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> กำลังประมวลผลรูปภาพ...</span>`;
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            const img = new Image();
+            img.onload = function() {
+              const canvas = document.createElement('canvas');
+              let width = img.width;
+              let height = img.height;
+              const maxDim = 1200; // ความกว้างสูงสุด 1200px (ชัดเจนพอสำหรับอ่านตัวหนังสือในสมุด)
+
+              if (width > maxDim || height > maxDim) {
+                if (width > height) {
+                  height = Math.round((height * maxDim) / width);
+                  width = maxDim;
+                } else {
+                  width = Math.round((width * maxDim) / height);
+                  height = maxDim;
+                }
+              }
+
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, width, height);
+
+              // บีบอัดเป็น JPEG คุณภาพ 80% (ขนาดจะเหลือแค่ประมาณ 300-500 KB แต่ภาพชัดมาก)
+              const compressedData = canvas.toDataURL('image/jpeg', 0.8);
+              tempUploadedFile = { name: file.name, type: 'image/jpeg', data: compressedData };
+              fileStatus.innerHTML = `<span style="color:var(--success);"><i class="fa-solid fa-check"></i> แนบรูปภาพเรียบร้อย: ${file.name}</span>`;
+            };
+            img.src = evt.target.result;
+          };
+          reader.readAsDataURL(file);
+        } else {
+          // กรณีเป็นไฟล์ PDF หรือเอกสารอื่นๆ
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            tempUploadedFile = { name: file.name, type: file.type, data: evt.target.result };
+            fileStatus.innerHTML = `<span style="color:var(--success);"><i class="fa-solid fa-check"></i> แนบไฟล์เรียบร้อย: ${file.name}</span>`;
+          };
+          reader.readAsDataURL(file);
+        }
+      };
     async function saveAssignmentAndNext() {
       const btn = document.getElementById('btn-save-assignment');
       if (btn) {
