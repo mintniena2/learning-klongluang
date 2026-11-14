@@ -821,7 +821,10 @@
       <span class="back-btn" onclick="navigate('view-student-login')"><i class="fa-solid fa-arrow-left"></i> ออกจากระบบ</span>
       <div class="card">
         <h3 id="res-std-name" style="color:var(--pastel-purple); font-size:1.15rem;"></h3>
-        <p id="res-std-id" style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;"></p>
+        <p id="res-std-id" style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 10px;"></p>
+        <div id="res-std-term-attendance" style="background:var(--pastel-purple-light); padding:10px 14px; border-radius:10px; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;"></div>
+        
+        <!-- ตารางที่ 1: ผลการเรียนรายครั้ง (ของเดิม) -->
         <h4 style="margin-bottom:10px; font-size:0.95rem;">ผลการเข้าเรียนและคะแนนสะสม</h4>
         <div class="table-container">
           <table>
@@ -837,9 +840,29 @@
             <tbody id="student-score-table-body"></tbody>
           </table>
         </div>
+
+        <!-- 🌟 ตารางที่ 2: สรุปผลคะแนนรวมรายวิชา -->
+        <div style="margin-top: 25px; padding-top: 15px; border-top: 2px dashed #f0e6f7;">
+          <h4 style="margin-bottom: 10px; font-size: 0.95rem; color: var(--pastel-purple);">
+            <i class="fa-solid fa-graduation-cap"></i> สรุปผลคะแนนรวมรายวิชา
+          </h4>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>รหัสวิชา / รายวิชา</th>
+                  <th>คะแนนเก็บดิบ</th>
+                  <th>คะแนนรวมปลายภาค (40)</th>
+                  <th>ผลการประเมิน</th>
+                </tr>
+              </thead>
+              <tbody id="student-subject-summary-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </div>
-
     <!-- 9. TEACHER LOGIN (รหัส 031212) -->
     <div id="view-teacher-login" class="view">
       <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> กลับหน้าแรก</span>
@@ -859,9 +882,12 @@
     <div id="view-teacher-dashboard" class="view">
       <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> ออกจากระบบครู</span>
       <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom: 8px;">
           <h2 style="color:var(--pastel-purple); font-size:1.2rem;"><i class="fa-solid fa-gauge"></i> แผงควบคุมระบบคลาวด์</h2>
-          <button class="btn btn-sm" style="width:auto;" onclick="fetchCloudRecords(true)"><i class="fa-solid fa-arrows-rotate"></i> ซิงค์ข้อมูลล่าสุด</button>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-sm" style="width:auto; background:var(--success);" onclick="openAttendanceModal()"><i class="fa-solid fa-user-check"></i> กรอกคะแนนเข้าเรียน</button>
+            <button class="btn btn-sm" style="width:auto;" onclick="fetchCloudRecords(true)"><i class="fa-solid fa-arrows-rotate"></i> ซิงค์ข้อมูลล่าสุด</button>
+          </div>
         </div>
         <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;">เช็คชื่อ ตรวจใบงาน และดูคะแนนนักศึกษา</p>
 
@@ -921,6 +947,55 @@
       <div style="display:flex; gap:10px;">
         <button class="btn btn-secondary" onclick="closeGradingModal()">ยกเลิก</button>
         <button class="btn" onclick="saveAssignmentGrade()">บันทึกผลการตรวจ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: กรอกคะแนนเข้าเรียนรวมทั้งเทอม (สำหรับคุณครู) -->
+  <div id="modal-attendance" class="modal">
+    <div class="modal-content">
+      <h3 style="color:var(--pastel-purple); margin-bottom:8px;"><i class="fa-solid fa-user-check"></i> กรอกคะแนนเข้าเรียนรวมทั้งเทอม</h3>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">เลือกรายชื่อนักศึกษาหรือกรอกรหัส เพื่อบันทึกคะแนนเข้าเรียนรวมทั้งเทอม (ไม่แยกรายวิชา)</p>
+
+      <div class="input-group">
+        <label>เลือกจากนักศึกษาในระบบ (หรือกรอกรหัสเองด้านล่าง)</label>
+        <select id="att-modal-existing-student" onchange="onSelectExistingAttendanceStudent()">
+          <option value="">-- กรอกรหัสใหม่ / เลือกนักศึกษา --</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label>รหัสนักศึกษา</label>
+        <input type="text" id="att-modal-std-id" placeholder="กรอกรหัสนักศึกษา" maxlength="15" oninput="syncAttendanceScorePreview()">
+      </div>
+      <div class="input-group">
+        <label>ชื่อ - นามสกุล นักศึกษา</label>
+        <input type="text" id="att-modal-std-name" placeholder="ชื่อ นามสกุล จริง">
+      </div>
+      <div class="input-group">
+        <label>คะแนนเข้าเรียนรวมทั้งเทอม</label>
+        <input type="number" id="att-modal-score" min="0" step="0.5" placeholder="กรอกคะแนนเข้าเรียนรวมทั้งเทอม">
+      </div>
+
+      <div style="display:flex; gap:10px; margin-bottom:15px;">
+        <button class="btn btn-secondary" onclick="closeAttendanceModal()">ปิด</button>
+        <button class="btn" onclick="saveAttendanceScore()">บันทึกคะแนนเข้าเรียน</button>
+      </div>
+
+      <div style="border-top:1px dashed #e2d9ec; padding-top:12px;">
+        <h4 style="font-size:0.9rem; color:var(--pastel-purple); margin-bottom:8px;">รายการคะแนนเข้าเรียนที่บันทึกไว้</h4>
+        <div class="table-container" style="max-height:200px; overflow-y:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>รหัส / ชื่อนักศึกษา</th>
+                <th>คะแนนเข้าเรียนทั้งเทอม</th>
+                <th>แก้ไข</th>
+              </tr>
+            </thead>
+            <tbody id="att-modal-saved-list"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -2339,8 +2414,102 @@ questions: [
 
       navigate('view-home');
     }
+    // =========================================================================
+    // 🌟 [สูตรคำนวณคะแนนรวมและตัดเกรดปลายภาค] คุณครูสามารถปรับสูตรตรงนี้ได้
+    // =========================================================================
+    function calculateSubjectSummary(courseCode, courseTitle, attendedCount, totalSessions, totalQuizScore, totalAssignScore) {
+      // 1. คำนวณคะแนนดิบสะสม (สอบ 10 + ใบงาน 10 = เต็ม 20 ต่อครั้ง)
+      // เช่น วิชา 5 ครั้ง คะแนนดิบเต็ม 100 | วิชา 7 ครั้ง คะแนนดิบเต็ม 140
+      const rawScore = totalQuizScore + totalAssignScore;
+      const maxRawScore = totalSessions * 20;
 
-    // นักศึกษาตรวจผลคะแนน
+      // 2. หารปรับฐานให้เป็นคะแนนรวมปลายภาควิชาละ 40 คะแนนเต็ม
+      let finalScore40 = 0;
+      let percentScore = 0;
+      if (maxRawScore > 0) {
+        finalScore40 = Number(((rawScore / maxRawScore) * 40).toFixed(2));
+        percentScore = Math.round((rawScore / maxRawScore) * 100);
+      }
+
+      // 3. สถานะผลการประเมิน (ผ่านเกณฑ์ 50% หรือ 20/40 ขึ้นไป)
+      const passed = percentScore >= 50;
+
+      return {
+        rawScoreText: `${rawScore} / ${maxRawScore}`,
+        finalScore40: finalScore40,
+        passed: passed
+      };
+    }
+
+    // ฟังก์ชันรวบรวมคะแนนแยกตามรายวิชาเพื่อแสดงผลในตารางสรุป
+    function renderStudentCourseSummary(studentRecords) {
+      const tbody = document.getElementById('student-subject-summary-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      if (!studentRecords || studentRecords.length === 0) return;
+
+      // หาวิชาทั้งหมดในระดับชั้นของผู้เรียน
+      const studentLevel = studentRecords[0].level || currentLevel;
+      const coursesInLevel = ALL_COURSES_DATA[studentLevel] || [];
+
+      // จัดกลุ่มรายวิชาที่มีในหลักสูตร
+      const courseMap = {};
+      coursesInLevel.forEach(item => {
+        if (!courseMap[item.code]) {
+          courseMap[item.code] = {
+            code: item.code,
+            title: item.title,
+            totalSessions: 0
+          };
+        }
+        courseMap[item.code].totalSessions++;
+      });
+
+      // ประมวลผลคะแนนทีละรายวิชา
+      Object.values(courseMap).forEach(course => {
+        // ดึงรายการบันทึกของนักศึกษาเฉพาะวิชานี้
+        const recordsForCourse = studentRecords.filter(r => 
+          (r.courseCode === course.code) || 
+          (r.lessonTitle && r.lessonTitle.includes(course.code)) ||
+          (r.lessonId && r.lessonId.startsWith(course.code))
+        );
+
+        const attendedCount = recordsForCourse.length;
+        let totalQuiz = 0;
+        let totalAssign = 0;
+
+        recordsForCourse.forEach(r => {
+          totalQuiz += Number(r.bestQuizScore) || 0;
+          totalAssign += Number(r.assignmentScore) || 0;
+        });
+
+        // คำนวณตามสูตรของครู
+        const result = calculateSubjectSummary(
+          course.code,
+          course.title,
+          attendedCount,
+          course.totalSessions,
+          totalQuiz,
+          totalAssign
+        );
+
+        const statusBadge = result.passed
+          ? `<span style="color:var(--success); font-weight:600;"><i class="fa-solid fa-circle-check"></i> ผ่าน</span>`
+          : `<span style="color:var(--danger); font-weight:600;"><i class="fa-solid fa-circle-xmark"></i> ไม่ผ่าน</span>`;
+
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${course.code}</strong><br><small style="color:var(--text-muted);">${course.title}</small></td>
+            <td>${result.rawScoreText}</td>
+            <td><strong style="color:var(--pastel-purple); font-size:1rem;">${result.finalScore40}</strong> / 40</td>
+            <td>${statusBadge}</td>
+          </tr>
+        `;
+      });
+    }
+
+// นักศึกษาตรวจผลคะแนน
     async function loginCheckScore() {
       const idInput = document.getElementById('std-check-id').value.trim();
       const pwdInput = document.getElementById('std-check-pwd').value.trim();
@@ -2376,6 +2545,16 @@ questions: [
       document.getElementById('res-std-name').innerText = `ผู้เรียน: ${records[0].stdName}`;
       document.getElementById('res-std-id').innerText = `รหัสนักศึกษา: ${records[0].stdId}`;
 
+      const termAttScore = getTermAttendanceScore(records[0].stdId, records);
+      const termAttBox = document.getElementById('res-std-term-attendance');
+      if (termAttBox) {
+        const termAttBadge = (termAttScore !== null)
+          ? `<span class="badge badge-pass" style="font-size:0.9rem;">${termAttScore} คะแนน</span>`
+          : `<span class="badge badge-wait" style="font-size:0.85rem;">รอครูกรอก</span>`;
+        termAttBox.innerHTML = `<span style="font-size:0.9rem; font-weight:600; color:var(--pastel-purple);"><i class="fa-solid fa-user-check"></i> คะแนนเข้าเรียนรวมทั้งเทอม</span>${termAttBadge}`;
+      }
+
+      // 1. แสดงผลตารางที่ 1: รายครั้ง
       const tbody = document.getElementById('student-score-table-body');
       tbody.innerHTML = '';
       records.forEach(r => {
@@ -2395,9 +2574,114 @@ questions: [
         `;
       });
 
+      // 🌟 2. เรียกคำนวณและแสดงตารางสรุปคะแนนรวมรายวิชา
+      renderStudentCourseSummary(records);
+
       navigate('view-student-result');
     }
 
+    // =========================================================================
+    // 🌟 [สูตรคำนวณคะแนนรวมปลายภาค] คุณครูสามารถปรับสูตรตรงนี้ได้
+    // =========================================================================
+    function calculateSubjectSummary(courseCode, courseTitle, attendedCount, totalSessions, totalQuizScore, totalAssignScore) {
+      // รวมคะแนนดิบสะสม (สอบเต็ม 10 + ใบงานเต็ม 10 = เต็ม 20 ต่อครั้ง)
+      // เช่น วิชา 5 ครั้ง คะแนนดิบเต็ม 100 | วิชา 7 ครั้ง คะแนนดิบเต็ม 140
+      const rawScore = totalQuizScore + totalAssignScore;
+      const maxRawScore = totalSessions * 20;
+
+      // หารปรับฐานให้เป็นคะแนนรวมปลายภาควิชาละ 40 คะแนนเต็ม
+      let finalScore40 = 0;
+      let percentScore = 0;
+      if (maxRawScore > 0) {
+        finalScore40 = Number(((rawScore / maxRawScore) * 40).toFixed(2));
+        percentScore = Math.round((rawScore / maxRawScore) * 100);
+      }
+
+      const passed = percentScore >= 50;
+
+      return {
+        rawScoreText: `${rawScore} / ${maxRawScore}`,
+        finalScore40: finalScore40,
+        passed: passed
+      };
+    }
+
+    // ฟังก์ชันรวบรวมคะแนนรายวิชาและสร้างแถวในตารางสรุป (ไม่แสดงเกรด)
+    function renderStudentCourseSummary(studentRecords) {
+      const tbody = document.getElementById('student-subject-summary-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      if (!studentRecords || studentRecords.length === 0) return;
+
+      // รวมรายวิชาทั้งหมดทั้ง ม.ต้น และ ม.ปลาย เพื่อความแม่นยำ
+      const allLessons = [...(ALL_COURSES_DATA['m-ton'] || []), ...(ALL_COURSES_DATA['m-ปลาย'] || [])];
+
+      const courseMap = {};
+      allLessons.forEach(item => {
+        if (!courseMap[item.code]) {
+          courseMap[item.code] = {
+            code: item.code,
+            title: item.title,
+            totalSessions: 0
+          };
+        }
+        courseMap[item.code].totalSessions++;
+      });
+
+      // กรองเฉพาะวิชาที่นักศึกษาคนนี้ได้เข้าเรียน
+      const enrolledCourses = Object.values(courseMap).filter(course => {
+        return studentRecords.some(r => 
+          (r.courseCode && r.courseCode === course.code) ||
+          (r.lessonTitle && r.lessonTitle.includes(course.code)) ||
+          (r.lessonId && r.lessonId.includes(course.code))
+        );
+      });
+
+      if (enrolledCourses.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:12px; color:var(--text-muted);">ยังไม่มีข้อมูลวิชาที่เข้าเรียน</td></tr>';
+        return;
+      }
+
+      enrolledCourses.forEach(course => {
+        const recordsForCourse = studentRecords.filter(r => 
+          (r.courseCode && r.courseCode === course.code) ||
+          (r.lessonTitle && r.lessonTitle.includes(course.code)) ||
+          (r.lessonId && r.lessonId.includes(course.code))
+        );
+
+        const attendedCount = recordsForCourse.length;
+        let totalQuiz = 0;
+        let totalAssign = 0;
+
+        recordsForCourse.forEach(r => {
+          totalQuiz += Number(r.bestQuizScore) || 0;
+          totalAssign += Number(r.assignmentScore) || 0;
+        });
+
+        const result = calculateSubjectSummary(
+          course.code,
+          course.title,
+          attendedCount,
+          course.totalSessions,
+          totalQuiz,
+          totalAssign
+        );
+
+        const statusBadge = result.passed
+          ? `<span style="color:var(--success); font-weight:600;"><i class="fa-solid fa-circle-check"></i> ผ่าน</span>`
+          : `<span style="color:var(--danger); font-weight:600;"><i class="fa-solid fa-circle-xmark"></i> ไม่ผ่าน</span>`;
+
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${course.code}</strong><br><small style="color:var(--text-muted);">${course.title}</small></td>
+            <td>${result.rawScoreText}</td>
+            <td><strong style="color:var(--pastel-purple); font-size:1rem;">${result.finalScore40}</strong> / 40</td>
+            <td>${statusBadge}</td>
+          </tr>
+        `;
+      });
+    }
     // ครูผู้สอน (รหัสลับ 031212)
     async function loginTeacher() {
       const pwd = document.getElementById('teacher-pwd').value.trim();
@@ -2560,6 +2844,160 @@ questions: [
       alert('บันทึกผลการตรวจใบงานเรียบร้อย');
     }
 
+    // =========================================================================
+    // 📝 ระบบจัดการคะแนนเข้าเรียนรวมทั้งเทอม (ไม่แยกรายวิชา: ครูกรอกเอง + นักศึกษาดูได้)
+    // =========================================================================
+    function getTermAttendanceStore() {
+      try {
+        return JSON.parse(localStorage.getItem('clc_term_attendance_scores')) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveTermAttendanceToStore(stdId, stdName, score) {
+      const store = getTermAttendanceStore();
+      const key = String(stdId).trim();
+      store[key] = {
+        stdId: key,
+        stdName: String(stdName || '').trim(),
+        score: Number(score)
+      };
+      localStorage.setItem('clc_term_attendance_scores', JSON.stringify(store));
+    }
+
+    function getTermAttendanceScore(stdId, studentRecords = []) {
+      const cleanId = String(stdId || '').trim();
+      for (const r of studentRecords) {
+        const val = r.termAttendanceScore !== undefined ? r.termAttendanceScore : r.termattendancescore;
+        if (val !== undefined && val !== null && val !== '') {
+          return Number(val);
+        }
+      }
+      const store = getTermAttendanceStore();
+      const entry = store[cleanId];
+      if (entry && entry.score !== undefined && entry.score !== null && entry.score !== '') {
+        return Number(entry.score);
+      }
+      return null;
+    }
+
+    function populateAttendanceModalSelects() {
+      const studentSelect = document.getElementById('att-modal-existing-student');
+      if (!studentSelect) return;
+
+      studentSelect.innerHTML = '<option value="">-- กรอกรหัสใหม่ / เลือกนักศึกษา --</option>';
+      const uniqueStudents = {};
+      appData.records.forEach(r => {
+        const sId = String(r.stdId || r.stdid || '').trim();
+        const sName = String(r.stdName || r.stdname || '').trim();
+        if (sId && !uniqueStudents[sId]) {
+          uniqueStudents[sId] = sName;
+          studentSelect.innerHTML += `<option value="${sId}" data-name="${sName}">${sId} - ${sName}</option>`;
+        }
+      });
+    }
+
+    function renderSavedAttendanceList() {
+      const tbody = document.getElementById('att-modal-saved-list');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const store = getTermAttendanceStore();
+      const entries = Object.values(store);
+      if (entries.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">ยังไม่มีรายการคะแนนเข้าเรียนที่บันทึกไว้</td></tr>';
+        return;
+      }
+
+      entries.forEach(item => {
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${item.stdId}</strong><br><small>${item.stdName || '-'}</small></td>
+            <td><span class="badge badge-pass">${item.score} คะแนน</span></td>
+            <td><button class="btn btn-sm" style="background:var(--pastel-purple);" onclick="editAttendanceEntry('${String(item.stdId).replace(/'/g, "\\'")}')"><i class="fa-solid fa-pen"></i></button></td>
+          </tr>
+        `;
+      });
+    }
+
+    function editAttendanceEntry(stdId) {
+      const store = getTermAttendanceStore();
+      const entry = store[String(stdId).trim()];
+      if (!entry) return;
+      document.getElementById('att-modal-std-id').value = entry.stdId || '';
+      document.getElementById('att-modal-std-name').value = entry.stdName || '';
+      document.getElementById('att-modal-score').value = entry.score !== undefined ? entry.score : '';
+    }
+
+    function openAttendanceModal() {
+      populateAttendanceModalSelects();
+      document.getElementById('att-modal-existing-student').value = '';
+      document.getElementById('att-modal-std-id').value = '';
+      document.getElementById('att-modal-std-name').value = '';
+      document.getElementById('att-modal-score').value = '';
+      renderSavedAttendanceList();
+      document.getElementById('modal-attendance').classList.add('active');
+    }
+
+    function onSelectExistingAttendanceStudent() {
+      const sel = document.getElementById('att-modal-existing-student');
+      const stdId = sel.value;
+      if (!stdId) return;
+      const opt = sel.options[sel.selectedIndex];
+      document.getElementById('att-modal-std-id').value = stdId;
+      document.getElementById('att-modal-std-name').value = opt.getAttribute('data-name') || '';
+      syncAttendanceScorePreview();
+    }
+
+    function syncAttendanceScorePreview() {
+      const stdId = document.getElementById('att-modal-std-id').value.trim();
+      if (!stdId) return;
+      const studentRecords = appData.records.filter(r => String(r.stdId || r.stdid || '').trim() === stdId);
+      const existingScore = getTermAttendanceScore(stdId, studentRecords);
+      if (existingScore !== null) {
+        document.getElementById('att-modal-score').value = existingScore;
+      }
+    }
+
+    function closeAttendanceModal() {
+      document.getElementById('modal-attendance').classList.remove('active');
+    }
+
+    async function saveAttendanceScore() {
+      const stdId = document.getElementById('att-modal-std-id').value.trim();
+      const stdName = document.getElementById('att-modal-std-name').value.trim();
+      const scoreVal = document.getElementById('att-modal-score').value;
+
+      if (!stdId || !stdName) {
+        alert('กรุณากรอกรหัสนักศึกษาและชื่อ-นามสกุลให้ครบถ้วน');
+        return;
+      }
+      if (scoreVal === '' || isNaN(Number(scoreVal)) || Number(scoreVal) < 0) {
+        alert('กรุณากรอกคะแนนเข้าเรียนเป็นตัวเลขตั้งแต่ 0 ขึ้นไป');
+        return;
+      }
+
+      const numericScore = Number(scoreVal);
+      saveTermAttendanceToStore(stdId, stdName, numericScore);
+
+      const matchingRecords = appData.records.filter(r =>
+        String(r.stdId || r.stdid || '').trim() === stdId
+      );
+
+      matchingRecords.forEach(r => {
+        r.termAttendanceScore = numericScore;
+      });
+      saveStorage();
+
+      if (matchingRecords.length > 0) {
+        await syncToCloud(matchingRecords[0]);
+      }
+
+      renderSavedAttendanceList();
+      alert(`บันทึกคะแนนเข้าเรียนรวมทั้งเทอมของ ${stdName} (${numericScore} คะแนน) เรียบร้อย`);
+    }
+
     // ซิงค์ Google Sheets
     async function syncToCloud(recordData) {
       if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("วาง_URL")) return;
@@ -2581,13 +3019,24 @@ questions: [
         const res = await fetch(GOOGLE_SCRIPT_URL + "?action=getRecords&nocache=" + new Date().getTime());
         const data = await res.json();
         if (Array.isArray(data)) {
+          const termStore = getTermAttendanceStore();
           data.forEach(r => {
             r.stdId = String(r.stdId || r.stdid || "").trim();
             let ans = r.assignmentAnswers || r.assignmentanswers;
             if (typeof ans === 'string' && ans.startsWith('{')) {
               try { r.assignmentAnswers = JSON.parse(ans); } catch(e){}
             }
+            const cloudTermAtt = r.termAttendanceScore !== undefined ? r.termAttendanceScore : r.termattendancescore;
+            if (r.stdId && cloudTermAtt !== undefined && cloudTermAtt !== null && cloudTermAtt !== '') {
+              r.termAttendanceScore = Number(cloudTermAtt);
+              termStore[r.stdId] = {
+                stdId: r.stdId,
+                stdName: String(r.stdName || r.stdname || '').trim(),
+                score: Number(cloudTermAtt)
+              };
+            }
           });
+          localStorage.setItem('clc_term_attendance_scores', JSON.stringify(termStore));
           appData.records = data;
           saveStorage();
           renderFilteredTeacherTable();
