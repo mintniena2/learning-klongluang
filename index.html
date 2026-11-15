@@ -706,10 +706,10 @@
         </div>
 
         <!-- 👉 เปลี่ยนรูปกระดานข่าวโดยแก้ชื่อไฟล์ตรง src="images/news.png" ได้เลย -->
-       <div class="news-board-img-wrap" id="news-board-img-wrap" onclick="openLightbox(this.querySelector('img').src)">
-  <img src="images/news.png" onerror="this.onerror=null; this.src='images/cover.png';" alt="ภาพกระดานข่าว">
-  <div class="news-zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> แตะดูภาพใหญ่</div>
-</div>
+        <div class="news-board-img-wrap" onclick="openLightbox(this.querySelector('img').src)">
+          <img src="images/news.png" onerror="this.onerror=null; this.src='images/cover.png';" alt="ภาพกระดานข่าว">
+          <div class="news-zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> แตะดูภาพใหญ่</div>
+        </div>
 
         <!-- 👉 แก้ข้อความข่าวในบรรทัดล่างนี้ได้เลย -->
         <p class="news-board-caption">ยินดีต้อนรับนักศึกษา ศรช. ปีการศึกษา 2569 ภาคเรียนที่ 2 ติดตามข่าวสารและกำหนดการเรียนได้ที่นี่ครับ</p>
@@ -1007,6 +1007,7 @@
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button class="btn btn-sm" style="width:auto; background:var(--success);" onclick="openAttendanceModal()"><i class="fa-solid fa-user-check"></i> กรอกคะแนนเข้าเรียน</button>
             <button class="btn btn-sm" style="width:auto;" onclick="fetchCloudRecords(true)"><i class="fa-solid fa-arrows-rotate"></i> ซิงค์ข้อมูลล่าสุด</button>
+            <button class="btn btn-sm" id="btn-toggle-maintenance" style="width:auto; background:var(--danger);" onclick="toggleMaintenanceFromDashboard()"><i class="fa-solid fa-screwdriver-wrench"></i> ปิดปรับปรุงเว็บ</button>
           </div>
         </div>
         <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;">เช็คชื่อ ตรวจใบงาน และดูคะแนนนักศึกษา</p>
@@ -1195,6 +1196,43 @@
       <button type="button" class="btn" onclick="closeKpcAlert()">รับทราบ</button>
     </div>
   </div>
+  <!-- OVERLAY: หน้าต่างปิดปรับปรุงระบบชั่วคราว -->
+  <div id="maintenance-overlay" style="display:none; position:fixed; inset:0; background:linear-gradient(135deg, var(--pastel-cream) 0%, var(--pastel-pink-light) 50%, var(--pastel-purple-light) 100%); z-index:2000; align-items:center; justify-content:center; padding:20px;">
+    <div class="card" style="max-width:460px; width:100%; text-align:center; padding:28px 22px; border:2px solid white;">
+      <div style="width:72px; height:72px; border-radius:50%; background:#fff3cd; color:#d39e00; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-size:2.2rem;">
+        <i class="fa-solid fa-screwdriver-wrench"></i>
+      </div>
+      <h2 style="color:var(--pastel-purple); font-size:1.35rem; margin-bottom:8px;">ปิดปรับปรุงระบบชั่วคราว</h2>
+      <p id="maint-display-message" style="font-size:0.95rem; color:var(--text-dark); line-height:1.6; margin-bottom:18px;">
+        ขณะนี้คุณครูกำลังปรับปรุงและอัปเดตข้อมูลระบบห้องเรียนออนไลน์ เพื่อป้องกันข้อมูลคลาดเคลื่อน กรุณารอสักครู่แล้วกลับมาใช้งานใหม่อีกครั้งครับ
+      </p>
+
+      <div style="border-top:1px dashed #e2d9ec; padding-top:14px;">
+        <button type="button" class="btn btn-sm" style="background:var(--pastel-purple-light); color:var(--pastel-purple); border:1px solid #d9c7ee;" onclick="toggleMaintTeacherPanel()">
+          <i class="fa-solid fa-key"></i> สำหรับคุณครู (ทดสอบระบบ / เปิดเว็บ)
+        </button>
+
+        <div id="maint-teacher-panel" style="display:none; margin-top:12px; text-align:left; background:#faf7fd; padding:12px; border-radius:12px; border:1px solid #ece3f6;">
+          <div id="maint-pwd-step">
+            <label style="font-size:0.82rem; font-weight:600; display:block; margin-bottom:6px;">กรอกรหัสผ่านคุณครู (954803)</label>
+            <div style="display:flex; gap:8px;">
+              <input type="password" id="maint-teacher-pwd" placeholder="รหัสผ่านคุณครู" style="flex:1; padding:8px; border:1px solid #d9c7ee; border-radius:8px; outline:none;" onkeydown="if(event.key==='Enter') verifyMaintTeacherPwd()">
+              <button type="button" class="btn btn-sm" onclick="verifyMaintTeacherPwd()">ยืนยัน</button>
+            </div>
+          </div>
+
+          <div id="maint-action-step" style="display:none; flex-direction:column; gap:8px;">
+            <button type="button" class="btn btn-sm" style="width:100%; background:var(--pastel-purple); padding:10px;" onclick="bypassMaintenanceForTeacher()">
+              <i class="fa-solid fa-eye"></i> เข้าทดสอบเว็บเฉพาะเครื่องครู (นักศึกษายังถูกปิดอยู่)
+            </button>
+            <button type="button" class="btn btn-sm" id="btn-maint-turn-off" style="width:100%; background:var(--success); padding:10px;" onclick="turnOffMaintenanceEverywhere()">
+              <i class="fa-solid fa-circle-check"></i> เปิดเว็บไซต์ให้นักศึกษาเข้าใช้งานทันที
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- MODAL: LIGHTBOX -->
   <div id="modal-lightbox" class="modal" onclick="closeLightbox()">
     <div style="position:relative; max-width:92%; max-height:92%;">
@@ -1209,6 +1247,8 @@
     // 🔗 วาง Web App URL จาก Google Apps Script ตรงนี้
     // ==========================================
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDgW6Fwgt6OJtnxURoeApPNcdSFk3sKHEQbjJyLN04vWouS4sNm2yyNMtwZMIEu3sR/exec";
+    // 👉 ถ้าอยากสั่งปิดปรับปรุงเว็บจากในโค้ดโดยตรง ให้เปลี่ยน false เป็น true (ปกติตั้งไว้ false เพื่อกดเปิด-ปิดจากหน้าคุณครูได้)
+    const FORCE_MAINTENANCE_MODE = false;
 
     // ฟังก์ชันช่วยเขียนหน้าเนื้อหา: p('ชื่อตอน', 'เนื้อหา', 'ลิงก์รูป')
     function p(pageTitle, pageContent, imgUrl) {
@@ -3413,6 +3453,17 @@
               attendanceMetaRows.push(r);
               return;
             }
+            if (lId === '__MAINTENANCE_MODE__') {
+              let mAns = r.assignmentAnswers || r.assignmentanswers;
+              if (typeof mAns === 'string' && mAns.startsWith('{')) {
+                try { mAns = JSON.parse(mAns); } catch (e) {}
+              }
+              if (mAns && typeof mAns === 'object') {
+                localStorage.setItem('clc_maintenance_mode', JSON.stringify(mAns));
+                applyMaintenanceMode();
+              }
+              return;
+            }
 
             const cloudTermAtt = r.termAttendanceScore !== undefined ? r.termAttendanceScore : r.termattendancescore;
             if (r.stdId && cloudTermAtt !== undefined && cloudTermAtt !== null && cloudTermAtt !== '') {
@@ -3474,6 +3525,141 @@ function closeKpcAlert() {
       const el = document.getElementById('modal-kpc-alert');
       if (el) el.classList.remove('active');
     }
+    // =========================================================================
+    // 🚧 ระบบเปิด-ปิดปรับปรุงเว็บไซต์ชั่วคราว (ลิ้งผ่าน Google Sheets)
+    // =========================================================================
+    function getMaintenanceState() {
+      if (FORCE_MAINTENANCE_MODE) {
+        return { enabled: true, message: 'ขณะนี้คุณครูกำลังปรับปรุงและอัปเดตระบบห้องเรียนออนไลน์ กรุณากลับมาใช้งานใหม่อีกครั้งครับ' };
+      }
+      try {
+        const saved = JSON.parse(localStorage.getItem('clc_maintenance_mode'));
+        if (saved && typeof saved === 'object') return saved;
+      } catch (e) {}
+      return { enabled: false, message: '' };
+    }
+
+    function applyMaintenanceMode() {
+      const state = getMaintenanceState();
+      const overlay = document.getElementById('maintenance-overlay');
+      const msgEl = document.getElementById('maint-display-message');
+      const dashBtn = document.getElementById('btn-toggle-maintenance');
+      const isTeacherBypass = sessionStorage.getItem('clc_teacher_bypass') === '1';
+
+      if (dashBtn) {
+        if (state.enabled) {
+          dashBtn.style.background = 'var(--success)';
+          dashBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i> เปิดใช้งานเว็บตามปกติ`;
+        } else {
+          dashBtn.style.background = 'var(--danger)';
+          dashBtn.innerHTML = `<i class="fa-solid fa-screwdriver-wrench"></i> ปิดปรับปรุงเว็บ`;
+        }
+      }
+
+      if (!overlay) return;
+      if (state.enabled && !isTeacherBypass) {
+        if (msgEl && state.message) msgEl.innerText = state.message;
+        overlay.style.display = 'flex';
+        document.getElementById('maint-teacher-panel').style.display = 'none';
+        document.getElementById('maint-pwd-step').style.display = 'block';
+        document.getElementById('maint-action-step').style.display = 'none';
+        document.getElementById('maint-teacher-pwd').value = '';
+      } else {
+        overlay.style.display = 'none';
+      }
+    }
+
+    function toggleMaintTeacherPanel() {
+      const panel = document.getElementById('maint-teacher-panel');
+      if (!panel) return;
+      panel.style.display = (panel.style.display === 'none' || panel.style.display === '') ? 'block' : 'none';
+    }
+
+    function verifyMaintTeacherPwd() {
+      const pwd = document.getElementById('maint-teacher-pwd').value.trim();
+      if (pwd !== '954803') {
+        alert('รหัสผ่านคุณครูไม่ถูกต้อง!');
+        return;
+      }
+      document.getElementById('maint-pwd-step').style.display = 'none';
+      document.getElementById('maint-action-step').style.display = 'flex';
+    }
+
+    function bypassMaintenanceForTeacher() {
+      sessionStorage.setItem('clc_teacher_bypass', '1');
+      applyMaintenanceMode();
+    }
+
+    async function setCloudMaintenance(enabled, customMessage) {
+      const payload = {
+        enabled: !!enabled,
+        message: customMessage || 'ขณะนี้คุณครูกำลังปรับปรุงและอัปเดตข้อมูลระบบห้องเรียนออนไลน์ เพื่อป้องกันข้อมูลคลาดเคลื่อน กรุณารอสักครู่แล้วกลับมาใช้งานใหม่อีกครั้งครับ',
+        updatedAt: new Date().toLocaleString('th-TH')
+      };
+      localStorage.setItem('clc_maintenance_mode', JSON.stringify(payload));
+      applyMaintenanceMode();
+
+      await syncToCloud({
+        stdId: '__SYSTEM_MAINTENANCE__',
+        stdName: 'สถานะปิดปรับปรุงระบบ',
+        level: 'm-ton',
+        lessonId: '__MAINTENANCE_MODE__',
+        courseCode: 'SYSTEM',
+        session: 'โหมดปรับปรุงระบบ',
+        lessonTitle: enabled ? 'ปิดปรับปรุงชั่วคราว' : 'เปิดใช้งานปกติ',
+        attendedAt: new Date().toLocaleString('th-TH'),
+        quizAttempts: 0,
+        bestQuizScore: 0,
+        quizPassed: false,
+        assignmentAnswers: payload,
+        assignmentScore: '',
+        teacherFeedback: enabled ? 'MAINTENANCE_ON' : 'MAINTENANCE_OFF'
+      });
+    }
+
+    async function turnOffMaintenanceEverywhere() {
+      if (FORCE_MAINTENANCE_MODE) {
+        alert('ตอนนี้ในโค้ดตั้งค่า FORCE_MAINTENANCE_MODE = true ไว้ กรุณาแก้ในโค้ดเป็น false ด้วยนะครับ');
+        return;
+      }
+      const btn = document.getElementById('btn-maint-turn-off');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังเปิดเว็บไซต์...`;
+      }
+      sessionStorage.removeItem('clc_teacher_bypass');
+      await setCloudMaintenance(false);
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> เปิดเว็บไซต์ให้นักศึกษาเข้าใช้งานทันที`;
+      }
+      alert('เปิดเว็บไซต์ให้นักศึกษาเข้าใช้งานตามปกติแล้วครับ');
+    }
+
+    async function toggleMaintenanceFromDashboard() {
+      const current = getMaintenanceState();
+      if (current.enabled) {
+        if (FORCE_MAINTENANCE_MODE) {
+          alert('ตอนนี้ในโค้ดตั้งค่า FORCE_MAINTENANCE_MODE = true ไว้ กรุณาแก้ในโค้ดเป็น false ด้วยนะครับ');
+          return;
+        }
+        if (!confirm('ต้องการ "เปิดเว็บไซต์ให้นักศึกษาเข้าใช้งานตามปกติ" ใช่หรือไม่?')) return;
+        sessionStorage.removeItem('clc_teacher_bypass');
+        await setCloudMaintenance(false);
+        alert('เปิดเว็บไซต์ให้นักศึกษาเข้าใช้งานตามปกติแล้ว');
+      } else {
+        const msg = prompt('ต้องการปิดปรับปรุงเว็บไซต์ใช่หรือไม่?\n(ระบุข้อความแจ้งนักศึกษา หรือกดตกลงเพื่อใช้ข้อความมาตรฐาน):', 'ขณะนี้คุณครูกำลังปรับปรุงและอัปเดตข้อมูลระบบห้องเรียนออนไลน์ เพื่อป้องกันข้อมูลคลาดเคลื่อน กรุณารอสักครู่แล้วกลับมาใช้งานใหม่อีกครั้งครับ');
+        if (msg === null) return;
+        sessionStorage.setItem('clc_teacher_bypass', '1'); // ให้เครื่องครูปัจจุบันยังกดทำงานต่อได้
+        await setCloudMaintenance(true, msg.trim());
+        alert('เปิดโหมดปิดปรับปรุงเว็บไซต์แล้ว!\nนักศึกษาทุกเครื่องจะเข้าใช้งานไม่ได้จนกว่าคุณครูจะกด "เปิดใช้งานเว็บตามปกติ"');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      applyMaintenanceMode();
+      fetchCloudRecords();
+    });
     function openLightbox(src) {
       document.getElementById('lightbox-img').src = src;
       document.getElementById('modal-lightbox').classList.add('active');
