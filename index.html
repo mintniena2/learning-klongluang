@@ -2,380 +2,876 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
   <!-- ป้องกันแคชค้างในมือถือ โหลดโค้ดใหม่ล่าสุดเสมอ -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
-  <title>ห้องเรียนออนไลน์ ศูนย์การเรียนชุมชน ปีการศึกษา 2569 ภาคเรียนที่ 2</title>
+  <title>ศรช. ออนไลน์ 2/2569 — ห้องเรียนออนไลน์ ศูนย์การเรียนชุมชน</title>
   <!-- Google Fonts & Font Awesome Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Prompt:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+
   <style>
     :root {
-      --pastel-purple: #9D84B7;
-      --pastel-purple-light: #E8DFF5;
-      --pastel-pink: #F7B2B7;
-      --pastel-pink-light: #FDE2E4;
-      --pastel-cream: #FFF1E6;
+      --pastel-purple: #7C5AA8;
+      --pastel-purple-dark: #6D4E99;
+      --pastel-purple-soft: #9E82C4;
+      --pastel-purple-light: #FAF5FF;
+      --pastel-pink: #C86F89;
+      --pastel-pink-bright: #D97B93;
+      --pastel-pink-light: #FFF0F5;
+      --pastel-cream: #FFF7EE;
       --pastel-cream-bg: #FFFDF9;
-      --text-dark: #3E3449;
-      --text-muted: #72687D;
+      --border-hairline: #EADFF5;
+      --border-soft: #DFCFEA;
+      --text-dark: #3A2E48;
+      --text-body: #5C4E6D;
+      --text-muted: #6E5F7D;
       --card-bg: rgba(255, 255, 255, 0.96);
-      --success: #28a745;
-      --warning: #e0a800;
-      --danger: #dc3545;
-      --radius: 16px;
-      --shadow: 0 8px 24px rgba(157, 132, 183, 0.12);
+      --success: #059669;
+      --success-bg: #ECFDF5;
+      --warning: #D97706;
+      --warning-bg: #FFF7EA;
+      --danger: #C85A77;
+      --danger-bg: #FFF0F4;
+      --radius: 18px;
+      --shadow: 0 4px 20px rgba(124, 90, 168, 0.06);
+      --shadow-soft: 0 2px 10px rgba(124, 90, 168, 0.05);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Kanit', sans-serif;
+      font-family: 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
+    html, body {
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
     body {
-      background: linear-gradient(135deg, var(--pastel-cream) 0%, var(--pastel-pink-light) 50%, var(--pastel-purple-light) 100%);
+      background: linear-gradient(155deg, #FFFDF9 0%, #FFF4F6 48%, #F6EFFC 100%);
+      background-attachment: fixed;
       min-height: 100vh;
       color: var(--text-dark);
       display: flex;
       flex-direction: column;
     }
 
-    header {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(8px);
-      padding: 12px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    h1, h2, h3, h4, .brand, .font-display {
+      font-family: 'Prompt', 'Noto Sans Thai', sans-serif;
+    }
+
+    .font-mono-num {
+      font-family: 'IBM Plex Mono', 'Noto Sans Thai', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    button, a, select, input, textarea {
+      touch-action: manipulation;
+    }
+
+    /* แถบแจ้งเตือนโหมดทดสอบครู */
+    .teacher-bypass-bar {
+      display: none;
+      background: #FFF5E8;
+      border-bottom: 1px solid #F7D6B5;
+      color: #8C5319;
+      font-size: 0.78rem;
+      font-weight: 500;
+      text-align: center;
+      padding: 7px 14px;
+    }
+    .teacher-bypass-bar button {
+      background: transparent;
+      border: none;
+      color: var(--pastel-purple-dark);
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+      margin-left: 10px;
+      font-size: 0.78rem;
+    }
+
+    /* Header สไตล์ Gemini */
+    header.site-header {
       position: sticky;
       top: 0;
       z-index: 100;
+      border-bottom: 1px solid var(--border-hairline);
+      background: rgba(255, 253, 249, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .header-inner {
+      max-width: 1152px;
+      margin: 0 auto;
+      padding: 11px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    @media (min-width: 640px) {
+      .header-inner {
+        padding: 12px 24px;
+      }
     }
 
     .brand {
       font-weight: 600;
-      color: var(--pastel-purple);
-      font-size: 1.05rem;
+      color: var(--text-dark);
+      font-size: 0.98rem;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #8B68B8, #DF8FA5);
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      box-shadow: 0 2px 8px rgba(124, 90, 168, 0.22);
+      flex-shrink: 0;
+    }
+
+    .header-nav {
+      display: none;
+      align-items: center;
+      gap: 24px;
+    }
+    @media (min-width: 768px) {
+      .header-nav {
+        display: flex;
+      }
+    }
+
+    .nav-link-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding: 5px 2px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .nav-link-btn:hover {
+      color: var(--pastel-purple-dark);
+    }
+    .nav-link-btn.active {
+      color: var(--pastel-purple-dark);
+      border-bottom-color: var(--pastel-pink-bright);
+      font-weight: 600;
     }
 
     .header-btns {
       display: flex;
+      align-items: center;
       gap: 8px;
+      flex-shrink: 0;
     }
 
-    .btn-nav {
+    .btn-header-mobile-score {
       background: white;
-      border: 1px solid var(--pastel-purple);
-      color: var(--pastel-purple);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.82rem;
+      border: 1px solid var(--border-hairline);
+      color: var(--pastel-purple-dark);
+      padding: 7px 11px;
+      border-radius: 11px;
+      font-size: 0.78rem;
+      font-weight: 500;
       cursor: pointer;
+      white-space: nowrap;
+    }
+    @media (min-width: 768px) {
+      .btn-header-mobile-score {
+        display: none;
+      }
+    }
+
+    .btn-header-teacher {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(90deg, #7C5AA8, #C86F89);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 11px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(124, 90, 168, 0.2);
+      transition: opacity 0.15s;
+    }
+    .btn-header-teacher:hover {
+      opacity: 0.94;
+    }
+
+    /* แถบเมนูลัดสำหรับมือถือ */
+    .mobile-quick-nav {
       display: flex;
       align-items: center;
-      gap: 5px;
-      transition: all 0.2s;
+      gap: 6px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 8px 16px;
+      border-top: 1px solid #F3EAF9;
+      background: rgba(255, 253, 249, 0.96);
     }
-
-    .btn-nav:hover, .btn-nav.active {
-      background: var(--pastel-purple);
-      color: white;
+    .mobile-quick-nav::-webkit-scrollbar {
+      display: none;
+    }
+    @media (min-width: 768px) {
+      .mobile-quick-nav {
+        display: none;
+      }
+    }
+    .mobile-nav-chip {
+      flex-shrink: 0;
+      border: 1px solid var(--border-hairline);
+      background: white;
+      color: var(--text-muted);
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .mobile-nav-chip.active {
+      background: #F4ECFC;
+      border-color: #CBB6E4;
+      color: var(--pastel-purple-dark);
+      font-weight: 600;
     }
 
     .container {
-      max-width: 850px;
+      max-width: 1152px;
       margin: 0 auto;
-      padding: 20px 15px;
+      padding: 20px 16px 40px;
       flex: 1;
       width: 100%;
+    }
+    @media (min-width: 640px) {
+      .container {
+        padding: 28px 24px 48px;
+      }
     }
 
     .view {
       display: none;
-      animation: fadeIn 0.3s ease-in-out;
+      animation: fadeIn 0.25s ease-out;
     }
     .view.active {
       display: block;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-5px); }
+      40% { transform: translateX(5px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+    .animate-shake {
+      animation: shake 0.35s ease-in-out;
     }
 
     .card {
       background: var(--card-bg);
       border-radius: var(--radius);
-      padding: 22px 18px;
+      padding: 20px 16px;
       box-shadow: var(--shadow);
-      border: 1px solid white;
-      margin-bottom: 18px;
+      border: 1px solid var(--border-hairline);
+      margin-bottom: 22px;
     }
-
-    /* ภาพปกขนาดใหญ่ */
-    .hero-banner-wrapper {
-      position: relative;
-      width: 100%;
-      height: 250px;
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      margin-bottom: 18px;
-      border: 2px solid white;
-    }
-
-    @media (min-width: 768px) {
-      .hero-banner-wrapper {
-        height: 350px;
+    @media (min-width: 640px) {
+      .card {
+        padding: 26px 28px;
       }
     }
 
-    .hero-banner-img {
+    /* 🌟 GEMINI HERO CARD (2 คอลัมน์บนคอม / เรียงลงบนมือถือ) */
+    .gemini-hero-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      border-radius: 20px;
+      padding: 20px 18px;
+      box-shadow: var(--shadow);
+      margin-bottom: 28px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+    @media (min-width: 640px) {
+      .gemini-hero-card {
+        padding: 28px 30px;
+      }
+    }
+    @media (min-width: 960px) {
+      .gemini-hero-card {
+        grid-template-columns: 7fr 5fr;
+        gap: 28px;
+      }
+    }
+
+    .gemini-hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .gemini-hero-eyebrow {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--pastel-purple);
+      letter-spacing: 0.01em;
+    }
+
+    .gemini-hero-title {
+      margin-top: 6px;
+      font-size: 1.65rem;
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--text-dark);
+    }
+    @media (min-width: 640px) {
+      .gemini-hero-title {
+        font-size: 2.15rem;
+      }
+    }
+
+    .gemini-hero-desc {
+      margin-top: 10px;
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: var(--text-muted);
+      max-width: 560px;
+    }
+
+    .gemini-steps-overview {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      border-top: 1px solid #F3EAF9;
+      padding-top: 16px;
+    }
+    @media (min-width: 640px) {
+      .gemini-steps-overview {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    .gemini-step-mini-num {
+      font-size: 0.74rem;
+      font-weight: 600;
+      font-family: 'IBM Plex Mono', 'Noto Sans Thai', monospace;
+    }
+    .gemini-step-mini-num.pink { color: #B95D78; }
+    .gemini-step-mini-num.purple { color: #7C5AA8; }
+    .gemini-step-mini-label {
+      margin-top: 2px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .gemini-hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .gemini-cta-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #7C5AA8, #C86F89);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(124, 90, 168, 0.22);
+      transition: opacity 0.15s;
+    }
+    .gemini-cta-primary:hover { opacity: 0.94; }
+
+    .gemini-cta-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 12px;
+      background: #FFF8FB;
+      color: var(--pastel-purple-dark);
+      border: 1px solid var(--border-soft);
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .gemini-cta-secondary:hover { background: #F5ECFC; }
+
+    @media (max-width: 520px) {
+      .gemini-hero-cta {
+        flex-direction: column;
+      }
+      .gemini-cta-primary, .gemini-cta-secondary {
+        width: 100%;
+      }
+    }
+
+    /* กล่องภาพปกขวา (แสดง images/cover.png ถ้ามี หรือสลับเป็นการ์ดไล่สีสไตล์ Gemini อัตโนมัติ) */
+    .gemini-hero-visual {
+      position: relative;
+      width: 100%;
+      min-height: 220px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border-hairline);
+      background: linear-gradient(135deg, #8B68B8 0%, #B47AA8 50%, #E598AC 100%);
+      display: flex;
+    }
+
+    .gemini-hero-img-box {
+      position: relative;
       width: 100%;
       height: 100%;
+      min-height: 220px;
+    }
+    .gemini-hero-img-box img {
+      width: 100%;
+      height: 100%;
+      min-height: 220px;
+      max-height: 340px;
       object-fit: cover;
       display: block;
     }
-
-    .hero-banner-overlay {
+    .gemini-hero-img-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(74, 64, 84, 0.1) 0%, rgba(157, 132, 183, 0.75) 100%);
+      background: linear-gradient(to top, rgba(58, 42, 77, 0.84) 0%, rgba(94, 66, 122, 0.22) 55%, transparent 100%);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       padding: 20px;
       color: white;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
 
-    .hero-banner-title {
-      font-size: 1.5rem;
+    .gemini-hero-fallback {
+      display: none;
+      width: 100%;
+      min-height: 220px;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+      color: white;
+    }
+    .gemini-hero-fallback-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+    }
+
+    /* ส่วนเลือกระดับชั้นสไตล์ Gemini */
+    .gemini-section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .gemini-section-head h2 {
+      font-size: 1.25rem;
       font-weight: 600;
-      margin-bottom: 4px;
+      color: var(--text-dark);
+    }
+    .gemini-section-head p {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .gemini-link-action {
+      background: transparent;
+      border: none;
+      color: var(--pastel-purple);
+      font-size: 0.86rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .gemini-link-action:hover {
+      color: #B95D78;
+      text-decoration: underline;
     }
 
-    .hero-banner-sub {
-      font-size: 0.95rem;
-      opacity: 0.95;
+    .level-selection {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media (min-width: 640px) {
+      .level-selection {
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
-    /* กระดานข่าวหน้าแรก */
+    .btn-level-card {
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid #F5CBD6;
+      border-radius: 18px;
+      padding: 20px;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-soft);
+      width: 100%;
+    }
+    .btn-level-card.purple-theme {
+      border-color: var(--border-soft);
+    }
+    .btn-level-card:hover {
+      border-color: var(--pastel-pink-bright);
+      background: #FFF9FB;
+      transform: translateY(-2px);
+    }
+    .btn-level-card.purple-theme:hover {
+      border-color: var(--pastel-purple);
+      background: #FAF6FF;
+    }
+    .btn-level-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .btn-level-icon.pink {
+      background: #FDE8EE;
+      color: #B95D78;
+    }
+    .btn-level-icon.purple {
+      background: #F2E9FB;
+      color: #7C5AA8;
+    }
+    .btn-level-body {
+      flex: 1;
+      min-width: 0;
+    }
+    .btn-level-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .btn-level-title-row h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    /* กระดานข่าวสไตล์ Gemini (2 คอลัมน์) */
     .news-board-card {
-      padding: 18px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-hairline);
+      border-radius: 18px;
+      padding: 20px 18px;
+      box-shadow: var(--shadow);
+      margin-top: 26px;
+    }
+    @media (min-width: 640px) {
+      .news-board-card {
+        padding: 24px 28px;
+      }
     }
     .news-board-header {
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px dashed #e8dff5;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #F3EAF9;
+    }
+    .news-board-grid {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+    @media (min-width: 768px) {
+      .news-board-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
     }
     .news-board-img-wrap {
       position: relative;
-      border-radius: 12px;
+      border-radius: 14px;
       overflow: hidden;
-      border: 1px solid #ece3f6;
-      background: #faf7fd;
+      border: 1px solid var(--border-hairline);
+      background: #FFF8FB;
       cursor: pointer;
       text-align: center;
     }
     .news-board-img-wrap img {
       width: 100%;
-      max-height: 360px;
+      max-height: 300px;
       object-fit: contain;
       display: block;
       margin: 0 auto;
     }
+    .news-board-fallback {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      border: 1px solid var(--border-hairline);
+      background: #FFF8F2;
+      padding: 36px 16px;
+      text-align: center;
+    }
     .news-zoom-hint {
       position: absolute;
-      bottom: 8px;
-      right: 8px;
-      background: rgba(0,0,0,0.6);
+      bottom: 10px;
+      right: 10px;
+      background: rgba(58, 42, 77, 0.82);
       color: #fff;
-      font-size: 0.72rem;
-      padding: 3px 9px;
-      border-radius: 12px;
+      font-size: 0.74rem;
+      padding: 4px 10px;
+      border-radius: 8px;
     }
     .news-board-caption {
-      margin-top: 10px;
-      font-size: 0.88rem;
-      color: var(--text-dark);
-      line-height: 1.6;
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.7;
       white-space: pre-wrap;
-    }
-
-    .level-selection {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      margin-top: 15px;
-    }
-
-    .btn-level {
-      background: white;
-      border: 2px solid var(--pastel-purple-light);
-      border-radius: 16px;
-      padding: 18px 10px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s;
-    }
-
-    .btn-level:hover {
-      border-color: var(--pastel-purple);
-      transform: translateY(-2px);
     }
 
     .back-btn {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      color: var(--pastel-purple);
+      color: var(--text-muted);
       cursor: pointer;
-      margin-bottom: 15px;
-      font-size: 0.9rem;
+      margin-bottom: 14px;
+      font-size: 0.88rem;
       font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid var(--border-hairline);
+    }
+    .back-btn:hover {
+      background: white;
+      color: var(--pastel-purple);
     }
 
     .course-card {
-      background: white;
-      border: 1px solid #eee;
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 15px;
+      background: #FFFBF7;
+      border: 1px solid var(--border-hairline);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
     }
 
     .course-header {
       font-weight: 600;
-      color: var(--pastel-purple);
+      color: var(--text-dark);
       font-size: 1rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px dashed #e8dff5;
-      padding-bottom: 8px;
-      margin-bottom: 10px;
+      border-bottom: 1px solid #EFE4F6;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 6px;
     }
 
     .session-badge-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 9px;
     }
 
     .session-btn {
-      background: var(--pastel-cream);
-      border: 1px solid #f2e2d2;
-      color: var(--text-dark);
-      padding: 7px 12px;
-      border-radius: 8px;
-      font-size: 0.85rem;
+      background: white;
+      border: 1px solid var(--border-soft);
+      color: var(--pastel-purple-dark);
+      padding: 9px 14px;
+      border-radius: 12px;
+      font-size: 0.84rem;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 7px;
     }
 
     .session-btn:hover {
-      background: var(--pastel-purple);
+      background: linear-gradient(90deg, #7C5AA8, #C86F89);
       color: white;
-      border-color: var(--pastel-purple);
+      border-color: transparent;
     }
 
     .session-btn.locked {
-      background: #f1f3f5 !important;
-      color: #868e96 !important;
-      border-color: #dee2e6 !important;
+      background: #F5F1F8 !important;
+      color: #9587A3 !important;
+      border-color: #E5DCEB !important;
       cursor: not-allowed !important;
+      font-weight: 500;
     }
 
     /* แถบแยกเล็กๆ สำหรับเรียนในชั้นเรียน */
     .inclass-strip {
-      margin-top: 14px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: #faf7fd;
-      border: 1px dashed var(--pastel-purple);
+      margin-top: 16px;
+      padding: 13px 16px;
+      border-radius: 14px;
+      background: #FAF5FF;
+      border: 1px dashed var(--border-soft);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
-    /* กล่องแจ้งเตือนหน้ากรอกรหัสนักศึกษา */
     .std-id-warning-box {
-      background: #fff3cd;
-      border: 1px solid #ffe08a;
-      color: #856404;
-      padding: 10px 12px;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      margin-bottom: 15px;
+      background: var(--warning-bg);
+      border: 1px solid #F7D6B5;
+      color: #8C5319;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 0.84rem;
+      margin-bottom: 16px;
       text-align: left;
-      line-height: 1.5;
+      line-height: 1.55;
     }
 
-    /* Step Bar ปรับเป็น 3 ขั้นตอน (อ่านเนื้อหา ➔ ใบงาน ➔ แบบทดสอบ) */
+    /* Step Bar 4 ขั้นตอน */
     .step-indicator {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      position: relative;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 18px;
+      background: rgba(255, 255, 255, 0.96);
+      padding: 12px 8px;
+      border-radius: 16px;
+      border: 1px solid var(--border-hairline);
     }
 
     .step-item {
       text-align: center;
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
-      flex: 1;
+      line-height: 1.3;
+    }
+    @media (min-width: 640px) {
+      .step-item {
+        font-size: 0.78rem;
+      }
     }
 
     .step-circle {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
-      background: white;
-      border: 2px solid #ddd;
+      background: var(--pastel-cream);
+      border: 1.5px solid var(--border-soft);
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 0 auto 5px;
       font-weight: 600;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    @media (min-width: 640px) {
+      .step-circle {
+        width: 32px;
+        height: 32px;
+        font-size: 0.82rem;
+      }
     }
 
     .step-item.active .step-circle {
-      border-color: var(--pastel-purple);
-      background: var(--pastel-purple);
+      border-color: transparent;
+      background: linear-gradient(135deg, #7C5AA8, #C86F89);
       color: white;
+      box-shadow: 0 0 0 4px #F9DCE6;
+    }
+    .step-item.active {
+      color: var(--pastel-purple-dark);
+      font-weight: 600;
     }
 
     .step-item.completed .step-circle {
-      border-color: #28a745;
-      background: #28a745;
+      border-color: var(--success);
+      background: var(--success);
       color: white;
     }
+    .step-item.completed {
+      color: var(--success);
+      font-weight: 500;
+    }
 
-    /* โพสต์ไทม์ไลน์โซเชียล (Facebook Style) */
+    /* การ์ดเนื้อหาและใบงาน */
     .fb-post-card {
       background: #ffffff;
-      border-radius: 14px;
-      border: 1px solid #e4e6eb;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+      border-radius: 18px;
+      border: 1px solid var(--border-hairline);
+      box-shadow: var(--shadow);
       margin-bottom: 16px;
       overflow: hidden;
     }
@@ -383,85 +879,140 @@
     .fb-post-header {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 12px 14px 8px 14px;
+      gap: 11px;
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid #F3EAF9;
+      flex-wrap: wrap;
     }
 
     .fb-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--pastel-purple), var(--pastel-pink));
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #7C5AA8, #C86F89);
       color: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       flex-shrink: 0;
     }
 
     .fb-meta h4 {
-      font-size: 0.95rem;
-      color: #050505;
+      font-size: 0.92rem;
+      color: var(--text-dark);
       font-weight: 600;
-      line-height: 1.2;
+      line-height: 1.25;
     }
 
     .fb-meta span {
       font-size: 0.75rem;
-      color: #65676b;
+      color: var(--text-muted);
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: 4px;
     }
 
     .page-badge-counter {
       background: var(--pastel-pink-light);
-      color: #b03a5b;
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-size: 0.8rem;
+      color: #B95D78;
+      border: 1px solid #F5CBD6;
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 0.78rem;
       font-weight: 600;
       display: inline-block;
-      margin-bottom: 8px;
+      white-space: nowrap;
     }
 
     .fb-content {
-      padding: 12px 16px;
-      font-size: 0.95rem;
-      color: #1c1e21;
+      padding: 16px 16px;
+      font-size: 0.94rem;
+      color: var(--text-dark);
       line-height: 1.8;
       background: #fff;
+    }
+    @media (min-width: 640px) {
+      .fb-content {
+        padding: 20px 24px;
+      }
+    }
+
+    .no-copy-zone {
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .fb-tags-badge {
       display: inline-block;
       background: var(--pastel-purple-light);
-      color: var(--pastel-purple);
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-size: 0.75rem;
+      color: var(--pastel-purple-dark);
+      border: 1px solid var(--border-soft);
+      padding: 3px 10px;
+      border-radius: 8px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    /* กล่องแจ้งเตือนห้าม Copy-Paste ในใบงาน */
+    .anti-paste-banner {
+      background: #FAF5FF;
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin: 8px 0 14px;
+      font-size: 0.84rem;
+      color: var(--text-dark);
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      line-height: 1.55;
+    }
+
+    .paste-warning-alert {
+      display: none;
+      background: var(--danger-bg);
+      border: 1px solid #F5CBD6;
+      color: #9F1239;
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      font-size: 0.84rem;
       font-weight: 500;
-      margin-bottom: 8px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .paste-warning-alert.active {
+      display: flex;
     }
 
     .fb-task-callout {
-      background: #f0f2f5;
-      border-left: 4px solid var(--pastel-purple);
-      border-radius: 8px;
-      padding: 12px 14px;
+      background: #FFFBF7;
+      border: 1px solid var(--border-hairline);
+      border-left: 4px solid var(--pastel-pink-bright);
+      border-radius: 14px;
+      padding: 14px 14px;
       margin-top: 12px;
     }
 
     .fb-comment-box {
       background: #ffffff;
-      border: 1px solid #ccd0d5;
-      border-radius: 14px;
-      padding: 8px 12px;
+      border: 1.5px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 10px 12px;
       display: flex;
       flex-direction: column;
       gap: 6px;
-      margin-top: 8px;
+      margin-top: 10px;
+      transition: border-color 0.2s;
+    }
+    .fb-comment-box:focus-within {
+      border-color: var(--pastel-purple);
+      box-shadow: 0 0 0 3px rgba(124, 90, 168, 0.12);
     }
 
     .fb-comment-box textarea {
@@ -469,34 +1020,39 @@
       border: none;
       outline: none;
       resize: vertical;
-      font-size: 0.9rem;
+      font-size: 1rem;
       background: transparent;
-      min-height: 60px;
-      line-height: 1.5;
+      min-height: 96px;
+      line-height: 1.6;
+      color: var(--text-dark);
     }
 
     .fb-comment-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-top: 4px;
-      border-top: 1px dashed #e4e6eb;
-      font-size: 0.8rem;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-top: 6px;
+      border-top: 1px dashed var(--border-hairline);
+      font-size: 0.78rem;
+      color: var(--text-muted);
     }
 
     .fb-read-media {
-      margin-top: 12px;
-      background: #000;
+      margin: 0 16px 12px;
+      background: #241A30;
       text-align: center;
       cursor: pointer;
       position: relative;
-      border-radius: 10px;
+      border-radius: 14px;
       overflow: hidden;
+      border: 1px solid var(--border-hairline);
     }
 
     .fb-read-media img {
       width: 100%;
-      max-height: 520px;
+      max-height: 460px;
       object-fit: contain;
       display: block;
       margin: 0 auto;
@@ -504,23 +1060,23 @@
 
     .fb-read-media-overlay {
       position: absolute;
-      bottom: 8px;
-      right: 8px;
-      background: rgba(0, 0, 0, 0.65);
+      bottom: 10px;
+      right: 10px;
+      background: rgba(58, 42, 77, 0.82);
       color: white;
-      font-size: 0.75rem;
-      padding: 4px 10px;
-      border-radius: 14px;
+      font-size: 0.74rem;
+      padding: 5px 11px;
+      border-radius: 9px;
     }
 
     .fb-actions-bar {
       display: flex;
       justify-content: space-around;
-      border-top: 1px solid #ced0d4;
+      border-top: 1px solid #F3EAF9;
       padding: 8px 0;
-      margin: 8px 14px 10px 14px;
-      color: #65676b;
-      font-size: 0.85rem;
+      margin: 4px 16px 8px;
+      color: var(--text-muted);
+      font-size: 0.84rem;
     }
 
     .fb-action-btn {
@@ -531,280 +1087,784 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 0.85rem;
-      padding: 6px 12px;
-      border-radius: 6px;
+      font-size: 0.84rem;
+      padding: 6px 14px;
+      border-radius: 10px;
+      transition: background 0.15s;
     }
-    .fb-action-btn.liked { color: #1877f2; font-weight: 600; }
+    .fb-action-btn:hover {
+      background: var(--pastel-purple-light);
+    }
+    .fb-action-btn.liked {
+      color: var(--pastel-pink);
+      font-weight: 600;
+    }
+
+    /* 🎮 เกมจับคู่บังคับก่อนทำใบงาน */
+    .matching-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-hairline);
+      margin-bottom: 14px;
+    }
+
+    .matching-stats-box {
+      background: var(--pastel-purple-light);
+      border: 1px solid var(--border-soft);
+      color: var(--text-dark);
+      padding: 6px 12px;
+      border-radius: 11px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .matching-progress-wrap {
+      margin-bottom: 14px;
+    }
+    .matching-progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .matching-progress-bar {
+      height: 10px;
+      border-radius: 999px;
+      background: #F2E9FB;
+      overflow: hidden;
+    }
+    .matching-progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #7C5AA8, #C86F89);
+      transition: width 0.3s ease;
+    }
+    .matching-progress-fill.done {
+      background: var(--success);
+    }
+
+    .matching-feedback {
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.84rem;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-hairline);
+      background: var(--pastel-cream);
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      line-height: 1.5;
+    }
+    .matching-feedback.success {
+      background: var(--success-bg);
+      border-color: #A7F3D0;
+      color: #065F46;
+    }
+    .matching-feedback.error {
+      background: var(--danger-bg);
+      border-color: #F5CBD6;
+      color: #9F1239;
+    }
+
+    .matching-board {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 640px) {
+      .matching-board {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+    }
+
+    .matching-col-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .matching-card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .match-card {
+      width: 100%;
+      min-height: 54px;
+      text-align: left;
+      padding: 12px 14px;
+      border-radius: 13px;
+      border: 1.5px solid var(--border-hairline);
+      background: #FFFDF9;
+      color: var(--text-dark);
+      font-size: 0.86rem;
+      line-height: 1.45;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      transition: all 0.16s ease;
+    }
+    .match-card.left-side:hover:not(:disabled) {
+      border-color: var(--pastel-purple);
+      background: var(--pastel-purple-light);
+    }
+    .match-card.right-side {
+      border-color: #F2DAE2;
+    }
+    .match-card.right-side:hover:not(:disabled) {
+      border-color: var(--pastel-pink-bright);
+      background: var(--pastel-pink-light);
+    }
+    .match-card.selected-left {
+      border-color: var(--pastel-purple);
+      background: #F4ECFC;
+      box-shadow: 0 0 0 3px rgba(124, 90, 168, 0.16);
+      font-weight: 600;
+    }
+    .match-card.selected-right {
+      border-color: var(--pastel-pink-bright);
+      background: #FFF0F4;
+      box-shadow: 0 0 0 3px rgba(217, 123, 147, 0.18);
+      font-weight: 600;
+    }
+    .match-card.matched {
+      border-color: #6EE7B7 !important;
+      background: var(--success-bg) !important;
+      color: #065F46 !important;
+      cursor: default;
+      opacity: 0.92;
+    }
+    .match-card.mismatch {
+      border-color: #E11D48 !important;
+      background: #FFF1F2 !important;
+      color: #9F1239 !important;
+    }
 
     .btn {
       width: 100%;
-      padding: 13px;
-      background: linear-gradient(135deg, var(--pastel-purple), var(--pastel-pink));
+      padding: 13px 16px;
+      background: linear-gradient(90deg, #7C5AA8, #C86F89);
       color: white;
       border: none;
-      border-radius: 14px;
-      font-size: 0.95rem;
-      font-weight: 500;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      font-weight: 600;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(157, 132, 183, 0.3);
+      box-shadow: 0 2px 10px rgba(124, 90, 168, 0.22);
       transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn:hover:not(:disabled) {
+      opacity: 0.94;
     }
 
     .btn:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-      box-shadow: none;
+      background: #EAE2F0 !important;
+      color: #9587A3 !important;
+      cursor: not-allowed !important;
+      box-shadow: none !important;
     }
 
     .btn-sm {
-      padding: 6px 12px;
+      padding: 8px 13px;
       font-size: 0.8rem;
-      border-radius: 8px;
+      border-radius: 10px;
       width: auto;
     }
 
-    .btn-secondary { background: #6c757d; }
+    .btn-secondary {
+      background: #8B7D9B;
+      box-shadow: none;
+    }
+
+    .btn-outline {
+      background: white;
+      color: var(--pastel-purple-dark);
+      border: 1px solid var(--border-soft);
+      box-shadow: none;
+    }
+    .btn-outline:hover:not(:disabled) {
+      background: var(--pastel-purple-light);
+    }
 
     .input-group {
-      margin-bottom: 15px;
+      margin-bottom: 14px;
       text-align: left;
     }
 
     .input-group label {
       display: block;
       margin-bottom: 6px;
-      font-size: 0.88rem;
-      font-weight: 500;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-dark);
     }
 
-    .input-group input, .input-group textarea, .input-group select {
+    /* font-size 16px บนมือถือป้องกัน Safari ซูมหน้าจออัตโนมัติ */
+    .input-group input, .input-group textarea, .input-group select,
+    .teacher-filter-grid select {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #e2d9ec;
-      border-radius: 10px;
-      font-size: 0.9rem;
+      padding: 10px 12px;
+      border: 1px solid var(--border-soft);
+      border-radius: 11px;
+      font-size: 16px;
       outline: none;
       background: white;
+      color: var(--text-dark);
+    }
+    @media (min-width: 640px) {
+      .input-group input, .input-group textarea, .input-group select,
+      .teacher-filter-grid select {
+        font-size: 0.9rem;
+      }
+    }
+    .input-group input:focus, .input-group textarea:focus, .input-group select:focus,
+    .teacher-filter-grid select:focus {
+      border-color: var(--pastel-purple);
+      box-shadow: 0 0 0 3px rgba(124, 90, 168, 0.14);
     }
 
     .question-card {
-      background: white;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 12px;
-      border: 1px solid #f0e6f7;
+      background: #FFFBF7;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border-hairline);
     }
 
     .option-label {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 9px;
-      border: 1px solid #eee;
-      border-radius: 8px;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 1px solid var(--border-hairline);
+      background: white;
+      border-radius: 11px;
       margin-top: 8px;
       cursor: pointer;
       font-size: 0.9rem;
+      transition: all 0.15s;
+    }
+    .option-label:hover {
+      border-color: var(--pastel-purple-soft);
+      background: var(--pastel-purple-light);
+    }
+    .option-label input[type="radio"] {
+      accent-color: var(--pastel-purple);
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* แผงควบคุมครู + สรุปผล */
+    .teacher-metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    @media (min-width: 640px) {
+      .teacher-metrics-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    .teacher-metric-box {
+      border-radius: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--border-hairline);
+      background: #FFFBF7;
+    }
+    .teacher-metric-box.pink {
+      border-color: #F5CBD6;
+      background: #FFF8FB;
+    }
+    .teacher-metric-box.purple {
+      border-color: var(--border-soft);
+      background: #FAF5FF;
+    }
+
+    .teacher-filter-grid {
+      background: #FAF5FF;
+      border: 1px solid var(--border-hairline);
+      padding: 14px;
+      border-radius: 14px;
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 640px) {
+      .teacher-filter-grid {
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     .table-container {
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       background: white;
-      border-radius: 12px;
-      border: 1px solid #f0e6f7;
+      border-radius: 14px;
+      border: 1px solid var(--border-hairline);
       margin-top: 10px;
+    }
+
+    .mobile-scroll-hint {
+      display: block;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+    @media (min-width: 768px) {
+      .mobile-scroll-hint {
+        display: none;
+      }
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       text-align: left;
     }
 
     th, td {
-      padding: 11px;
-      border-bottom: 1px solid #eee;
+      padding: 11px 12px;
+      border-bottom: 1px solid #F3EAF9;
+      vertical-align: top;
     }
 
     th {
-      background: var(--pastel-cream);
-      color: var(--text-dark);
+      background: #FFF5EE;
+      color: var(--text-body);
       white-space: nowrap;
+      font-weight: 600;
+      font-size: 0.78rem;
     }
 
     .badge {
       display: inline-block;
-      padding: 3px 8px;
+      padding: 4px 10px;
       border-radius: 10px;
       font-size: 0.75rem;
-      font-weight: 500;
+      font-weight: 600;
       white-space: nowrap;
     }
-    .badge-pass { background: #d4edda; color: #155724; }
-    .badge-fail { background: #f8d7da; color: #721c24; }
-    .badge-wait { background: #fff3cd; color: #856404; }
+    .badge-pass { background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; }
+    .badge-fail { background: #FFF0F4; color: #9F1239; border: 1px solid #F5CBD6; }
+    .badge-wait { background: #FFF7EA; color: #8C5319; border: 1px solid #F7D6B5; }
 
     .modal {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.6);
+      background: rgba(42, 31, 56, 0.62);
+      backdrop-filter: blur(4px);
       z-index: 1000;
       align-items: center;
       justify-content: center;
-      padding: 15px;
+      padding: 12px;
     }
     .modal.active { display: flex; }
     .modal-content {
-      background: white;
-      border-radius: 18px;
-      padding: 20px;
+      background: #FFFDF9;
+      border-radius: 20px;
+      border: 1px solid var(--border-hairline);
+      padding: 20px 18px;
       width: 100%;
       max-width: 580px;
-      max-height: 90vh;
+      max-height: 92dvh;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      box-shadow: 0 20px 50px rgba(42, 31, 56, 0.25);
+    }
+    @media (min-width: 640px) {
+      .modal-content {
+        padding: 24px;
+      }
+    }
+
+    .modal-actions-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .modal-actions-row > button {
+      flex: 1 1 140px;
+    }
+
+    /* 🔒 หน้าล็อคระบบตั้งแต่หน้าแรก */
+    #maintenance-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(145deg, #3A2A4D 0%, #4C335E 50%, #362647 100%);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow-y: auto;
+    }
+
+    #maint-boot-loader {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(155deg, #FFFDF9 0%, #FFF4F6 48%, #F6EFFC 100%);
+      z-index: 2100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    footer {
+      border-top: 1px solid var(--border-hairline);
+      background: rgba(255, 253, 249, 0.9);
+      text-align: center;
+      padding: 16px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
     }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header>
-    <div class="brand" onclick="navigate('view-home')">
-      <i class="fa-solid fa-graduation-cap"></i>
-      <span>ศรช. ออนไลน์ 2/2569</span>
+  <!-- หน้าจอโหลดตรวจสอบสถานะระบบตอนเปิดเว็บ (ป้องกันหน้าแรกโผล่ก่อนตรวจสอบ) -->
+  <div id="maint-boot-loader">
+    <div class="card" style="max-width:400px; width:100%; text-align:center; padding:30px 22px;">
+      <div style="width:58px; height:58px; border-radius:16px; background:var(--pastel-purple-light); color:var(--pastel-purple); display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-size:1.5rem;">
+        <i class="fa-solid fa-arrows-rotate fa-spin"></i>
+      </div>
+      <h2 style="color:var(--text-dark); font-size:1.15rem; margin-bottom:6px;">กำลังตรวจสอบสถานะระบบ</h2>
+      <p style="font-size:0.86rem; color:var(--text-muted);">กรุณารอสักครู่ ระบบกำลังเชื่อมต่อข้อมูลล่าสุดจากฐานข้อมูลกลาง...</p>
     </div>
-    <div class="header-btns">
-      <button class="btn-nav" onclick="navigate('view-student-login')"><i class="fa-solid fa-user"></i> ดูผลคะแนน</button>
-      <button class="btn-nav" onclick="navigate('view-teacher-login')"><i class="fa-solid fa-chalkboard-user"></i> คุณครู</button>
-    </div>
-  </header>
+  </div>
 
-  <div class="container">
+  <!-- 🔒 OVERLAY: หน้าต่างปิดปรับปรุงระบบชั่วคราว (ล็อคตั้งแต่หน้าแรก) -->
+  <div id="maintenance-overlay">
+    <div class="card" style="max-width:470px; width:100%; text-align:center; padding:30px 24px; border:1.5px solid #EADFF5; background:#FFFDF9;">
+      <div style="width:68px; height:68px; border-radius:20px; background:var(--danger-bg); color:var(--danger); border:1px solid #F5CBD6; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:1.9rem;">
+        <i class="fa-solid fa-lock"></i>
+      </div>
+      <p style="font-size:0.78rem; font-weight:600; color:var(--pastel-purple); margin-bottom:6px;">ศูนย์การเรียนชุมชน • ปีการศึกษา 2569 ภาคเรียนที่ 2</p>
+      <h2 style="color:var(--text-dark); font-size:1.4rem; margin-bottom:10px;">ปิดปรับปรุงระบบชั่วคราว</h2>
+      <p id="maint-display-message" style="font-size:0.93rem; color:var(--text-muted); line-height:1.65; margin-bottom:20px;">
+        ขณะนี้คุณครูกำลังปรับปรุงและอัปเดตข้อมูลระบบห้องเรียนออนไลน์ เพื่อป้องกันข้อมูลคลาดเคลื่อน กรุณารอสักครู่แล้วกลับมาใช้งานใหม่อีกครั้งครับ
+      </p>
 
-    <!-- 1. HOME VIEW -->
-    <div id="view-home" class="view active">
-      <div class="hero-banner-wrapper">
-        <img src="images/cover.png" onerror="this.src='https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop'" alt="ภาพปก" class="hero-banner-img">
-        <div class="hero-banner-overlay">
-          <span style="background: rgba(255,255,255,0.25); backdrop-filter: blur(4px); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; width: fit-content; margin-bottom: 8px;">
-            <i class="fa-solid fa-graduation-cap"></i> ยินดีต้อนรับสู่ห้องเรียนออนไลน์
-          </span>
-          <h1 class="hero-banner-title">ศูนย์การเรียนชุมชน</h1>
-          <p class="hero-banner-sub">ปีการศึกษา 2569 ภาคเรียนที่ 2</p>
-        </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+        <button type="button" id="btn-maint-refresh" class="btn btn-outline" style="flex:1; padding:10px 14px; font-size:0.86rem;" onclick="refreshMaintenanceStatusFromLock()">
+          <i class="fa-solid fa-arrows-rotate"></i> ตรวจสอบสถานะอีกครั้ง
+        </button>
+        <button type="button" class="btn" style="flex:1; padding:10px 14px; font-size:0.86rem;" onclick="toggleMaintTeacherPanel()">
+          <i class="fa-solid fa-key"></i> สำหรับคุณครู
+        </button>
       </div>
 
-      <!-- 📰 กระดานข่าวหน้าแรก (คุณครูแก้รูปภาพและข้อความในโค้ดตรงนี้ได้เลย) -->
-      <div class="card news-board-card" id="home-news-board">
-        <div class="news-board-header">
-          <h2 style="font-size:1.08rem; color:var(--pastel-purple); display:flex; align-items:center; gap:7px;">
-            <i class="fa-solid fa-bullhorn"></i> กระดานข่าวประชาสัมพันธ์
-          </h2>
-        </div>
-
-        <!-- 👉 เปลี่ยนรูปกระดานข่าวโดยแก้ชื่อไฟล์ตรง src="images/news.png" ได้เลย -->
-        <div class="news-board-img-wrap" onclick="openLightbox(this.querySelector('img').src)">
-          <img src="images/news.png" onerror="this.onerror=null; this.src='images/cover.png';" alt="ภาพกระดานข่าว">
-          <div class="news-zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> แตะดูภาพใหญ่</div>
-        </div>
-
-        <!-- 👉 แก้ข้อความข่าวในบรรทัดล่างนี้ได้เลย -->
-        <p class="news-board-caption">ยินดีต้อนรับนักศึกษา ศรช. ปีการศึกษา 2569 ภาคเรียนที่ 2 ติดตามข่าวสารและกำหนดการเรียนได้ที่นี่ครับ</p>
-      </div>
-
-      <div class="card" style="text-align: center; padding: 22px 18px;">
-        <h2 style="font-size:1.15rem; color:var(--pastel-purple); margin-bottom: 4px;">
-          <i class="fa-solid fa-layer-group"></i> เลือกระดับชั้นเพื่อเริ่มเรียนรู้
-        </h2>
-        <p style="font-size:0.85rem; color:var(--text-muted);">
-          เช็คชื่ออัตโนมัติ • ศึกษาเนื้อหา & อินโฟกราฟิก • ตอบใบงาน • ทำแบบทดสอบ
-        </p>
-
-        <div class="level-selection">
-          <div class="btn-level" onclick="openLevel('m-ton')">
-            <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--pastel-pink-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">
-              <i class="fa-solid fa-school" style="font-size: 1.5rem; color: var(--pastel-purple);"></i>
-            </div>
-            <h3 style="font-size:1.05rem; color: var(--text-dark);">ระดับ ม.ต้น</h3>
-            <span style="font-size:0.75rem; color:var(--text-muted); display: block; margin-top: 3px;">3 รายวิชา (รวม 18 ครั้ง)</span>
-          </div>
-
-          <div class="btn-level" onclick="openLevel('m-ปลาย')">
-            <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--pastel-purple-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">
-              <i class="fa-solid fa-building-columns" style="font-size: 1.5rem; color: var(--pastel-purple);"></i>
-            </div>
-            <h3 style="font-size:1.05rem; color: var(--text-dark);">ระดับ ม.ปลาย</h3>
-            <span style="font-size:0.75rem; color:var(--text-muted); display: block; margin-top: 3px;">4 รายวิชา (รวม 18 ครั้ง)</span>
+      <div id="maint-teacher-panel" style="display:none; margin-top:12px; text-align:left; background:var(--pastel-pink-light); padding:14px; border-radius:14px; border:1px solid #F5CBD6;">
+        <div id="maint-pwd-step">
+          <label style="font-size:0.82rem; font-weight:600; display:block; margin-bottom:6px; color:var(--text-dark);">กรอกรหัสผ่านคุณครูเพื่อเข้าทดสอบหรือเปิดระบบ</label>
+          <div style="display:flex; gap:8px;">
+            <input type="password" id="maint-teacher-pwd" placeholder="รหัสผ่านคุณครู" style="flex:1; padding:9px 12px; border:1px solid #DFCFEA; border-radius:10px; outline:none; background:white;" onkeydown="if(event.key==='Enter') verifyMaintTeacherPwd()">
+            <button type="button" class="btn btn-sm" style="padding:9px 16px;" onclick="verifyMaintTeacherPwd()">ยืนยัน</button>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- 2. STUDENT LOGIN FOR ATTENDANCE -->
-    <div id="view-lesson-login" class="view">
-      <span class="back-btn" onclick="navigate('view-lessons')"><i class="fa-solid fa-arrow-left"></i> ย้อนกลับ</span>
-      <div class="card" style="text-align: center;">
-        <i class="fa-solid fa-id-card" style="font-size: 2.5rem; color: var(--pastel-purple); margin-bottom:10px;"></i>
-        <h2 id="login-lesson-title" style="margin-bottom: 6px; font-size:1.15rem;"></h2>
-        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 12px;">กรอกรหัสนักศึกษาเพื่อเช็คชื่อเข้าเรียนอัตโนมัติ</p>
-
-        <!-- แจ้งเตือนสำคัญก่อนกรอกรหัสนักศึกษา -->
-        <div class="std-id-warning-box">
-          <i class="fa-solid fa-triangle-exclamation" style="color:#dc3545;"></i>
-          <strong style="color:#b02a37;">คำเตือน:</strong> กรุณากรอกรหัสนักศึกษาให้ถูกต้องทุกครั้ง มิเช่นนั้นระบบจะไม่บันทึกคะแนน ต้องทำใหม่
-        </div>
-        
-        <div class="input-group">
-          <label>รหัสนักศึกษา (10 หลัก)</label>
-          <input type="text" id="lesson-std-id" placeholder="กรอกรหัสนักศึกษา" maxlength="15">
-        </div>
-        <div class="input-group">
-          <label>ชื่อ - นามสกุล นักศึกษา</label>
-          <input type="text" id="lesson-std-name" placeholder="ชื่อ นามสกุล จริง">
-        </div>
-        <button class="btn" onclick="startLearningLesson()">เช็คชื่อและเริ่มศึกษาเนื้อหา</button>
-
-        <!-- แถบแยกเล็กๆ: สำหรับเรียนในชั้นเรียน -->
-        <div class="inclass-strip">
-          <span style="font-size:0.82rem; color:var(--text-muted); text-align:left;">
-            <i class="fa-solid fa-chalkboard-user" style="color:var(--pastel-purple);"></i> <strong>สำหรับเรียนในชั้นเรียน</strong> (ครูกรอกคะแนนในคาบ)
-          </span>
-          <button type="button" class="btn btn-sm" style="background:var(--pastel-purple); color:white;" onclick="openInClassModal(true)">
-            <i class="fa-solid fa-key"></i> กรอกคะแนนในชั้นเรียน
+        <div id="maint-action-step" style="display:none; flex-direction:column; gap:8px;">
+          <button type="button" class="btn btn-outline" style="width:100%; padding:10px; font-size:0.86rem;" onclick="bypassMaintenanceForTeacher()">
+            <i class="fa-solid fa-eye"></i> เข้าทดสอบเว็บเฉพาะเครื่องครู (นักศึกษายังถูกล็อคอยู่)
+          </button>
+          <button type="button" class="btn" id="btn-maint-turn-off" style="width:100%; background:var(--success); padding:10px; font-size:0.86rem;" onclick="turnOffMaintenanceEverywhere()">
+            <i class="fa-solid fa-circle-check"></i> เปิดเว็บไซต์ให้นักศึกษาเข้าใช้งานทันที
           </button>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- 3. LESSON LIST VIEW -->
-    <div id="view-lessons" class="view">
-      <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> หน้าแรก</span>
-      <div class="card">
-        <h2 id="level-title" style="color:var(--pastel-purple); margin-bottom: 15px; font-size:1.15rem;"></h2>
-        <div id="lesson-list-container"></div>
+  <!-- 🌸 APP SHELL (ซ่อนสนิทเมื่อล็อคระบบตั้งแต่หน้าแรก) -->
+  <div id="app-shell" style="display:none; flex-direction:column; min-height:100vh;">
 
-        <!-- แถบแยกเล็กๆ: สำหรับเรียนในชั้นเรียน -->
-        <div class="inclass-strip">
-          <span style="font-size:0.82rem; color:var(--text-muted);">
-            <i class="fa-solid fa-chalkboard-user" style="color:var(--pastel-purple);"></i> <strong>สำหรับเรียนในชั้นเรียน</strong> (สำหรับนักศึกษาที่เรียนในคาบกับครู)
-          </span>
-          <button type="button" class="btn btn-sm" style="background:var(--pastel-purple); color:white;" onclick="openInClassModal(false)">
-            <i class="fa-solid fa-key"></i> ครูกรอกคะแนนในชั้นเรียน
+    <!-- แถบสถานะโหมดทดสอบของครู -->
+    <div id="teacher-bypass-bar" class="teacher-bypass-bar">
+      <span><i class="fa-solid fa-eye"></i> โหมดทดสอบสำหรับคุณครู (หน้าเว็บจริงยังคงล็อคปิดระบบสำหรับนักศึกษาอยู่)</span>
+      <button type="button" onclick="returnToMaintenanceLock()">กลับไปหน้าล็อคระบบ</button>
+    </div>
+
+    <!-- Header สไตล์ Gemini พร้อมรองรับมือถือเต็มรูปแบบ -->
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="brand" onclick="navigate('view-home')">
+          <span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+          <span>ศรช. ออนไลน์ 2/2569</span>
+        </div>
+
+        <nav class="header-nav">
+          <button type="button" class="nav-link-btn active" id="nav-link-home" onclick="navigate('view-home')">หน้าแรก</button>
+          <button type="button" class="nav-link-btn" id="nav-link-mton" onclick="openLevel('m-ton')">ระดับ ม.ต้น</button>
+          <button type="button" class="nav-link-btn" id="nav-link-mplai" onclick="openLevel('m-ปลาย')">ระดับ ม.ปลาย</button>
+          <button type="button" class="nav-link-btn" id="nav-link-student" onclick="navigate('view-student-login')">ตรวจสอบคะแนน</button>
+        </nav>
+
+        <div class="header-btns">
+          <button type="button" class="btn-header-mobile-score" onclick="navigate('view-student-login')">ดูคะแนน</button>
+          <button type="button" class="btn-header-teacher" onclick="navigate('view-teacher-login')">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>ระบบคุณครู</span>
           </button>
         </div>
       </div>
-    </div>
 
-    <!-- 4. STEP 1: READING (2-3 หน้า บังคับอ่านทีละหน้า) -->
-    <div id="view-step-read" class="view">
-      <div class="card" style="padding: 16px 12px; background: #f0f2f5;">
-        <div class="step-indicator" style="margin-bottom: 12px;">
+      <!-- เมนูแถบลัดบนมือถือ -->
+      <div class="mobile-quick-nav">
+        <button type="button" class="mobile-nav-chip active" id="mnav-home" onclick="navigate('view-home')"><i class="fa-solid fa-house"></i> หน้าแรก</button>
+        <button type="button" class="mobile-nav-chip" id="mnav-mton" onclick="openLevel('m-ton')"><i class="fa-solid fa-school"></i> ม.ต้น</button>
+        <button type="button" class="mobile-nav-chip" id="mnav-mplai" onclick="openLevel('m-ปลาย')"><i class="fa-solid fa-building-columns"></i> ม.ปลาย</button>
+        <button type="button" class="mobile-nav-chip" id="mnav-student" onclick="navigate('view-student-login')"><i class="fa-solid fa-award"></i> ดูผลคะแนน</button>
+      </div>
+    </header>
+
+    <div class="container">
+
+      <!-- 1. HOME VIEW (ดีไซน์เหมือน Gemini + รองรับรูป images/cover.png และ images/news.png) -->
+      <div id="view-home" class="view active">
+        <section class="gemini-hero-card">
+          <div class="gemini-hero-left">
+            <div>
+              <p class="gemini-hero-eyebrow">ปีการศึกษา 2569 · ภาคเรียนที่ 2</p>
+              <h1 class="gemini-hero-title">ห้องเรียนออนไลน์ ศูนย์การเรียนชุมชน</h1>
+              <p class="gemini-hero-desc">
+                ระบบการเรียนรู้ครบวงจร เช็คชื่อเข้าเรียนอัตโนมัติ ศึกษาเนื้อหาและอินโฟกราฟิก
+                เล่นเกมจับคู่ทบทวนความรู้ ทำใบงาน และทำแบบทดสอบออนไลน์พร้อมตรวจผลคะแนนได้ทันที
+              </p>
+            </div>
+
+            <div class="gemini-steps-overview">
+              <div>
+                <p class="gemini-step-mini-num pink">ขั้นตอนที่ 01</p>
+                <p class="gemini-step-mini-label">อ่านเนื้อหา</p>
+              </div>
+              <div>
+                <p class="gemini-step-mini-num purple">ขั้นตอนที่ 02</p>
+                <p class="gemini-step-mini-label">เกมจับคู่ความรู้</p>
+              </div>
+              <div>
+                <p class="gemini-step-mini-num pink">ขั้นตอนที่ 03</p>
+                <p class="gemini-step-mini-label">พิมพ์ตอบใบงาน</p>
+              </div>
+              <div>
+                <p class="gemini-step-mini-num purple">ขั้นตอนที่ 04</p>
+                <p class="gemini-step-mini-label">แบบทดสอบ 10 ข้อ</p>
+              </div>
+            </div>
+
+            <div class="gemini-hero-cta">
+              <button type="button" class="gemini-cta-primary" onclick="openLevel('m-ton')">
+                <span>เริ่มเรียนระดับ ม.ต้น</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button type="button" class="gemini-cta-secondary" onclick="openLevel('m-ปลาย')">
+                <span>เริ่มเรียนระดับ ม.ปลาย</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- 👉 รูปปกหน้าแรก (ถ้ามีไฟล์ images/cover.png จะแสดงรูป พร้อมกรอบข้อความด้านล่าง / ถ้าไม่มีจะขึ้นการ์ดไล่สีสวยอัตโนมัติ) -->
+          <div class="gemini-hero-visual">
+            <div class="gemini-hero-img-box" id="hero-cover-img-box">
+              <img src="images/cover.png" alt="ภาพปกห้องเรียนออนไลน์ ศูนย์การเรียนชุมชน" onerror="document.getElementById('hero-cover-img-box').style.display='none'; document.getElementById('hero-cover-fallback').style.display='flex';">
+              <div class="gemini-hero-img-overlay">
+                <p style="font-size:0.78rem; color:#FCE7F3; font-weight:500;">ยินดีต้อนรับนักศึกษา ศรช.</p>
+                <p style="margin-top:2px; font-family:'Prompt', sans-serif; font-size:1.15rem; font-weight:600;">เรียนรู้ได้ทุกที่ ทุกเวลา</p>
+              </div>
+            </div>
+
+            <div class="gemini-hero-fallback" id="hero-cover-fallback">
+              <div class="gemini-hero-fallback-icon">
+                <i class="fa-solid fa-graduation-cap"></i>
+              </div>
+              <div>
+                <p style="font-size:0.78rem; color:#FFF1E6; font-weight:500;">ศูนย์การเรียนชุมชน</p>
+                <h2 style="margin-top:4px; font-size:1.25rem; font-weight:600;">ระบบห้องเรียนออนไลน์ 2/2569</h2>
+                <p style="margin-top:6px; font-size:0.8rem; color:rgba(255,255,255,0.92); line-height:1.55;">
+                  ครบครันทั้ง 7 รายวิชา ระดับ ม.ต้น และ ม.ปลาย บันทึกคะแนนเข้าสู่ระบบคลาวด์อัตโนมัติ
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- เลือกระดับชั้นเพื่อเข้าเรียน -->
+        <section style="margin-bottom: 24px;">
+          <div class="gemini-section-head">
+            <div>
+              <h2>เลือกระดับชั้นเพื่อเข้าเรียน</h2>
+              <p>เลือกหมวดระดับชั้นของนักศึกษาเพื่อดูรายวิชาและครั้งที่เปิดสอน</p>
+            </div>
+            <button type="button" class="gemini-link-action" onclick="navigate('view-student-login')">
+              ตรวจสอบผลคะแนนสะสม →
+            </button>
+          </div>
+
+          <div class="level-selection">
+            <button type="button" class="btn-level-card" onclick="openLevel('m-ton')">
+              <div class="btn-level-icon pink">
+                <i class="fa-solid fa-school"></i>
+              </div>
+              <div class="btn-level-body">
+                <div class="btn-level-title-row">
+                  <h3>ระดับมัธยมศึกษาตอนต้น (ม.ต้น)</h3>
+                  <i class="fa-solid fa-arrow-right" style="color:#9B8CA8;"></i>
+                </div>
+                <p style="margin-top:4px; font-size:0.88rem; color:var(--text-body);">3 รายวิชาหลัก · รวมทั้งหมด 18 ครั้ง</p>
+                <p style="margin-top:6px; font-size:0.76rem; color:#8A7B99;">การค้าขายออนไลน์ · สังคมศึกษาฯ · ภาษาอังกฤษ</p>
+              </div>
+            </button>
+
+            <button type="button" class="btn-level-card purple-theme" onclick="openLevel('m-ปลาย')">
+              <div class="btn-level-icon purple">
+                <i class="fa-solid fa-building-columns"></i>
+              </div>
+              <div class="btn-level-body">
+                <div class="btn-level-title-row">
+                  <h3>ระดับมัธยมศึกษาตอนปลาย (ม.ปลาย)</h3>
+                  <i class="fa-solid fa-arrow-right" style="color:#9B8CA8;"></i>
+                </div>
+                <p style="margin-top:4px; font-size:0.88rem; color:var(--text-body);">4 รายวิชาหลัก · รวมทั้งหมด 18 ครั้ง</p>
+                <p style="margin-top:6px; font-size:0.76rem; color:#8A7B99;">สังคมศึกษาฯ · คุณธรรมอาชีพบริการ · สุขภาพฯ · ภาษาอังกฤษ</p>
+              </div>
+            </button>
+          </div>
+
+          <div class="inclass-strip">
+            <span style="font-size:0.84rem; color:var(--text-body);">
+              <i class="fa-solid fa-key" style="color:var(--pastel-purple);"></i> <strong>สำหรับผู้เข้าเรียนในชั้นเรียน:</strong> คุณครูสามารถเปิดหน้าต่างกรอกคะแนนในคาบเรียนได้จากตรงนี้ทันที
+            </span>
+            <button type="button" class="btn btn-sm" onclick="openInClassModal(false)">
+              <i class="fa-solid fa-key"></i> กรอกคะแนนสำหรับเรียนในชั้นเรียน
+            </button>
+          </div>
+        </section>
+
+        <!-- 📰 กระดานข่าวประชาสัมพันธ์หน้าแรก (แก้รูป src="images/news.png" และข้อความได้เลย) -->
+        <section class="news-board-card" id="home-news-board">
+          <div class="news-board-header">
+            <i class="fa-solid fa-bullhorn" style="color:#B95D78; font-size:1.1rem;"></i>
+            <h2 style="font-size:1.12rem; color:var(--text-dark); font-weight:600;">กระดานข่าวประชาสัมพันธ์</h2>
+          </div>
+
+          <div class="news-board-grid">
+            <div>
+              <!-- 👉 เปลี่ยนรูปกระดานข่าวโดยแก้ชื่อไฟล์ตรง src="images/news.png" ได้เลย -->
+              <div class="news-board-img-wrap" id="news-board-img-wrap" onclick="openLightbox(this.querySelector('img').src)">
+                <img src="images/news.png" alt="ภาพกระดานข่าวประชาสัมพันธ์" onerror="document.getElementById('news-board-img-wrap').style.display='none'; document.getElementById('news-board-fallback').style.display='flex';">
+                <div class="news-zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> แตะดูภาพใหญ่</div>
+              </div>
+              <div class="news-board-fallback" id="news-board-fallback">
+                <i class="fa-solid fa-bullhorn" style="font-size:1.8rem; color:#B95D78; margin-bottom:8px;"></i>
+                <p style="font-size:0.9rem; font-weight:600; color:var(--text-dark);">ประชาสัมพันธ์ภาคเรียนที่ 2/2569</p>
+                <p style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">ศูนย์การเรียนชุมชน</p>
+              </div>
+            </div>
+
+            <div>
+              <h3 style="font-size:1.02rem; font-weight:600; color:var(--text-dark);">
+                ประกาศสำหรับนักศึกษา ศรช. ปีการศึกษา 2569 ภาคเรียนที่ 2
+              </h3>
+              <!-- 👉 แก้ข้อความข่าวในบรรทัดล่างนี้ได้เลย -->
+              <p class="news-board-caption">ยินดีต้อนรับนักศึกษา ศรช. ปีการศึกษา 2569 ภาคเรียนที่ 2 ติดตามข่าวสารและกำหนดการเรียนได้ที่นี่ครับ กรุณาเข้าเรียนตามรายวิชาที่เปิดสอน อ่านเนื้อหา เล่นเกมจับคู่ความรู้ พิมพ์ตอบใบงานด้วยตนเอง และทำแบบทดสอบให้ครบถ้วน</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- 2. STUDENT LOGIN FOR ATTENDANCE -->
+      <div id="view-lesson-login" class="view">
+        <span class="back-btn" onclick="navigate('view-lessons')"><i class="fa-solid fa-arrow-left"></i> ย้อนกลับ</span>
+        <div class="card" style="text-align: center; max-width:560px; margin:0 auto;">
+          <div style="width:54px; height:54px; border-radius:16px; background:var(--pastel-pink-light); color:var(--pastel-pink); display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:1.5rem;">
+            <i class="fa-solid fa-id-card"></i>
+          </div>
+          <h2 id="login-lesson-title" style="margin-bottom: 6px; font-size:1.15rem; color:var(--text-dark);"></h2>
+          <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom: 14px;">กรอกรหัสนักศึกษาเพื่อเช็คชื่อเข้าเรียนอัตโนมัติ</p>
+
+          <div class="std-id-warning-box">
+            <i class="fa-solid fa-triangle-exclamation" style="color:var(--warning);"></i>
+            <strong>คำเตือน:</strong> กรุณากรอกรหัสนักศึกษาให้ถูกต้องทุกครั้ง มิเช่นนั้นระบบจะไม่บันทึกคะแนน ต้องทำใหม่
+          </div>
+
+          <div class="input-group">
+            <label>รหัสนักศึกษา (10 หลัก)</label>
+            <input type="text" id="lesson-std-id" placeholder="กรอกรหัสนักศึกษา" maxlength="15">
+          </div>
+          <div class="input-group">
+            <label>ชื่อ - นามสกุล นักศึกษา</label>
+            <input type="text" id="lesson-std-name" placeholder="ชื่อ นามสกุล จริง">
+          </div>
+          <button class="btn" onclick="startLearningLesson()">เช็คชื่อและเริ่มศึกษาเนื้อหา</button>
+
+          <!-- แถบแยกเล็กๆ: สำหรับเรียนในชั้นเรียน -->
+          <div class="inclass-strip">
+            <span style="font-size:0.82rem; color:var(--text-muted); text-align:left;">
+              <i class="fa-solid fa-chalkboard-user" style="color:var(--pastel-purple);"></i> <strong>สำหรับเรียนในชั้นเรียน</strong> (ครูกรอกคะแนนในคาบ)
+            </span>
+            <button type="button" class="btn btn-sm" onclick="openInClassModal(true)">
+              <i class="fa-solid fa-key"></i> กรอกคะแนนในชั้นเรียน
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. LESSON LIST VIEW -->
+      <div id="view-lessons" class="view">
+        <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> หน้าแรก</span>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
+            <h2 id="level-title" style="color:var(--pastel-purple); font-size:1.25rem; margin:0;"></h2>
+            <button type="button" class="btn btn-sm btn-outline" onclick="openInClassModal(false)">
+              <i class="fa-solid fa-chalkboard-user"></i> กรอกคะแนนในชั้นเรียน
+            </button>
+          </div>
+          <div id="lesson-list-container"></div>
+
+          <!-- แถบแยกเล็กๆ: สำหรับเรียนในชั้นเรียน -->
+          <div class="inclass-strip">
+            <span style="font-size:0.82rem; color:var(--text-muted);">
+              <i class="fa-solid fa-chalkboard-user" style="color:var(--pastel-purple);"></i> <strong>สำหรับเรียนในชั้นเรียน</strong> (สำหรับนักศึกษาที่เรียนในคาบกับครู)
+            </span>
+            <button type="button" class="btn btn-sm" onclick="openInClassModal(false)">
+              <i class="fa-solid fa-key"></i> ครูกรอกคะแนนในชั้นเรียน
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. STEP 1: READING (2-3 หน้า บังคับอ่านทีละหน้า) -->
+      <div id="view-step-read" class="view">
+        <div class="step-indicator">
           <div class="step-item active"><div class="step-circle">1</div>อ่านเนื้อหา</div>
-          <div class="step-item"><div class="step-circle">2</div>ทำใบงาน</div>
-          <div class="step-item"><div class="step-circle">3</div>แบบทดสอบ</div>
+          <div class="step-item"><div class="step-circle">2</div>เกมจับคู่</div>
+          <div class="step-item"><div class="step-circle">3</div>ทำใบงาน</div>
+          <div class="step-item"><div class="step-circle">4</div>แบบทดสอบ</div>
         </div>
 
         <div class="fb-post-card">
@@ -817,9 +1877,9 @@
             <div id="page-badge-counter" class="page-badge-counter">หน้า 1 / 3</div>
           </div>
 
-          <div class="fb-content">
+          <div class="fb-content no-copy-zone" oncopy="return false" oncontextmenu="return false">
             <span id="fb-read-tag" class="fb-tags-badge">#สาระความรู้</span>
-            <h3 id="reading-page-title" style="color:var(--pastel-purple); font-size:1.05rem; margin-bottom:8px; font-weight:600;"></h3>
+            <h3 id="reading-page-title" style="color:var(--pastel-purple); font-size:1.08rem; margin-bottom:8px; font-weight:600;"></h3>
             <div id="reading-content-box" style="white-space: pre-wrap; margin-top: 4px;"></div>
           </div>
 
@@ -838,22 +1898,91 @@
           </div>
         </div>
 
-        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 12px; text-align:center;">
-          <i class="fa-solid fa-book-reader"></i> บังคับอ่านหน้านี้อย่างน้อย <span id="read-timer-count" style="font-weight:600; color:var(--pastel-purple);">10</span> วินาที ก่อนเปิดหน้าถัดไป
-        </p>
-        <button id="btn-next-page" class="btn" disabled onclick="handleNextPageClick()">
-          หน้าถัดไป <i class="fa-solid fa-arrow-right"></i>
-        </button>
+        <div class="card" style="padding:16px 18px; text-align:center;">
+          <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom: 12px;">
+            <i class="fa-solid fa-book-reader" style="color:var(--pastel-purple);"></i> บังคับอ่านหน้านี้อย่างน้อย <span id="read-timer-count" style="font-weight:600; color:var(--pastel-purple);">10</span> วินาที ก่อนเปิดหน้าถัดไป
+          </p>
+          <button id="btn-next-page" class="btn" disabled onclick="handleNextPageClick()">
+            หน้าถัดไป <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
       </div>
-    </div>
 
-    <!-- 5. STEP 2: ASSIGNMENT (Timeline Feed Style - พิมพ์ตอบข้อความ) -->
-    <div id="view-step-assignment" class="view">
-      <div class="card" style="padding: 16px 12px; background: #f0f2f5;">
-        <div class="step-indicator" style="margin-bottom: 12px;">
+      <!-- 5. STEP 2: MATCHING GAME (บังคับเล่นให้ครบก่อนทำใบงาน ห้ามกดข้าม!) -->
+      <div id="view-step-matching" class="view">
+        <div class="step-indicator">
           <div class="step-item completed"><div class="step-circle"><i class="fa-solid fa-check"></i></div>อ่านเนื้อหา</div>
-          <div class="step-item active"><div class="step-circle">2</div>ทำใบงาน</div>
-          <div class="step-item"><div class="step-circle">3</div>แบบทดสอบ</div>
+          <div class="step-item active"><div class="step-circle">2</div>เกมจับคู่</div>
+          <div class="step-item"><div class="step-circle">3</div>ทำใบงาน</div>
+          <div class="step-item"><div class="step-circle">4</div>แบบทดสอบ</div>
+        </div>
+
+        <div class="card">
+          <div class="matching-toolbar">
+            <div>
+              <p style="font-size:0.78rem; font-weight:600; color:var(--pastel-pink); margin-bottom:2px;">
+                <i class="fa-solid fa-gamepad"></i> ภารกิจบังคับก่อนทำใบงาน (ไม่สามารถกดข้ามได้)
+              </p>
+              <h2 style="font-size:1.18rem; color:var(--text-dark);">เกมจับคู่ทบทวนความรู้ประจำบทเรียน</h2>
+              <p id="matching-lesson-sub" style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;"></p>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+              <span id="matching-status-badge" class="matching-stats-box">จับคู่แล้ว 0/5 · ผิด 0 ครั้ง</span>
+              <button type="button" id="btn-matching-shuffle" class="btn btn-sm btn-outline" onclick="shuffleMatchingBoard()">
+                <i class="fa-solid fa-shuffle"></i> สลับการ์ด
+              </button>
+              <button type="button" id="btn-matching-sound" class="btn btn-sm btn-outline" onclick="toggleMatchingSound()" title="เปิด/ปิดเสียง">
+                <i id="matching-sound-icon" class="fa-solid fa-volume-high"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="matching-progress-wrap">
+            <div class="matching-progress-header">
+              <span>ความคืบหน้าในการจับคู่</span>
+              <strong id="matching-progress-pct" style="color:var(--pastel-purple);">0%</strong>
+            </div>
+            <div class="matching-progress-bar">
+              <div id="matching-progress-fill" class="matching-progress-fill"></div>
+            </div>
+          </div>
+
+          <div id="matching-feedback-box" class="matching-feedback">
+            <i class="fa-solid fa-puzzle-piece" style="color:var(--pastel-purple);"></i>
+            <span>เลือกการ์ดหัวข้อทางฝั่งซ้าย 1 ใบ แล้วแตะจับคู่กับคำตอบที่ถูกต้องทางฝั่งขวา</span>
+          </div>
+
+          <div class="matching-board">
+            <div>
+              <div class="matching-col-title">
+                <span>ฝั่งที่ 1 · หัวข้อ / คำถามสำคัญ</span>
+                <span style="font-weight:400;">แตะเลือก</span>
+              </div>
+              <div id="matching-left-col" class="matching-card-list"></div>
+            </div>
+
+            <div>
+              <div class="matching-col-title">
+                <span>ฝั่งที่ 2 · คำอธิบาย / คำตอบที่คู่กัน</span>
+                <span style="font-weight:400;">แตะจับคู่</span>
+              </div>
+              <div id="matching-right-col" class="matching-card-list"></div>
+            </div>
+          </div>
+
+          <button type="button" id="btn-proceed-to-assignment" class="btn" disabled onclick="goToAssignmentStep()">
+            <i class="fa-solid fa-lock"></i> จับคู่ให้ครบทุกคู่ก่อนทำใบงาน
+          </button>
+        </div>
+      </div>
+
+      <!-- 6. STEP 3: ASSIGNMENT (ห้ามคัดลอกและวางเด็ดขาด - บังคับพิมพ์เอง) -->
+      <div id="view-step-assignment" class="view">
+        <div class="step-indicator">
+          <div class="step-item completed"><div class="step-circle"><i class="fa-solid fa-check"></i></div>อ่านเนื้อหา</div>
+          <div class="step-item completed"><div class="step-circle"><i class="fa-solid fa-check"></i></div>เกมจับคู่</div>
+          <div class="step-item active"><div class="step-circle">3</div>ทำใบงาน</div>
+          <div class="step-item"><div class="step-circle">4</div>แบบทดสอบ</div>
         </div>
 
         <div class="fb-post-card">
@@ -867,9 +1996,23 @@
 
           <div class="fb-content">
             <div id="fb-post-tag" class="fb-tags-badge">#รายวิชา</div>
-            <p style="margin-bottom: 6px;">
-              สวัสดีนักศึกษาทุกคน ให้นักศึกษาตอบคำถามใบงานตามรายการภารกิจด้านล่างนี้ โดยพิมพ์คำตอบลงในช่องข้อความใต้แต่ละข้อได้เลยครับ 👇
+            <p style="margin-bottom: 8px;">
+              สวัสดีนักศึกษาทุกคน ให้นักศึกษาอ่านโจทย์และพิมพ์คำตอบใบงานด้วยตนเองลงในช่องข้อความใต้แต่ละข้อได้เลยครับ
             </p>
+
+            <div class="anti-paste-banner">
+              <i class="fa-solid fa-keyboard" style="color:var(--pastel-purple); font-size:1.15rem; margin-top:2px;"></i>
+              <div>
+                <strong>ระบบฝึกทักษะการอ่านและพิมพ์ตอบด้วยตนเอง (ห้ามคัดลอก-วาง):</strong><br>
+                ไม่อนุญาตให้กด Copy / Paste (Ctrl+V / คลิกขวาวาง / ลากวาง) ลงในช่องใบงาน เพื่อให้นักศึกษาได้อ่านทำความเข้าใจและเรียบเรียงคำตอบด้วยตนเองครับ
+              </div>
+            </div>
+
+            <div id="assignment-paste-warning" class="paste-warning-alert">
+              <span><i class="fa-solid fa-shield-halved"></i> <span id="assignment-paste-warning-text">ไม่อนุญาตให้วางข้อความ กรุณาพิมพ์คำตอบด้วยตนเอง</span></span>
+              <span id="assignment-paste-count" style="font-size:0.76rem; font-weight:600;"></span>
+            </div>
+
             <div id="assignment-questions-list"></div>
           </div>
 
@@ -887,359 +2030,353 @@
           <i class="fa-solid fa-paper-plane"></i> ส่งคำตอบใบงาน และทำแบบทดสอบ <i class="fa-solid fa-arrow-right"></i>
         </button>
       </div>
-    </div>
 
-    <!-- 6. STEP 3: QUIZ (10 ข้อ) -->
-    <div id="view-step-quiz" class="view">
-      <div class="card">
+      <!-- 7. STEP 4: QUIZ (10 ข้อ) -->
+      <div id="view-step-quiz" class="view">
         <div class="step-indicator">
           <div class="step-item completed"><div class="step-circle"><i class="fa-solid fa-check"></i></div>อ่านเนื้อหา</div>
+          <div class="step-item completed"><div class="step-circle"><i class="fa-solid fa-check"></i></div>เกมจับคู่</div>
           <div class="step-item completed"><div class="step-circle"><i class="fa-solid fa-check"></i></div>ทำใบงาน</div>
-          <div class="step-item active"><div class="step-circle">3</div>แบบทดสอบ</div>
+          <div class="step-item active"><div class="step-circle">4</div>แบบทดสอบ</div>
         </div>
 
-        <div style="background:var(--pastel-cream); padding:10px; border-radius:8px; margin-bottom:15px; font-size:0.85rem;">
-          <i class="fa-solid fa-circle-info"></i> แบบทดสอบ 10 ข้อ (ข้อละ 1 คะแนน) | สอบได้ 2 ครั้ง (คิดคะแนนสูงสุด) | เกณฑ์ผ่าน 6 คะแนน
-          <div id="quiz-attempt-info" style="font-weight:600; margin-top:4px;"></div>
-        </div>
-
-        <form id="quiz-form">
-          <div id="quiz-questions-box"></div>
-          <button type="button" class="btn" id="btn-submit-quiz" onclick="submitQuiz()">ส่งคำตอบแบบทดสอบ</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- 7. STUDENT LOGIN TO VIEW SCORE -->
-    <div id="view-student-login" class="view">
-      <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> กลับหน้าแรก</span>
-      <div class="card" style="text-align: center;">
-        <i class="fa-solid fa-award" style="font-size: 2.5rem; color: var(--pastel-pink); margin-bottom:10px;"></i>
-        <h2 style="font-size:1.2rem; margin-bottom: 5px;">ตรวจสอบผลการเรียนและคะแนน</h2>
-        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;">เข้าสู่ระบบด้วยรหัสนักศึกษา (รหัสผ่านคือรหัสเดียวกัน)</p>
-
-        <div class="input-group">
-          <label>รหัสนักศึกษา</label>
-          <input type="text" id="std-check-id" placeholder="รหัสนักศึกษา">
-        </div>
-        <div class="input-group">
-          <label>รหัสผ่าน</label>
-          <input type="password" id="std-check-pwd" placeholder="รหัสผ่าน">
-        </div>
-        <button class="btn" id="btn-login-check" onclick="loginCheckScore()">เข้าสู่ระบบดูผลคะแนน</button>
-      </div>
-    </div>
-
-    <!-- 8. STUDENT SCORE RESULT VIEW -->
-    <div id="view-student-result" class="view">
-      <span class="back-btn" onclick="navigate('view-student-login')"><i class="fa-solid fa-arrow-left"></i> ออกจากระบบ</span>
-      <div class="card">
-        <h3 id="res-std-name" style="color:var(--pastel-purple); font-size:1.15rem;"></h3>
-        <p id="res-std-id" style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 10px;"></p>
-        <div id="res-std-term-attendance" style="background:var(--pastel-purple-light); padding:10px 14px; border-radius:10px; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;"></div>
-        
-        <!-- ตารางที่ 1: ผลการเรียนรายครั้ง -->
-        <h4 style="margin-bottom:10px; font-size:0.95rem;">ผลการเข้าเรียนและคะแนนสะสม</h4>
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>วิชา / ครั้งที่</th>
-                <th>เช็คชื่อ</th>
-                <th>คะแนนสอบ (10)</th>
-                <th>ใบงาน (10)</th>
-                <th>คำแนะนำจากครู</th>
-              </tr>
-            </thead>
-            <tbody id="student-score-table-body"></tbody>
-          </table>
-        </div>
-
-        <!-- 🌟 ตารางที่ 2: สรุปผลคะแนนรวมรายวิชา -->
-        <div style="margin-top: 25px; padding-top: 15px; border-top: 2px dashed #f0e6f7;">
-          <h4 style="margin-bottom: 10px; font-size: 0.95rem; color: var(--pastel-purple);">
-            <i class="fa-solid fa-graduation-cap"></i> สรุปผลคะแนนรวมรายวิชา
-          </h4>
-          <!-- โน้ตเตือนด้านบนตารางคะแนนรวมปลายภาค -->
-          <div style="background:#fff3cd; border:1px solid #ffe08a; color:#856404; padding:10px 12px; border-radius:10px; font-size:0.84rem; margin-bottom:10px; line-height:1.5;">
-            <i class="fa-solid fa-circle-info" style="color:#d39e00;"></i>
-            <strong>หมายเหตุ:</strong> คะแนนด้านล่างเป็นเพียงคะแนนเก็บทั้งเทอม 40 คะแนน ไม่รวมคะแนนเข้าเรียน 10 คะแนน สอบกลางภาค 10 และสอบปลายภาค 40
+        <div class="card">
+          <div style="background:var(--pastel-purple-light); border:1px solid #DFCFEA; padding:12px 14px; border-radius:12px; margin-bottom:16px; font-size:0.85rem;">
+            <i class="fa-solid fa-circle-info" style="color:var(--pastel-purple);"></i> แบบทดสอบ 10 ข้อ (ข้อละ 1 คะแนน) | สอบได้ 2 ครั้ง (คิดคะแนนสูงสุด) | เกณฑ์ผ่าน 6 คะแนน
+            <div id="quiz-attempt-info" style="font-weight:600; color:var(--pastel-purple); margin-top:4px;"></div>
           </div>
+
+          <form id="quiz-form">
+            <div id="quiz-questions-box"></div>
+            <button type="button" class="btn" id="btn-submit-quiz" onclick="submitQuiz()">ส่งคำตอบแบบทดสอบ</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- 8. STUDENT LOGIN TO VIEW SCORE -->
+      <div id="view-student-login" class="view">
+        <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> กลับหน้าแรก</span>
+        <div class="card" style="text-align: center; max-width:480px; margin:0 auto;">
+          <div style="width:54px; height:54px; border-radius:16px; background:var(--pastel-pink-light); color:var(--pastel-pink); display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:1.5rem;">
+            <i class="fa-solid fa-award"></i>
+          </div>
+          <h2 style="font-size:1.2rem; margin-bottom: 5px;">ตรวจสอบผลการเรียนและคะแนน</h2>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 16px;">เข้าสู่ระบบด้วยรหัสนักศึกษา (รหัสผ่านคือรหัสเดียวกัน)</p>
+
+          <div class="input-group">
+            <label>รหัสนักศึกษา</label>
+            <input type="text" id="std-check-id" placeholder="รหัสนักศึกษา">
+          </div>
+          <div class="input-group">
+            <label>รหัสผ่าน</label>
+            <input type="password" id="std-check-pwd" placeholder="รหัสผ่าน">
+          </div>
+          <button class="btn" id="btn-login-check" onclick="loginCheckScore()">เข้าสู่ระบบดูผลคะแนน</button>
+        </div>
+      </div>
+
+      <!-- 9. STUDENT SCORE RESULT VIEW -->
+      <div id="view-student-result" class="view">
+        <span class="back-btn" onclick="navigate('view-student-login')"><i class="fa-solid fa-arrow-left"></i> ออกจากระบบ</span>
+        <div class="card">
+          <h3 id="res-std-name" style="color:var(--pastel-purple); font-size:1.18rem;"></h3>
+          <p id="res-std-id" style="font-size:0.86rem; color:var(--text-muted); margin-bottom: 12px;"></p>
+          <div id="res-std-term-attendance" style="background:var(--pastel-purple-light); border:1px solid #DFCFEA; padding:11px 15px; border-radius:12px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;"></div>
+
+          <!-- ตารางที่ 1: ผลการเรียนรายครั้ง -->
+          <h4 style="margin-bottom:6px; font-size:0.96rem; color:var(--text-dark);">ผลการเข้าเรียนและคะแนนสะสม</h4>
+          <p class="mobile-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> ปัดซ้าย-ขวาบนตารางเพื่อดูข้อมูลทั้งหมด</p>
           <div class="table-container">
             <table>
               <thead>
                 <tr>
-                  <th>รหัสวิชา / รายวิชา</th>
-                  <th>คะแนนเก็บดิบ</th>
-                  <th>คะแนนรวมปลายภาค (40)</th>
-                  <th>ผลการประเมิน</th>
+                  <th>วิชา / ครั้งที่</th>
+                  <th>เช็คชื่อ</th>
+                  <th>คะแนนสอบ (10)</th>
+                  <th>ใบงาน (10)</th>
+                  <th>คำแนะนำจากครู</th>
                 </tr>
               </thead>
-              <tbody id="student-subject-summary-tbody"></tbody>
+              <tbody id="student-score-table-body"></tbody>
+            </table>
+          </div>
+
+          <!-- 🌟 ตารางที่ 2: สรุปผลคะแนนรวมรายวิชา -->
+          <div style="margin-top: 26px; padding-top: 16px; border-top: 2px dashed var(--border-hairline);">
+            <h4 style="margin-bottom: 10px; font-size: 0.98rem; color: var(--pastel-purple);">
+              <i class="fa-solid fa-graduation-cap"></i> สรุปผลคะแนนรวมรายวิชา
+            </h4>
+            <div class="std-id-warning-box" style="margin-bottom:12px;">
+              <i class="fa-solid fa-circle-info" style="color:var(--warning);"></i>
+              <strong>หมายเหตุ:</strong> คะแนนด้านล่างเป็นเพียงคะแนนเก็บทั้งเทอม 40 คะแนน ไม่รวมคะแนนเข้าเรียน 10 คะแนน สอบกลางภาค 10 และสอบปลายภาค 40
+            </div>
+            <p class="mobile-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> ปัดซ้าย-ขวาบนตารางเพื่อดูข้อมูลทั้งหมด</p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>รหัสวิชา / รายวิชา</th>
+                    <th>คะแนนเก็บดิบ</th>
+                    <th>คะแนนรวมปลายภาค (40)</th>
+                    <th>ผลการประเมิน</th>
+                  </tr>
+                </thead>
+                <tbody id="student-subject-summary-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 10. TEACHER LOGIN (รหัส 954803) -->
+      <div id="view-teacher-login" class="view">
+        <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> กลับหน้าแรก</span>
+        <div class="card" style="text-align: center; max-width:460px; margin:0 auto;">
+          <div style="width:54px; height:54px; border-radius:16px; background:var(--pastel-purple-light); color:var(--pastel-purple); display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:1.5rem;">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h2 style="font-size:1.2rem; margin-bottom: 6px;">ระบบจัดการศูนย์การเรียน (คุณครู)</h2>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 16px;">ระบุรหัสผ่านประจำตัวเพื่อเข้าใช้งาน</p>
+          <div class="input-group">
+            <label>รหัสผ่านคุณครู</label>
+            <input type="password" id="teacher-pwd" placeholder="กรอกรหัสผ่านประจำตัวครู" onkeydown="if(event.key==='Enter') loginTeacher()">
+          </div>
+          <button class="btn" onclick="loginTeacher()">เข้าสู่ระบบจัดการ</button>
+        </div>
+      </div>
+
+      <!-- 11. TEACHER DASHBOARD VIEW -->
+      <div id="view-teacher-dashboard" class="view">
+        <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> ออกจากระบบครู</span>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom: 10px;">
+            <h2 style="color:var(--pastel-purple); font-size:1.22rem;"><i class="fa-solid fa-gauge"></i> แผงควบคุมระบบคลาวด์</h2>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="btn btn-sm" style="background:var(--success);" onclick="openAttendanceModal()"><i class="fa-solid fa-user-check"></i> กรอกคะแนนเข้าเรียน</button>
+              <button class="btn btn-sm btn-outline" onclick="openInClassModal(false)"><i class="fa-solid fa-chalkboard-user"></i> คะแนนในชั้นเรียน</button>
+              <button class="btn btn-sm btn-outline" onclick="fetchCloudRecords(true)"><i class="fa-solid fa-arrows-rotate"></i> ซิงค์ข้อมูลล่าสุด</button>
+              <button class="btn btn-sm" id="btn-toggle-maintenance" style="background:var(--danger);" onclick="toggleMaintenanceFromDashboard()"><i class="fa-solid fa-screwdriver-wrench"></i> ปิดปรับปรุงเว็บ</button>
+            </div>
+          </div>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;">เช็คชื่อ ตรวจใบงาน และดูคะแนนนักศึกษา</p>
+
+          <!-- สรุปสถิติระบบคลาวด์ -->
+          <div class="teacher-metrics-grid">
+            <div class="teacher-metric-box">
+              <p style="font-size:0.76rem; color:var(--text-muted);">รายการส่งงานทั้งหมด</p>
+              <p id="teacher-metric-total" class="font-mono-num" style="font-size:1.55rem; font-weight:700; color:var(--text-dark); margin-top:4px;">0</p>
+            </div>
+            <div class="teacher-metric-box pink">
+              <p style="font-size:0.76rem; color:var(--text-muted);">ใบงานที่รอครูตรวจ</p>
+              <p id="teacher-metric-pending" class="font-mono-num" style="font-size:1.55rem; font-weight:700; color:#B45309; margin-top:4px;">0</p>
+            </div>
+            <div class="teacher-metric-box purple">
+              <p style="font-size:0.76rem; color:var(--text-muted);">สถานะเว็บไซต์</p>
+              <p id="teacher-metric-status" style="font-size:0.98rem; font-weight:600; color:var(--success); margin-top:6px;">
+                <i class="fa-solid fa-circle-check"></i> เปิดใช้งานปกติ
+              </p>
+            </div>
+          </div>
+
+          <div class="teacher-filter-grid">
+            <div>
+              <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:4px;">ระดับชั้น:</label>
+              <select id="filter-teacher-level" onchange="updateTeacherFilterCourses()">
+                <option value="all">-- ทุกระดับชั้น --</option>
+                <option value="m-ton">มัธยมศึกษาตอนต้น</option>
+                <option value="m-ปลาย">มัธยมศึกษาตอนปลาย</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:4px;">รายวิชาและครั้งที่:</label>
+              <select id="filter-teacher-session" onchange="renderFilteredTeacherTable()">
+                <option value="all">-- ทุกรายวิชา/ครั้งที่ --</option>
+              </select>
+            </div>
+          </div>
+
+          <p class="mobile-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> ปัดซ้าย-ขวาบนตารางเพื่อดูข้อมูลทั้งหมด</p>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>รหัส / ผู้เรียน</th>
+                  <th>วิชา / ครั้งที่</th>
+                  <th>เช็คชื่อเมื่อ</th>
+                  <th>สอบ (10)</th>
+                  <th>ใบงาน (10)</th>
+                  <th>รวม (20)</th>
+                  <th>การตรวจงาน</th>
+                </tr>
+              </thead>
+              <tbody id="teacher-records-tbody"></tbody>
             </table>
           </div>
         </div>
-
       </div>
+
     </div>
 
-    <!-- 9. TEACHER LOGIN (รหัส ) -->
-    <div id="view-teacher-login" class="view">
-      <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> กลับหน้าแรก</span>
-      <div class="card" style="text-align: center;">
-        <i class="fa-solid fa-shield-halved" style="font-size: 2.5rem; color: var(--pastel-purple); margin-bottom:10px;"></i>
-        <h2 style="font-size:1.2rem; margin-bottom: 6px;">ระบบจัดการศูนย์การเรียน (คุณครู)</h2>
-        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;">ระบุรหัสผ่านประจำตัวเพื่อเข้าใช้งาน</p>
-        <div class="input-group">
-          <label>รหัสผ่านคุณครู</label>
-          <input type="password" id="teacher-pwd" placeholder="กรอกรหัสผ่านประจำตัวครู">
-        </div>
-        <button class="btn" onclick="loginTeacher()">เข้าสู่ระบบจัดการ</button>
-      </div>
-    </div>
+    <footer>
+      ศูนย์การเรียนชุมชน · ปีการศึกษา 2569 ภาคเรียนที่ 2
+    </footer>
 
-    <!-- 10. TEACHER DASHBOARD VIEW -->
-    <div id="view-teacher-dashboard" class="view">
-      <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> ออกจากระบบครู</span>
-      <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom: 8px;">
-          <h2 style="color:var(--pastel-purple); font-size:1.2rem;"><i class="fa-solid fa-gauge"></i> แผงควบคุมระบบคลาวด์</h2>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button class="btn btn-sm" style="width:auto; background:var(--success);" onclick="openAttendanceModal()"><i class="fa-solid fa-user-check"></i> กรอกคะแนนเข้าเรียน</button>
-            <button class="btn btn-sm" style="width:auto;" onclick="fetchCloudRecords(true)"><i class="fa-solid fa-arrows-rotate"></i> ซิงค์ข้อมูลล่าสุด</button>
-            <button class="btn btn-sm" id="btn-toggle-maintenance" style="width:auto; background:var(--danger);" onclick="toggleMaintenanceFromDashboard()"><i class="fa-solid fa-screwdriver-wrench"></i> ปิดปรับปรุงเว็บ</button>
-          </div>
-        </div>
-        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;">เช็คชื่อ ตรวจใบงาน และดูคะแนนนักศึกษา</p>
-
-        <div style="background:var(--pastel-purple-light); padding:12px; border-radius:12px; margin-bottom:15px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-          <div>
-            <label style="font-size:0.8rem; font-weight:600;">ระดับชั้น:</label>
-            <select id="filter-teacher-level" onchange="updateTeacherFilterCourses()">
-              <option value="all">-- ทุกระดับชั้น --</option>
-              <option value="m-ton">มัธยมศึกษาตอนต้น</option>
-              <option value="m-ปลาย">มัธยมศึกษาตอนปลาย</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-size:0.8rem; font-weight:600;">รายวิชาและครั้งที่:</label>
-            <select id="filter-teacher-session" onchange="renderFilteredTeacherTable()">
-              <option value="all">-- ทุกรายวิชา/ครั้งที่ --</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>รหัส / ผู้เรียน</th>
-                <th>วิชา / ครั้งที่</th>
-                <th>เช็คชื่อเมื่อ</th>
-                <th>สอบ (10)</th>
-                <th>ใบงาน (10)</th>
-                <th>รวม (20)</th>
-                <th>การตรวจงาน</th>
-              </tr>
-            </thead>
-            <tbody id="teacher-records-tbody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- MODAL: ตรวจและให้คะแนนใบงาน -->
-  <div id="modal-grading" class="modal">
-    <div class="modal-content">
-      <h3 style="color:var(--pastel-purple); margin-bottom:8px;"><i class="fa-solid fa-pen-to-square"></i> ตรวจและให้คะแนนใบงาน</h3>
-      <p id="grade-modal-student" style="font-size:0.88rem; color:var(--text-muted); margin-bottom:12px;"></p>
-      <div id="grade-modal-answers-container" style="margin-bottom:12px;"></div>
-      
-      <div class="input-group">
-        <label>คะแนนใบงาน (เต็ม 10 คะแนน)</label>
-        <input type="number" id="grade-modal-score" min="0" max="10" placeholder="0 - 10">
-      </div>
-      <div class="input-group">
-        <label>คำแนะนำ / ข้อเสนอแนะของคุณครู</label>
-        <textarea id="grade-modal-feedback" rows="3" placeholder="เขียนคำแนะนำ..."></textarea>
-      </div>
-      <div style="display:flex; gap:10px;">
-        <button class="btn btn-secondary" onclick="closeGradingModal()">ยกเลิก</button>
-        <button class="btn" onclick="saveAssignmentGrade()">บันทึกผลการตรวจ</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: กรอกคะแนนเข้าเรียนรวมทั้งเทอม (สำหรับคุณครู) -->
-  <div id="modal-attendance" class="modal">
-    <div class="modal-content">
-      <h3 style="color:var(--pastel-purple); margin-bottom:8px;"><i class="fa-solid fa-user-check"></i> กรอกคะแนนเข้าเรียนรวมทั้งเทอม</h3>
-      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">เลือกรายชื่อนักศึกษาหรือกรอกรหัส เพื่อบันทึกคะแนนเข้าเรียนรวมทั้งเทอม (ไม่แยกรายวิชา)</p>
-
-      <div class="input-group">
-        <label>เลือกจากนักศึกษาในระบบ (หรือกรอกรหัสเองด้านล่าง)</label>
-        <select id="att-modal-existing-student" onchange="onSelectExistingAttendanceStudent()">
-          <option value="">-- กรอกรหัสใหม่ / เลือกนักศึกษา --</option>
-        </select>
-      </div>
-
-      <div class="input-group">
-        <label>รหัสนักศึกษา</label>
-        <input type="text" id="att-modal-std-id" placeholder="กรอกรหัสนักศึกษา" maxlength="15" oninput="syncAttendanceScorePreview()">
-      </div>
-      <div class="input-group">
-        <label>ชื่อ - นามสกุล นักศึกษา</label>
-        <input type="text" id="att-modal-std-name" placeholder="ชื่อ นามสกุล จริง">
-      </div>
-      <div class="input-group">
-        <label>คะแนนเข้าเรียนรวมทั้งเทอม</label>
-        <input type="number" id="att-modal-score" min="0" step="0.5" placeholder="กรอกคะแนนเข้าเรียนรวมทั้งเทอม">
-      </div>
-
-      <div style="display:flex; gap:10px; margin-bottom:15px;">
-        <button class="btn btn-secondary" onclick="closeAttendanceModal()">ปิด</button>
-        <button class="btn" id="btn-save-attendance" onclick="saveAttendanceScore()">บันทึกคะแนนเข้าเรียน</button>
-      </div>
-
-      <div style="border-top:1px dashed #e2d9ec; padding-top:12px;">
-        <h4 style="font-size:0.9rem; color:var(--pastel-purple); margin-bottom:8px;">รายการคะแนนเข้าเรียนที่บันทึกไว้</h4>
-        <div class="table-container" style="max-height:200px; overflow-y:auto;">
-          <table>
-            <thead>
-              <tr>
-                <th>รหัส / ชื่อนักศึกษา</th>
-                <th>คะแนนเข้าเรียนทั้งเทอม</th>
-                <th>แก้ไข</th>
-              </tr>
-            </thead>
-            <tbody id="att-modal-saved-list"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: สำหรับเรียนในชั้นเรียน (ครูใส่รหัส  และกรอกคะแนนในคาบ) -->
-  <div id="modal-inclass" class="modal">
-    <div class="modal-content">
-      <h3 style="color:var(--pastel-purple); margin-bottom:6px;"><i class="fa-solid fa-chalkboard-user"></i> สำหรับเรียนในชั้นเรียน</h3>
-      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">บันทึกคะแนนสำหรับนักศึกษาที่เข้าเรียนในชั้นเรียนกับครู (นำไปคำนวณเหมือนใบงานและแบบทดสอบ)</p>
-
-      <!-- ส่วนยืนยันรหัสผ่านครู  -->
-      <div id="inclass-auth-box">
-        <div class="input-group">
-          <label>กรอกรหัสผ่านคุณครูเพื่อเปิดช่องกรอกคะแนน</label>
-          <input type="password" id="inclass-teacher-pwd" placeholder="กรอกรหัสผ่านคุณครู" onkeydown="if(event.key==='Enter') verifyInClassTeacherPassword()">
-        </div>
-        <div style="display:flex; gap:10px;">
-          <button type="button" class="btn btn-secondary" onclick="closeInClassModal()">ยกเลิก</button>
-          <button type="button" class="btn" onclick="verifyInClassTeacherPassword()"><i class="fa-solid fa-unlock"></i> ยืนยันรหัสผ่าน</button>
-        </div>
-      </div>
-
-      <!-- ส่วนกรอกคะแนนในชั้นเรียน (แสดงหลังยืนยันรหัสผ่านถูกต้อง) -->
-      <div id="inclass-form-box" style="display:none;">
-        <div id="inclass-save-status" style="display:none; background:#d4edda; color:#155724; padding:10px 12px; border-radius:10px; font-size:0.85rem; margin-bottom:12px;"></div>
+    <!-- MODAL: ตรวจและให้คะแนนใบงาน -->
+    <div id="modal-grading" class="modal" onclick="if(event.target===this) closeGradingModal()">
+      <div class="modal-content">
+        <h3 style="color:var(--pastel-purple); margin-bottom:8px;"><i class="fa-solid fa-pen-to-square"></i> ตรวจและให้คะแนนใบงาน</h3>
+        <p id="grade-modal-student" style="font-size:0.88rem; color:var(--text-muted); margin-bottom:12px;"></p>
+        <div id="grade-modal-answers-container" style="margin-bottom:12px;"></div>
 
         <div class="input-group">
-          <label>รายวิชา และครั้งที่เรียน</label>
-          <select id="inclass-lesson-select"></select>
+          <label>คะแนนใบงาน (เต็ม 10 คะแนน)</label>
+          <input type="number" id="grade-modal-score" min="0" max="10" placeholder="0 - 10">
         </div>
+        <div class="input-group">
+          <label>คำแนะนำ / ข้อเสนอแนะของคุณครู</label>
+          <textarea id="grade-modal-feedback" rows="3" placeholder="เขียนคำแนะนำ..."></textarea>
+        </div>
+        <div class="modal-actions-row">
+          <button type="button" class="btn btn-secondary" onclick="closeGradingModal()">ยกเลิก</button>
+          <button type="button" class="btn" onclick="saveAssignmentGrade()">บันทึกผลการตรวจ</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: กรอกคะแนนเข้าเรียนรวมทั้งเทอม (สำหรับคุณครู) -->
+    <div id="modal-attendance" class="modal" onclick="if(event.target===this) closeAttendanceModal()">
+      <div class="modal-content">
+        <h3 style="color:var(--pastel-purple); margin-bottom:8px;"><i class="fa-solid fa-user-check"></i> กรอกคะแนนเข้าเรียนรวมทั้งเทอม</h3>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">เลือกรายชื่อนักศึกษาหรือกรอกรหัส เพื่อบันทึกคะแนนเข้าเรียนรวมทั้งเทอม (ไม่แยกรายวิชา)</p>
 
         <div class="input-group">
-          <label>เลือกจากนักศึกษาในระบบ (หรือกรอกรหัสใหม่ด้านล่าง)</label>
-          <select id="inclass-existing-student" onchange="onSelectExistingInClassStudent()">
+          <label>เลือกจากนักศึกษาในระบบ (หรือกรอกรหัสเองด้านล่าง)</label>
+          <select id="att-modal-existing-student" onchange="onSelectExistingAttendanceStudent()">
             <option value="">-- กรอกรหัสใหม่ / เลือกนักศึกษา --</option>
           </select>
         </div>
 
         <div class="input-group">
           <label>รหัสนักศึกษา</label>
-          <input type="text" id="inclass-std-id" placeholder="กรอกรหัสนักศึกษาให้ถูกต้อง" maxlength="15">
+          <input type="text" id="att-modal-std-id" placeholder="กรอกรหัสนักศึกษา" maxlength="15" oninput="syncAttendanceScorePreview()">
         </div>
-
         <div class="input-group">
           <label>ชื่อ - นามสกุล นักศึกษา</label>
-          <input type="text" id="inclass-std-name" placeholder="ชื่อ นามสกุล จริง">
+          <input type="text" id="att-modal-std-name" placeholder="ชื่อ นามสกุล จริง">
         </div>
-
         <div class="input-group">
-          <label>คะแนนในชั้นเรียน (เต็ม 20 คะแนน)</label>
-          <input type="number" id="inclass-score" min="0" max="20" step="0.5" placeholder="กรอกคะแนน 0 - 20" oninput="updateInClassScorePreview()">
-          <small id="inclass-score-preview" style="display:block; margin-top:5px; color:var(--pastel-purple); font-size:0.8rem;"></small>
+          <label>คะแนนเข้าเรียนรวมทั้งเทอม</label>
+          <input type="number" id="att-modal-score" min="0" step="0.5" placeholder="กรอกคะแนนเข้าเรียนรวมทั้งเทอม">
         </div>
 
-        <div class="input-group">
-          <label>หมายเหตุ / คำแนะนำเพิ่มเติม (ไม่บังคับ)</label>
-          <input type="text" id="inclass-note" placeholder="เช่น ตั้งใจเรียนดีมาก (ค่าเริ่มต้น: เรียนในชั้นเรียน)">
+        <div class="modal-actions-row" style="margin-bottom:15px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAttendanceModal()">ปิด</button>
+          <button type="button" class="btn" id="btn-save-attendance" onclick="saveAttendanceScore()">บันทึกคะแนนเข้าเรียน</button>
         </div>
 
-        <div style="display:flex; gap:10px;">
-          <button type="button" class="btn btn-secondary" onclick="closeInClassModal()">ปิดหน้าต่าง</button>
-          <button type="button" class="btn" id="btn-save-inclass" onclick="saveInClassScore()"><i class="fa-solid fa-cloud-arrow-up"></i> บันทึกคะแนนในชั้นเรียนลงชีต</button>
-        </div>
-      </div>
-    </div>
-  </div>
-<!-- MODAL: แจ้งเตือน กพช. -->
-  <div id="modal-kpc-alert" class="modal active" onclick="if(event.target===this) closeKpcAlert()">
-    <div class="modal-content" style="max-width:400px; text-align:center; padding:26px 20px;">
-      <div style="width:60px; height:60px; border-radius:50%; background:var(--pastel-pink-light); color:#d63384; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:1.8rem;">
-        <i class="fa-solid fa-bell"></i>
-      </div>
-      <h3 style="color:var(--pastel-purple); font-size:1.25rem; margin-bottom:8px;">แจ้งเตือนสำคัญ</h3>
-      <p style="font-size:1.15rem; font-weight:600; color:#dc3545; margin-bottom:18px;">
-        อย่าลืมเก็บคะแนนกพช.!
-      </p>
-      <button type="button" class="btn" onclick="closeKpcAlert()">รับทราบ</button>
-    </div>
-  </div>
-  <!-- OVERLAY: หน้าต่างปิดปรับปรุงระบบชั่วคราว -->
-  <div id="maintenance-overlay" style="display:none; position:fixed; inset:0; background:linear-gradient(135deg, var(--pastel-cream) 0%, var(--pastel-pink-light) 50%, var(--pastel-purple-light) 100%); z-index:2000; align-items:center; justify-content:center; padding:20px;">
-    <div class="card" style="max-width:460px; width:100%; text-align:center; padding:28px 22px; border:2px solid white;">
-      <div style="width:72px; height:72px; border-radius:50%; background:#fff3cd; color:#d39e00; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-size:2.2rem;">
-        <i class="fa-solid fa-screwdriver-wrench"></i>
-      </div>
-      <h2 style="color:var(--pastel-purple); font-size:1.35rem; margin-bottom:8px;">ปิดปรับปรุงระบบชั่วคราว</h2>
-      <p id="maint-display-message" style="font-size:0.95rem; color:var(--text-dark); line-height:1.6; margin-bottom:18px;">
-        ขณะนี้คุณครูกำลังปรับปรุงและอัปเดตข้อมูลระบบห้องเรียนออนไลน์ เพื่อป้องกันข้อมูลคลาดเคลื่อน กรุณารอสักครู่แล้วกลับมาใช้งานใหม่อีกครั้งครับ
-      </p>
-
-      <div style="border-top:1px dashed #e2d9ec; padding-top:14px;">
-        <button type="button" class="btn btn-sm" style="background:var(--pastel-purple-light); color:var(--pastel-purple); border:1px solid #d9c7ee;" onclick="toggleMaintTeacherPanel()">
-          <i class="fa-solid fa-key"></i> สำหรับคุณครู (ทดสอบระบบ / เปิดเว็บ)
-        </button>
-
-        <div id="maint-teacher-panel" style="display:none; margin-top:12px; text-align:left; background:#faf7fd; padding:12px; border-radius:12px; border:1px solid #ece3f6;">
-          <div id="maint-pwd-step">
-            <label style="font-size:0.82rem; font-weight:600; display:block; margin-bottom:6px;">กรอกรหัสผ่านคุณครู</label>
-            <div style="display:flex; gap:8px;">
-              <input type="password" id="maint-teacher-pwd" placeholder="รหัสผ่านคุณครู" style="flex:1; padding:8px; border:1px solid #d9c7ee; border-radius:8px; outline:none;" onkeydown="if(event.key==='Enter') verifyMaintTeacherPwd()">
-              <button type="button" class="btn btn-sm" onclick="verifyMaintTeacherPwd()">ยืนยัน</button>
-            </div>
-          </div>
-
-          <div id="maint-action-step" style="display:none; flex-direction:column; gap:8px;">
-            <button type="button" class="btn btn-sm" style="width:100%; background:var(--pastel-purple); padding:10px;" onclick="bypassMaintenanceForTeacher()">
-              <i class="fa-solid fa-eye"></i> เข้าทดสอบเว็บเฉพาะเครื่องครู (นักศึกษายังถูกปิดอยู่)
-            </button>
-            <button type="button" class="btn btn-sm" id="btn-maint-turn-off" style="width:100%; background:var(--success); padding:10px;" onclick="turnOffMaintenanceEverywhere()">
-              <i class="fa-solid fa-circle-check"></i> เปิดเว็บไซต์ให้นักศึกษาเข้าใช้งานทันที
-            </button>
+        <div style="border-top:1px dashed var(--border-hairline); padding-top:12px;">
+          <h4 style="font-size:0.9rem; color:var(--pastel-purple); margin-bottom:8px;">รายการคะแนนเข้าเรียนที่บันทึกไว้</h4>
+          <div class="table-container" style="max-height:200px; overflow-y:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>รหัส / ชื่อนักศึกษา</th>
+                  <th>คะแนนเข้าเรียนทั้งเทอม</th>
+                  <th>แก้ไข</th>
+                </tr>
+              </thead>
+              <tbody id="att-modal-saved-list"></tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <!-- MODAL: LIGHTBOX -->
-  <div id="modal-lightbox" class="modal" onclick="closeLightbox()">
-    <div style="position:relative; max-width:92%; max-height:92%;">
-      <img id="lightbox-img" src="" style="width:100%; height:auto; max-height:85vh; object-fit:contain; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
-      <p style="color:white; text-align:center; font-size:0.85rem; margin-top:10px;">(คลิกพื้นที่ว่างเพื่อปิดหน้าต่าง)</p>
+
+    <!-- MODAL: สำหรับเรียนในชั้นเรียน (ครูใส่รหัส 954803 และกรอกคะแนนในคาบ) -->
+    <div id="modal-inclass" class="modal" onclick="if(event.target===this) closeInClassModal()">
+      <div class="modal-content">
+        <h3 style="color:var(--pastel-purple); margin-bottom:6px;"><i class="fa-solid fa-chalkboard-user"></i> สำหรับเรียนในชั้นเรียน</h3>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">บันทึกคะแนนสำหรับนักศึกษาที่เข้าเรียนในชั้นเรียนกับครู (นำไปคำนวณเหมือนใบงานและแบบทดสอบ)</p>
+
+        <div id="inclass-auth-box">
+          <div class="input-group">
+            <label>กรอกรหัสผ่านคุณครูเพื่อเปิดช่องกรอกคะแนน</label>
+            <input type="password" id="inclass-teacher-pwd" placeholder="กรอกรหัสผ่านคุณครู (954803)" onkeydown="if(event.key==='Enter') verifyInClassTeacherPassword()">
+          </div>
+          <div class="modal-actions-row">
+            <button type="button" class="btn btn-secondary" onclick="closeInClassModal()">ยกเลิก</button>
+            <button type="button" class="btn" onclick="verifyInClassTeacherPassword()"><i class="fa-solid fa-unlock"></i> ยืนยันรหัสผ่าน</button>
+          </div>
+        </div>
+
+        <div id="inclass-form-box" style="display:none;">
+          <div id="inclass-save-status" style="display:none; background:var(--success-bg); color:#065F46; border:1px solid #A7F3D0; padding:10px 12px; border-radius:10px; font-size:0.85rem; margin-bottom:12px;"></div>
+
+          <div class="input-group">
+            <label>รายวิชา และครั้งที่เรียน</label>
+            <select id="inclass-lesson-select"></select>
+          </div>
+
+          <div class="input-group">
+            <label>เลือกจากนักศึกษาในระบบ (หรือกรอกรหัสใหม่ด้านล่าง)</label>
+            <select id="inclass-existing-student" onchange="onSelectExistingInClassStudent()">
+              <option value="">-- กรอกรหัสใหม่ / เลือกนักศึกษา --</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label>รหัสนักศึกษา</label>
+            <input type="text" id="inclass-std-id" placeholder="กรอกรหัสนักศึกษาให้ถูกต้อง" maxlength="15">
+          </div>
+
+          <div class="input-group">
+            <label>ชื่อ - นามสกุล นักศึกษา</label>
+            <input type="text" id="inclass-std-name" placeholder="ชื่อ นามสกุล จริง">
+          </div>
+
+          <div class="input-group">
+            <label>คะแนนในชั้นเรียน (เต็ม 20 คะแนน)</label>
+            <input type="number" id="inclass-score" min="0" max="20" step="0.5" placeholder="กรอกคะแนน 0 - 20" oninput="updateInClassScorePreview()">
+            <small id="inclass-score-preview" style="display:block; margin-top:5px; color:var(--pastel-purple); font-size:0.8rem;"></small>
+          </div>
+
+          <div class="input-group">
+            <label>หมายเหตุ / คำแนะนำเพิ่มเติม (ไม่บังคับ)</label>
+            <input type="text" id="inclass-note" placeholder="เช่น ตั้งใจเรียนดีมาก (ค่าเริ่มต้น: เรียนในชั้นเรียน)">
+          </div>
+
+          <div class="modal-actions-row">
+            <button type="button" class="btn btn-secondary" onclick="closeInClassModal()">ปิดหน้าต่าง</button>
+            <button type="button" class="btn" id="btn-save-inclass" onclick="saveInClassScore()"><i class="fa-solid fa-cloud-arrow-up"></i> บันทึกคะแนนในชั้นเรียนลงชีต</button>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+
+    <!-- MODAL: แจ้งเตือน กพช. (จะเปิดก็ต่อเมื่อระบบไม่ได้ล็อคปิดปรับปรุง) -->
+    <div id="modal-kpc-alert" class="modal" onclick="if(event.target===this) closeKpcAlert()">
+      <div class="modal-content" style="max-width:400px; text-align:center; padding:28px 22px;">
+        <div style="width:62px; height:62px; border-radius:18px; background:var(--pastel-pink-light); color:var(--pastel-pink); border:1px solid #F5CBD6; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-size:1.75rem;">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+        <h3 style="color:var(--text-dark); font-size:1.25rem; margin-bottom:8px;">แจ้งเตือนสำคัญ</h3>
+        <p style="font-size:1.15rem; font-weight:600; color:#BE123C; margin-bottom:18px;">
+          อย่าลืมเก็บคะแนน กพช.!
+        </p>
+        <button type="button" class="btn" onclick="closeKpcAlert()">รับทราบ</button>
+      </div>
+    </div>
+
+    <!-- MODAL: LIGHTBOX -->
+    <div id="modal-lightbox" class="modal" onclick="closeLightbox()">
+      <div style="position:relative; max-width:92%; max-height:92%;">
+        <img id="lightbox-img" src="" style="width:100%; height:auto; max-height:85vh; object-fit:contain; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+        <p style="color:white; text-align:center; font-size:0.85rem; margin-top:10px;">(คลิกพื้นที่ว่างเพื่อปิดหน้าต่าง)</p>
+      </div>
+    </div>
+
+  </div><!-- /#app-shell -->
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
@@ -1265,9 +2402,7 @@
     }
 
     // =========================================================================
-    // 📚 ฐานข้อมูลหลัก: แจกแจงครบ 7 วิชา รวม 36 ครั้ง (คุณครูแก้ตรงนี้ได้โดยตรง!)
-    // 👉 isLocked: false = เปิดเรียนได้ทันที
-    // 👉 isLocked: true  = ล็อคบทเรียนไว้ (นักศึกษาจะกดไม่ได้)
+    // 📚 ฐานข้อมูลหลัก: แจกแจงครบ 7 วิชา รวม 36 ครั้ง (คงข้อมูลเดิมครบ 100%)
     // =========================================================================
     const ALL_COURSES_DATA = {
 
@@ -2273,6 +3408,63 @@
       ]
     };
 
+    // คู่จับคู่ความรู้แนะนำสำหรับบทเรียนที่เปิดสอน (บทเรียนอื่นจะสร้างอัตโนมัติจากข้อสอบ 5 ข้อแรก)
+    const CURATED_MATCHING_PAIRS = {
+      mt1_s1: [
+        { id: 'p1', term: 'E-Commerce (การค้าออนไลน์)', match: 'การซื้อขายสินค้าหรือบริการผ่านระบบอินเทอร์เน็ต' },
+        { id: 'p2', term: 'Social Commerce', match: 'การขายสินค้าผ่าน Facebook, TikTok Shop, LINE Shopping' },
+        { id: 'p3', term: 'E-Marketplace', match: 'แพลตฟอร์มตลาดออนไลน์ขนาดใหญ่ เช่น Shopee, Lazada' },
+        { id: 'p4', term: 'ความปลอดภัยบัญชีผู้ขาย', match: 'ปฏิเสธและไม่เปิดเผยรหัส OTP ให้บุคคลแปลกหน้า' },
+        { id: 'p5', term: 'การติดตามหลังจัดส่ง', match: 'แจ้งเลขติดตามพัสดุ (Tracking) ให้ลูกค้าทราบ' }
+      ],
+      mt1_s2: [
+        { id: 'p1', term: 'การขายด้วยคลิปวิดีโอสั้น', match: 'เหมาะกับแพลตฟอร์ม TikTok เพื่อเข้าถึงลูกค้าจำนวนมาก' },
+        { id: 'p2', term: 'ต้นทุนรวมสินค้า', match: 'ราคาสินค้า + ค่าบรรจุภัณฑ์ + ค่าใช้จ่ายอื่น ๆ ที่เกี่ยวข้อง' },
+        { id: 'p3', term: 'การตั้งราคาขาย', match: 'ต้นทุนรวม + กำไรที่ต้องการ (เช่น 120 + 30 = 150 บาท)' },
+        { id: 'p4', term: 'การส่งเสริมการขาย', match: 'การจัดโปรโมชั่นส่วนลดและแจกคูปอง' },
+        { id: 'p5', term: 'การสร้างความน่าเชื่อถือ', match: 'แสดงข้อมูลสินค้าชัดเจนและมีรีวิวจากลูกค้าจริง' }
+      ],
+      mt1_s3: [
+        { id: 'p1', term: 'CRM (Customer Relationship Management)', match: 'การบริหารจัดการความสัมพันธ์ที่ดีกับลูกค้า' },
+        { id: 'p2', term: 'เมื่อลูกค้าแจ้งสินค้ามีตำหนิ', match: 'รับฟังปัญหาอย่างใจเย็นและตรวจสอบข้อเท็จจริงทันที' },
+        { id: 'p3', term: 'ตัวอย่างบริการหลังการขาย', match: 'การให้คำแนะนำวิธีใช้งานสินค้าหลังลูกค้าซื้อไปแล้ว' },
+        { id: 'p4', term: 'การรักษาข้อมูลส่วนบุคคล', match: 'ป้องกันไม่ให้นำชื่อ ที่อยู่ เบอร์โทรลูกค้าไปใช้โดยไม่ได้รับอนุญาต' },
+        { id: 'p5', term: 'ทำให้ลูกค้ากลับมาซื้อซ้ำ', match: 'มอบสิทธิพิเศษและดูแลลูกค้าอย่างต่อเนื่อง' }
+      ],
+      mp1_s1: [
+        { id: 'p1', term: 'ภาคตะวันออกเฉียงเหนือ (อีสาน)', match: 'ลักษณะภูมิประเทศส่วนใหญ่เป็นที่ราบสูงโคราช' },
+        { id: 'p2', term: 'ภาคกลางของประเทศไทย', match: 'ที่ราบลุ่มแม่น้ำเจ้าพระยา เหมาะแก่การทำเกษตรกรรม' },
+        { id: 'p3', term: 'ภาคใต้ของประเทศไทย', match: 'ลักษณะเป็นคาบสมุทรที่มีชายฝั่งทะเลขนาบสองด้าน' },
+        { id: 'p4', term: 'ทวีปที่ใหญ่ที่สุดและทะเลทรายซาฮารา', match: 'ทวีปเอเชียพื้นที่มากที่สุด / ทะเลทรายซาฮาราอยู่ในแอฟริกา' },
+        { id: 'p5', term: 'การใช้ทรัพยากรอย่างยั่งยืน', match: 'อนุรักษ์ป่าไม้ต้นน้ำและใช้น้ำอย่างประหยัดรู้คุณค่า' }
+      ],
+      mp1_s2: [
+        { id: 'p1', term: 'อารยธรรมเมโสโปเตเมีย', match: 'ลุ่มแม่น้ำไทกริส-ยูเฟรทีส และอักษรลิ่ม (คูนิฟอร์ม)' },
+        { id: 'p2', term: 'อารยธรรมอียิปต์โบราณ', match: 'ลุ่มแม่น้ำไนล์ ทำให้ดินแดนอุดมสมบูรณ์เหมาะแก่การเพาะปลูก' },
+        { id: 'p3', term: 'อารยธรรมลุ่มแม่น้ำสินธุ', match: 'มีศูนย์กลางสำคัญที่เมืองฮารัปปาและโมเฮนโจ-ดาโร' },
+        { id: 'p4', term: 'อารยธรรมกรีก (นครรัฐเอเธนส์)', match: 'ต้นแบบการปกครองระบอบประชาธิปไตยในโลกโบราณ' },
+        { id: 'p5', term: 'อารยธรรมโรมันและจีน', match: 'โรมันเด่นด้านถนน-สะพานส่งน้ำ / ขงจื๊อเน้นคุณธรรมและความกตัญญู' }
+      ],
+      mp1_s3: [
+        { id: 'p1', term: 'ปัญหาพื้นฐานทางเศรษฐกิจ', match: 'ผลิตอะไร ผลิตอย่างไร และผลิตเพื่อใคร' },
+        { id: 'p2', term: 'ระบบเศรษฐกิจแบบทุนนิยม', match: 'เอกชนมีกรรมสิทธิ์ในทรัพย์สินและใช้กลไกตลาดในการตัดสินใจ' },
+        { id: 'p3', term: 'ระบบเศรษฐกิจแบบผสม', match: 'ผสมผสานกลไกตลาดเข้ากับบทบาทการกำกับดูแลของภาครัฐ' },
+        { id: 'p4', term: 'กฎอุปสงค์ (Demand)', match: 'เมื่อราคาสินค้าสูงขึ้น ความต้องการซื้อสินค้าจะลดลง' },
+        { id: 'p5', term: 'ราคาดุลยภาพในตลาด', match: 'จุดที่ปริมาณความต้องการซื้อเท่ากับปริมาณเสนอขายพอดี' }
+      ]
+    };
+
+    function getLessonMatchingPairs(lesson) {
+      if (CURATED_MATCHING_PAIRS[lesson.id]) {
+        return CURATED_MATCHING_PAIRS[lesson.id];
+      }
+      return (lesson.questions || []).slice(0, 5).map((item, idx) => ({
+        id: 'auto_' + idx,
+        term: String(item.q || '').replace(/^ข้อที่\s*\d+\s*:\s*/, '').trim(),
+        match: String((item.options && item.options[item.ans]) || '').replace(/^[กขคง]\.\s*/, '').trim()
+      }));
+    }
+
     // 🌟 ดึงข้อมูลสดจากโค้ดตรงนี้เสมอ จบปัญหาแคชค้างแน่นอน
     let appData = {
       lessons: ALL_COURSES_DATA,
@@ -2285,17 +3477,66 @@
     let currentPageIndex = 0;
     let readTimerInterval = null;
     let selectedGradingRecord = null;
+    let initialBootResolved = false;
+
+    // ตัวแปรควบคุมเกมจับคู่บังคับก่อนทำใบงาน
+    let matchingCompleted = false;
+    let matchingPairs = [];
+    let matchingLeftOrder = [];
+    let matchingRightOrder = [];
+    let selectedLeftId = null;
+    let selectedRightId = null;
+    let matchedPairIds = [];
+    let matchingMistakes = 0;
+    let matchingLockedAnim = false;
+    let matchingMuted = false;
+
+    // ตัวแปรป้องกัน Copy-Paste ในใบงาน
+    let pasteWarningCount = 0;
+    let isThaiComposing = false;
+
+    function updateHeaderActiveNav(viewId) {
+      const desktopIds = ['nav-link-home', 'nav-link-mton', 'nav-link-mplai', 'nav-link-student'];
+      const mobileIds = ['mnav-home', 'mnav-mton', 'mnav-mplai', 'mnav-student'];
+      [...desktopIds, ...mobileIds].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('active');
+      });
+
+      if (viewId === 'view-home') {
+        document.getElementById('nav-link-home')?.classList.add('active');
+        document.getElementById('mnav-home')?.classList.add('active');
+      } else if (viewId === 'view-lessons' || viewId === 'view-lesson-login' || viewId.startsWith('view-step-')) {
+        if (currentLevel === 'm-ton') {
+          document.getElementById('nav-link-mton')?.classList.add('active');
+          document.getElementById('mnav-mton')?.classList.add('active');
+        } else {
+          document.getElementById('nav-link-mplai')?.classList.add('active');
+          document.getElementById('mnav-mplai')?.classList.add('active');
+        }
+      } else if (viewId === 'view-student-login' || viewId === 'view-student-result') {
+        document.getElementById('nav-link-student')?.classList.add('active');
+        document.getElementById('mnav-student')?.classList.add('active');
+      }
+    }
 
     function navigate(viewId) {
+      // ป้องกันการข้ามขั้นตอนไปหน้าใบงานหากยังเล่นเกมจับคู่ไม่ครบ
+      if (viewId === 'view-step-assignment' && !matchingCompleted) {
+        alert('กรุณาเล่นเกมจับคู่ให้ครบทุกคู่ก่อนเข้าทำใบงานครับ');
+        goToMatchingGameStep();
+        return;
+      }
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
       const target = document.getElementById(viewId);
-      if(target) target.classList.add('active');
-      window.scrollTo(0,0);
+      if (target) target.classList.add('active');
+      updateHeaderActiveNav(viewId);
+      window.scrollTo(0, 0);
     }
 
     function openLevel(lvl) {
       currentLevel = lvl;
-      document.getElementById('level-title').innerText = lvl === 'm-ton' ? 'ระดับมัธยมศึกษาตอนต้น' : 'ระดับมัธยมศึกษาตอนปลาย';
+      document.getElementById('level-title').innerText = lvl === 'm-ton' ? 'ระดับมัธยมศึกษาตอนต้น (ม.ต้น)' : 'ระดับมัธยมศึกษาตอนปลาย (ม.ปลาย)';
       renderLessonListGrouped();
       navigate('view-lessons');
     }
@@ -2308,7 +3549,7 @@
 
       const grouped = {};
       list.forEach(item => {
-        if(!grouped[item.code]) {
+        if (!grouped[item.code]) {
           grouped[item.code] = {
             code: item.code,
             title: item.title,
@@ -2339,7 +3580,7 @@
             btn.onclick = () => alert(`🔒 บทเรียนนี้ยังไม่เปิดให้เข้าเรียน\n\nวิชา: ${s.title}\n${s.session}\nกรุณารอคุณครูผู้สอนเปิดบทเรียนตามกำหนดการครับ`);
           } else {
             btn.className = 'session-btn';
-            btn.innerHTML = `<i class="fa-solid fa-book-open" style="font-size:0.7rem;"></i> ${s.session}`;
+            btn.innerHTML = `<i class="fa-solid fa-book-open" style="font-size:0.75rem;"></i> ${s.session}`;
             btn.onclick = () => selectLesson(s);
           }
           badgeBox.appendChild(btn);
@@ -2349,10 +3590,11 @@
 
     function selectLesson(lesson) {
       if (lesson.isLocked) {
-        alert(`🔒 บทเรียนนี้ยังไม่เปิดให้เข้าเรียน กรุณารอคุณครูผู้สอนเปิดบทเรียนครับ`);
+        alert('🔒 บทเรียนนี้ยังไม่เปิดให้เข้าเรียน กรุณารอคุณครูผู้สอนเปิดบทเรียนครับ');
         return;
       }
       currentLesson = lesson;
+      matchingCompleted = false;
       if (!currentLesson.assignmentTasks) {
         currentLesson.assignmentTasks = ['ให้นักศึกษาสรุปสิ่งที่ได้เรียนรู้'];
       }
@@ -2360,7 +3602,7 @@
       navigate('view-lesson-login');
     }
 
-    // เช็คชื่อเข้าเรียน + ยิงเข้า Google Sheets ทันที ➔ เข้าสู่หน้าอ่านเนื้อหาโดยตรง
+    // เช็คชื่อเข้าเรียน + ยิงเข้า Google Sheets ทันที -> เข้าสู่หน้าอ่านเนื้อหา
     async function startLearningLesson() {
       const id = document.getElementById('lesson-std-id').value.trim();
       const name = document.getElementById('lesson-std-name').value.trim();
@@ -2371,6 +3613,7 @@
       }
 
       currentStudent = { id, name };
+      matchingCompleted = false;
 
       let record = appData.records.find(r => String(r.stdId).trim() === String(id).trim() && r.lessonId === currentLesson.id);
       const existingTermAtt = getTermAttendanceScore(id);
@@ -2403,14 +3646,14 @@
       startReadingStep();
     }
 
-    // เริ่มอ่านเนื้อหา
+    // Step 1: Reading
     function startReadingStep() {
       currentPageIndex = 0;
+      matchingCompleted = false;
       navigate('view-step-read');
       loadReadingPage(currentPageIndex);
     }
 
-    // โหลดหน้าเนื้อหาตามลำดับหน้า (2-3 หน้า พร้อมบังคับอ่านทีละหน้า)
     function loadReadingPage(pageIdx) {
       currentPageIndex = pageIdx;
       const pages = currentLesson.pages || [p('เนื้อหาบทเรียน', 'ไม่มีข้อมูลเนื้อหา', '')];
@@ -2454,7 +3697,7 @@
           if (currentPageIndex < totalPages - 1) {
             btn.innerHTML = `หน้าถัดไป: อ่านหน้า ${currentPageIndex + 2}/${totalPages} <i class="fa-solid fa-arrow-right"></i>`;
           } else {
-            btn.innerHTML = `เสร็จสิ้นการศึกษา: ไปทำใบงานประจำครั้ง <i class="fa-solid fa-arrow-right"></i>`;
+            btn.innerHTML = `จบการอ่าน: ไปเล่นเกมจับคู่ความรู้ <i class="fa-solid fa-arrow-right"></i>`;
           }
         } else {
           timerSpan.innerText = timeLeft;
@@ -2468,11 +3711,225 @@
         loadReadingPage(currentPageIndex + 1);
         window.scrollTo(0, 0);
       } else {
-        goToAssignmentStep();
+        goToMatchingGameStep();
       }
     }
 
-    // Step 2: Assignment Timeline
+    // Step 2: Mandatory Unskippable Matching Game
+    function shuffleList(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function playGameTone(type) {
+      if (matchingMuted) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+        if (type === 'match') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.12);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.23);
+        } else if (type === 'wrong') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.exponentialRampToValueAtTime(160, now + 0.16);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.21);
+        } else if (type === 'win') {
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            const start = now + idx * 0.08;
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0.07, start);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.25);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + 0.26);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function toggleMatchingSound() {
+      matchingMuted = !matchingMuted;
+      const icon = document.getElementById('matching-sound-icon');
+      if (icon) {
+        icon.className = matchingMuted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
+      }
+    }
+
+    function goToMatchingGameStep() {
+      matchingPairs = getLessonMatchingPairs(currentLesson);
+      matchingLeftOrder = shuffleList(matchingPairs);
+      matchingRightOrder = shuffleList(matchingPairs);
+      selectedLeftId = null;
+      selectedRightId = null;
+      matchedPairIds = matchingCompleted ? matchingPairs.map(x => x.id) : [];
+      matchingMistakes = 0;
+      matchingLockedAnim = false;
+
+      document.getElementById('matching-lesson-sub').innerText = `${currentLesson.code} • ${currentLesson.title} (${currentLesson.session})`;
+      setMatchingFeedback('info', 'เลือกการ์ดหัวข้อทางฝั่งซ้าย 1 ใบ แล้วแตะจับคู่กับคำตอบที่ถูกต้องทางฝั่งขวา');
+      renderMatchingBoard();
+      navigate('view-step-matching');
+    }
+
+    function shuffleMatchingBoard() {
+      if (matchingCompleted || matchingLockedAnim) return;
+      matchingLeftOrder = shuffleList(matchingPairs);
+      matchingRightOrder = shuffleList(matchingPairs);
+      selectedLeftId = null;
+      selectedRightId = null;
+      setMatchingFeedback('info', 'สลับตำแหน่งการ์ดใหม่แล้ว เลือกจับคู่ต่อได้เลยครับ');
+      renderMatchingBoard();
+    }
+
+    function setMatchingFeedback(type, text) {
+      const box = document.getElementById('matching-feedback-box');
+      if (!box) return;
+      box.className = 'matching-feedback' + (type === 'success' ? ' success' : type === 'error' ? ' error' : '');
+      const icon = type === 'success'
+        ? '<i class="fa-solid fa-circle-check"></i>'
+        : type === 'error'
+        ? '<i class="fa-solid fa-circle-xmark"></i>'
+        : '<i class="fa-solid fa-puzzle-piece" style="color:var(--pastel-purple);"></i>';
+      box.innerHTML = `${icon} <span>${text}</span>`;
+    }
+
+    function renderMatchingBoard(mismatchLeft = null, mismatchRight = null) {
+      const total = matchingPairs.length;
+      const done = matchedPairIds.length;
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+      document.getElementById('matching-status-badge').innerText = `จับคู่แล้ว ${done}/${total} · ผิด ${matchingMistakes} ครั้ง`;
+      document.getElementById('matching-progress-pct').innerText = `${pct}%`;
+      const fill = document.getElementById('matching-progress-fill');
+      fill.style.width = `${pct}%`;
+      if (done === total && total > 0) fill.classList.add('done'); else fill.classList.remove('done');
+
+      const leftCol = document.getElementById('matching-left-col');
+      const rightCol = document.getElementById('matching-right-col');
+      leftCol.innerHTML = '';
+      rightCol.innerHTML = '';
+
+      matchingLeftOrder.forEach(item => {
+        const isMatched = matchedPairIds.includes(item.id);
+        const isSelected = selectedLeftId === item.id;
+        const isMismatch = mismatchLeft === item.id;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.disabled = isMatched;
+        btn.className = 'match-card left-side' +
+          (isMatched ? ' matched' : isMismatch ? ' mismatch animate-shake' : isSelected ? ' selected-left' : '');
+        btn.innerHTML = `<span>${item.term}</span>${isMatched ? '<i class="fa-solid fa-circle-check"></i>' : ''}`;
+        btn.onclick = () => onPickLeftCard(item.id);
+        leftCol.appendChild(btn);
+      });
+
+      matchingRightOrder.forEach(item => {
+        const isMatched = matchedPairIds.includes(item.id);
+        const isSelected = selectedRightId === item.id;
+        const isMismatch = mismatchRight === item.id;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.disabled = isMatched;
+        btn.className = 'match-card right-side' +
+          (isMatched ? ' matched' : isMismatch ? ' mismatch animate-shake' : isSelected ? ' selected-right' : '');
+        btn.innerHTML = `<span>${item.match}</span>${isMatched ? '<i class="fa-solid fa-circle-check"></i>' : ''}`;
+        btn.onclick = () => onPickRightCard(item.id);
+        rightCol.appendChild(btn);
+      });
+
+      const proceedBtn = document.getElementById('btn-proceed-to-assignment');
+      const shuffleBtn = document.getElementById('btn-matching-shuffle');
+      if (matchingCompleted) {
+        proceedBtn.disabled = false;
+        proceedBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> ผ่านเกมจับคู่แล้ว • ไปทำใบงานประจำครั้ง <i class="fa-solid fa-arrow-right"></i>';
+        if (shuffleBtn) shuffleBtn.style.display = 'none';
+      } else {
+        proceedBtn.disabled = true;
+        proceedBtn.innerHTML = `<i class="fa-solid fa-lock"></i> จับคู่ให้ครบทุกคู่ก่อนทำใบงาน (${done}/${total} คู่)`;
+        if (shuffleBtn) shuffleBtn.style.display = 'inline-flex';
+      }
+    }
+
+    function onPickLeftCard(id) {
+      if (matchingLockedAnim || matchedPairIds.includes(id)) return;
+      if (selectedRightId) {
+        selectedLeftId = id;
+        checkMatchAttempt(id, selectedRightId);
+      } else {
+        selectedLeftId = (selectedLeftId === id) ? null : id;
+        renderMatchingBoard();
+      }
+    }
+
+    function onPickRightCard(id) {
+      if (matchingLockedAnim || matchedPairIds.includes(id)) return;
+      if (selectedLeftId) {
+        selectedRightId = id;
+        checkMatchAttempt(selectedLeftId, id);
+      } else {
+        selectedRightId = (selectedRightId === id) ? null : id;
+        renderMatchingBoard();
+      }
+    }
+
+    function checkMatchAttempt(leftId, rightId) {
+      if (leftId === rightId) {
+        matchedPairIds.push(leftId);
+        selectedLeftId = null;
+        selectedRightId = null;
+
+        if (matchedPairIds.length === matchingPairs.length) {
+          matchingCompleted = true;
+          playGameTone('win');
+          setMatchingFeedback('success', 'เก่งมาก! คุณจับคู่ความรู้ครบทุกข้อแล้ว สามารถกดปุ่มด้านล่างเพื่อเข้าทำใบงานได้เลย');
+        } else {
+          playGameTone('match');
+          setMatchingFeedback('success', `ถูกต้อง! จับคู่สำเร็จแล้ว ${matchedPairIds.length} จาก ${matchingPairs.length} คู่`);
+        }
+        renderMatchingBoard();
+      } else {
+        playGameTone('wrong');
+        matchingMistakes++;
+        matchingLockedAnim = true;
+        setMatchingFeedback('error', 'ยังไม่ตรงกัน ลองอ่านทบทวนและจับคู่อีกครั้งนะครับ');
+        renderMatchingBoard(leftId, rightId);
+        setTimeout(() => {
+          selectedLeftId = null;
+          selectedRightId = null;
+          matchingLockedAnim = false;
+          renderMatchingBoard();
+        }, 520);
+      }
+    }
+
+    // Like Buttons
     let isFbLiked = false;
     function toggleFbLike() {
       isFbLiked = !isFbLiked;
@@ -2507,8 +3964,30 @@
       }
     }
 
+    // Step 3: Assignment (ป้องกัน Copy-Paste)
+    function showPasteBlockedWarning(msg) {
+      pasteWarningCount++;
+      const box = document.getElementById('assignment-paste-warning');
+      const txt = document.getElementById('assignment-paste-warning-text');
+      const cnt = document.getElementById('assignment-paste-count');
+      if (box && txt && cnt) {
+        txt.innerText = msg;
+        cnt.innerText = `แจ้งเตือน ${pasteWarningCount} ครั้ง`;
+        box.classList.add('active');
+      }
+    }
+
     function goToAssignmentStep() {
-      navigate('view-step-assignment');
+      if (!matchingCompleted) {
+        alert('กรุณาเล่นเกมจับคู่ความรู้ให้ครบทุกคู่ก่อนทำใบงานครับ');
+        goToMatchingGameStep();
+        return;
+      }
+
+      pasteWarningCount = 0;
+      const warnBox = document.getElementById('assignment-paste-warning');
+      if (warnBox) warnBox.classList.remove('active');
+
       document.getElementById('fb-post-tag').innerText = `#${currentLesson.code} • ${currentLesson.session}`;
 
       const questionsBox = document.getElementById('assignment-questions-list');
@@ -2519,37 +3998,106 @@
       const tasks = currentLesson.assignmentTasks || ['ให้นักศึกษาสรุปสิ่งที่ได้เรียนรู้'];
 
       tasks.forEach((taskText, index) => {
-        const prevAnswer = studentAnswers[index] || '';
+        const prevAnswer = typeof studentAnswers[index] === 'string' ? studentAnswers[index] : '';
         const itemDiv = document.createElement('div');
         itemDiv.className = 'fb-task-callout';
         itemDiv.innerHTML = `
-          <div style="font-weight:600; font-size:0.88rem; color:#1c1e21; margin-bottom:6px;">
-            📌 ภารกิจข้อที่ ${index + 1}:
-          </div>
-          <div style="font-size:0.9rem; color:#4b4f56; margin-bottom:8px; line-height:1.6;">
-            ${taskText}
+          <div class="no-copy-zone" oncopy="return false" oncontextmenu="return false">
+            <div style="font-weight:600; font-size:0.88rem; color:var(--pastel-pink); margin-bottom:5px;">
+              📌 ภารกิจข้อที่ ${index + 1}:
+            </div>
+            <div style="font-size:0.92rem; color:var(--text-dark); margin-bottom:8px; line-height:1.6;">
+              ${taskText}
+            </div>
           </div>
           <div class="fb-comment-box">
-            <textarea id="task-answer-${index}" placeholder="พิมพ์คำตอบข้อที่ ${index + 1} ที่นี่...">${prevAnswer}</textarea>
+            <textarea id="task-answer-${index}" autocomplete="off" spellcheck="false" placeholder="พิมพ์คำตอบข้อที่ ${index + 1} ด้วยตนเองที่นี่ (ห้ามวางข้อความ)..."></textarea>
             <div class="fb-comment-footer">
-              <span style="color:#8a8d91;"><i class="fa-solid fa-pen-nib"></i> คำตอบของ: ${currentStudent ? currentStudent.name : 'นักศึกษา'}</span>
-              <span style="color:var(--pastel-purple); font-weight:500;">ข้อที่ ${index + 1}</span>
+              <span><i class="fa-solid fa-pen-nib"></i> คำตอบของ: ${currentStudent ? currentStudent.name : 'นักศึกษา'}</span>
+              <span id="task-char-count-${index}" style="color:var(--pastel-purple); font-weight:500;">${prevAnswer.trim().length} ตัวอักษร</span>
             </div>
           </div>
         `;
         questionsBox.appendChild(itemDiv);
+
+        const ta = itemDiv.querySelector(`#task-answer-${index}`);
+        const charCounter = itemDiv.querySelector(`#task-char-count-${index}`);
+        ta.value = prevAnswer;
+        let lastValidText = prevAnswer;
+
+        ta.addEventListener('compositionstart', () => { isThaiComposing = true; });
+        ta.addEventListener('compositionend', () => { isThaiComposing = false; lastValidText = ta.value; });
+
+        ta.addEventListener('paste', (e) => {
+          e.preventDefault();
+          showPasteBlockedWarning('ไม่อนุญาตให้วางข้อความ (Paste) ในใบงาน กรุณาอ่านและพิมพ์คำตอบด้วยตนเองครับ');
+        });
+        ta.addEventListener('drop', (e) => {
+          e.preventDefault();
+          showPasteBlockedWarning('ไม่อนุญาตให้ลากวางข้อความลงในช่องคำตอบครับ');
+        });
+        ta.addEventListener('copy', (e) => {
+          e.preventDefault();
+          showPasteBlockedWarning('ไม่อนุญาตให้คัดลอกข้อความในหน้าใบงานครับ');
+        });
+        ta.addEventListener('cut', (e) => {
+          e.preventDefault();
+        });
+        ta.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          showPasteBlockedWarning('ปิดใช้งานเมนูคลิกขวาในช่องตอบใบงานเพื่อป้องกันการคัดลอกวางครับ');
+        });
+        ta.addEventListener('keydown', (e) => {
+          const isMod = e.ctrlKey || e.metaKey;
+          const k = (e.key || '').toLowerCase();
+          if ((isMod && (k === 'v' || k === 'c' || k === 'x')) || (e.shiftKey && e.key === 'Insert')) {
+            e.preventDefault();
+            showPasteBlockedWarning('ไม่อนุญาตให้ใช้คีย์ลัด Copy / Paste กรุณาพิมพ์คำตอบด้วยตนเองครับ');
+          }
+        });
+        ta.addEventListener('input', (e) => {
+          const inputType = (e && e.inputType) ? String(e.inputType) : '';
+          if (inputType === 'insertFromPaste' || inputType === 'insertFromDrop' || inputType === 'insertFromPasteAsQuotation') {
+            ta.value = lastValidText;
+            showPasteBlockedWarning('ไม่อนุญาตให้วางข้อความ (Paste) ในใบงาน กรุณาพิมพ์คำตอบด้วยตนเองครับ');
+            return;
+          }
+          const diff = ta.value.length - lastValidText.length;
+          if (!isThaiComposing && diff > 25) {
+            ta.value = lastValidText;
+            showPasteBlockedWarning('ตรวจพบการวางข้อความจำนวนมากพร้อมกัน ระบบไม่อนุญาตให้วางคำตอบครับ');
+            return;
+          }
+          lastValidText = ta.value;
+          if (charCounter) {
+            charCounter.innerText = `${ta.value.trim().length} ตัวอักษร`;
+          }
+        });
       });
+
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById('view-step-assignment').classList.add('active');
+      window.scrollTo(0, 0);
     }
 
     async function saveAssignmentAndNext() {
+      const tasks = currentLesson.assignmentTasks || [];
+      for (let i = 0; i < tasks.length; i++) {
+        const el = document.getElementById(`task-answer-${i}`);
+        if (!el || !el.value.trim()) {
+          alert(`กรุณาอ่านและพิมพ์คำตอบใบงานข้อที่ ${i + 1} ให้เรียบร้อยก่อนส่งครับ`);
+          if (el) el.focus();
+          return;
+        }
+      }
+
       const btn = document.getElementById('btn-save-assignment');
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกงานขึ้นระบบคลาวด์...`;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกงานขึ้นระบบคลาวด์...';
       }
 
       let record = appData.records.find(r => String(r.stdId).trim() === String(currentStudent.id).trim() && r.lessonId === currentLesson.id);
-      const tasks = currentLesson.assignmentTasks || [];
       const answersObj = {};
 
       tasks.forEach((_, index) => {
@@ -2565,13 +4113,13 @@
 
       if (btn) {
         btn.disabled = false;
-        btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> ส่งคำตอบใบงาน และทำแบบทดสอบ <i class="fa-solid fa-arrow-right"></i>`;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> ส่งคำตอบใบงาน และทำแบบทดสอบ <i class="fa-solid fa-arrow-right"></i>';
       }
 
       goToQuizStep();
     }
 
-    // Step 3: Quiz (10 ข้อ)
+    // Step 4: Quiz (10 ข้อ)
     function goToQuizStep() {
       let record = appData.records.find(r => String(r.stdId).trim() === String(currentStudent.id).trim() && r.lessonId === currentLesson.id);
       const attempts = record ? record.quizAttempts : 0;
@@ -2615,7 +4163,7 @@
           allAnswered = false;
           break;
         }
-        if (parseInt(selected.value) === currentLesson.questions[i].ans) {
+        if (parseInt(selected.value, 10) === currentLesson.questions[i].ans) {
           score++;
         }
       }
@@ -2628,13 +4176,13 @@
       const submitBtn = document.getElementById('btn-submit-quiz');
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกคะแนนลงระบบ...`;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกคะแนนลงระบบ...';
       }
 
       let record = appData.records.find(r => String(r.stdId).trim() === String(currentStudent.id).trim() && r.lessonId === currentLesson.id);
       if (record) {
-        record.quizAttempts += 1;
-        if (score > record.bestQuizScore) {
+        record.quizAttempts = (Number(record.quizAttempts) || 0) + 1;
+        if (score > (Number(record.bestQuizScore) || 0)) {
           record.bestQuizScore = score;
         }
         if (record.bestQuizScore >= 6) {
@@ -2644,11 +4192,11 @@
         await syncToCloud(record);
       }
 
-      alert(`บันทึกการส่งงานและสอบสำเร็จ!\nคะแนนสอบครั้งนี้: ${score}/10 คะแนน\nคะแนนสูงสุดสะสม: ${record.bestQuizScore}/10`);
-      
+      alert(`บันทึกการส่งงานและสอบสำเร็จ!\nคะแนนสอบครั้งนี้: ${score}/10 คะแนน\nคะแนนสูงสุดสะสม: ${record ? record.bestQuizScore : score}/10`);
+
       if (submitBtn) {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = `ส่งคำตอบแบบทดสอบ`;
+        submitBtn.innerHTML = 'ส่งคำตอบแบบทดสอบ';
       }
 
       navigate('view-home');
@@ -2671,14 +4219,14 @@
       const loginBtn = document.getElementById('btn-login-check');
       if (loginBtn) {
         loginBtn.disabled = true;
-        loginBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังค้นหาข้อมูล...`;
+        loginBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังค้นหาข้อมูล...';
       }
 
       await fetchCloudRecords();
 
       if (loginBtn) {
         loginBtn.disabled = false;
-        loginBtn.innerHTML = `เข้าสู่ระบบดูผลคะแนน`;
+        loginBtn.innerHTML = 'เข้าสู่ระบบดูผลคะแนน';
       }
 
       const records = appData.records.filter(r => String(r.stdId).trim() === String(idInput).trim());
@@ -2700,17 +4248,17 @@
       if (termAttBox) {
         const termAttBadge = (termAttScore !== null)
           ? `<span class="badge badge-pass" style="font-size:0.9rem;">${termAttScore} คะแนน</span>`
-          : `<span class="badge badge-wait" style="font-size:0.85rem;">รอครูกรอก</span>`;
+          : '<span class="badge badge-wait" style="font-size:0.85rem;">รอครูกรอก</span>';
         termAttBox.innerHTML = `<span style="font-size:0.9rem; font-weight:600; color:var(--pastel-purple);"><i class="fa-solid fa-user-check"></i> คะแนนเข้าเรียนรวมทั้งเทอม</span>${termAttBadge}`;
       }
 
-      // 1. แสดงผลตารางที่ 1: รายครั้ง
+      // ตารางที่ 1: รายครั้ง
       const tbody = document.getElementById('student-score-table-body');
       tbody.innerHTML = '';
       records.forEach(r => {
-        const isPassed = (r.quizPassed === true || r.quizPassed === "ผ่าน" || Number(r.bestQuizScore) >= 6);
+        const isPassed = (r.quizPassed === true || r.quizPassed === 'ผ่าน' || Number(r.bestQuizScore) >= 6);
         const quizBadge = isPassed ? `<span class="badge badge-pass">${r.bestQuizScore}/10 (ผ่าน)</span>` : `<span class="badge badge-fail">${r.bestQuizScore}/10 (ไม่ผ่าน)</span>`;
-        const assignBadge = (r.assignmentScore !== null && r.assignmentScore !== "") ? `<span class="badge badge-pass">${r.assignmentScore}/10 คะแนน</span>` : `<span class="badge badge-wait">รอครูตรวจ</span>`;
+        const assignBadge = (r.assignmentScore !== null && r.assignmentScore !== '') ? `<span class="badge badge-pass">${r.assignmentScore}/10 คะแนน</span>` : '<span class="badge badge-wait">รอครูตรวจ</span>';
         const feedback = r.teacherFeedback ? `<small style="color:var(--pastel-purple);">${r.teacherFeedback}</small>` : '<small style="color:var(--text-muted);">-</small>';
 
         tbody.innerHTML += `
@@ -2724,22 +4272,16 @@
         `;
       });
 
-      // 🌟 2. เรียกคำนวณและแสดงตารางสรุปคะแนนรวมรายวิชา
+      // ตารางที่ 2: สรุปคะแนนรวมรายวิชา 40 คะแนน
       renderStudentCourseSummary(records);
-
       navigate('view-student-result');
     }
 
-    // =========================================================================
-    // 🌟 [สูตรคำนวณคะแนนรวมปลายภาค] คุณครูสามารถปรับสูตรตรงนี้ได้
-    // =========================================================================
+    // สูตรคำนวณคะแนนรวมปลายภาค 40 คะแนน
     function calculateSubjectSummary(courseCode, courseTitle, attendedCount, totalSessions, totalQuizScore, totalAssignScore) {
-      // รวมคะแนนดิบสะสม (สอบเต็ม 10 + ใบงานเต็ม 10 = เต็ม 20 ต่อครั้ง)
-      // เช่น วิชา 5 ครั้ง คะแนนดิบเต็ม 100 | วิชา 7 ครั้ง คะแนนดิบเต็ม 140
       const rawScore = totalQuizScore + totalAssignScore;
       const maxRawScore = totalSessions * 20;
 
-      // หารปรับฐานให้เป็นคะแนนรวมปลายภาควิชาละ 40 คะแนนเต็ม
       let finalScore40 = 0;
       let percentScore = 0;
       if (maxRawScore > 0) {
@@ -2747,16 +4289,13 @@
         percentScore = Math.round((rawScore / maxRawScore) * 100);
       }
 
-      const passed = percentScore >= 50;
-
       return {
         rawScoreText: `${rawScore} / ${maxRawScore}`,
         finalScore40: finalScore40,
-        passed: passed
+        passed: percentScore >= 50
       };
     }
 
-    // ฟังก์ชันรวบรวมคะแนนรายวิชาและสร้างแถวในตารางสรุป (ไม่แสดงเกรด)
     function renderStudentCourseSummary(studentRecords) {
       const tbody = document.getElementById('student-subject-summary-tbody');
       if (!tbody) return;
@@ -2764,7 +4303,6 @@
 
       if (!studentRecords || studentRecords.length === 0) return;
 
-      // รวมรายวิชาทั้งหมดทั้ง ม.ต้น และ ม.ปลาย เพื่อความแม่นยำ
       const allLessons = [...(ALL_COURSES_DATA['m-ton'] || []), ...(ALL_COURSES_DATA['m-ปลาย'] || [])];
 
       const courseMap = {};
@@ -2779,9 +4317,8 @@
         courseMap[item.code].totalSessions++;
       });
 
-      // กรองเฉพาะวิชาที่นักศึกษาคนนี้ได้เข้าเรียน
       const enrolledCourses = Object.values(courseMap).filter(course => {
-        return studentRecords.some(r => 
+        return studentRecords.some(r =>
           (r.courseCode && r.courseCode === course.code) ||
           (r.lessonTitle && r.lessonTitle.includes(course.code)) ||
           (r.lessonId && r.lessonId.includes(course.code))
@@ -2794,7 +4331,7 @@
       }
 
       enrolledCourses.forEach(course => {
-        const recordsForCourse = studentRecords.filter(r => 
+        const recordsForCourse = studentRecords.filter(r =>
           (r.courseCode && r.courseCode === course.code) ||
           (r.lessonTitle && r.lessonTitle.includes(course.code)) ||
           (r.lessonId && r.lessonId.includes(course.code))
@@ -2819,8 +4356,8 @@
         );
 
         const statusBadge = result.passed
-          ? `<span style="color:var(--success); font-weight:600;"><i class="fa-solid fa-circle-check"></i> ผ่าน</span>`
-          : `<span style="color:var(--danger); font-weight:600;"><i class="fa-solid fa-circle-xmark"></i> ไม่ผ่าน</span>`;
+          ? '<span style="color:var(--success); font-weight:600;"><i class="fa-solid fa-circle-check"></i> ผ่าน</span>'
+          : '<span style="color:var(--danger); font-weight:600;"><i class="fa-solid fa-circle-xmark"></i> ไม่ผ่าน</span>';
 
         tbody.innerHTML += `
           <tr>
@@ -2866,7 +4403,43 @@
       renderFilteredTeacherTable();
     }
 
+    function updateTeacherDashboardMetrics() {
+      const totalEl = document.getElementById('teacher-metric-total');
+      const pendingEl = document.getElementById('teacher-metric-pending');
+      const statusEl = document.getElementById('teacher-metric-status');
+
+      const validRecords = (appData.records || []).filter(r => r && (r.stdId || r.stdname || r.lessonTitle || r.lessontitle));
+      if (totalEl) totalEl.innerText = String(validRecords.length);
+
+      if (pendingEl) {
+        const pendingCount = validRecords.filter(r => {
+          const assignVal = r.assignmentScore !== '' && r.assignmentScore !== null && r.assignmentScore !== undefined;
+          let hasAns = false;
+          const ansObj = r.assignmentAnswers || r.assignmentanswers;
+          if (typeof ansObj === 'object' && ansObj !== null) {
+            hasAns = Object.values(ansObj).some(val => String(val).trim() !== '');
+          } else if (typeof ansObj === 'string') {
+            hasAns = ansObj.trim() !== '' && ansObj !== '{}';
+          }
+          return hasAns && !assignVal;
+        }).length;
+        pendingEl.innerText = String(pendingCount);
+      }
+
+      if (statusEl) {
+        const maint = getMaintenanceState();
+        if (maint.enabled) {
+          statusEl.style.color = '#BE123C';
+          statusEl.innerHTML = '<i class="fa-solid fa-lock"></i> ปิดปรับปรุง (ล็อคหน้าแรก)';
+        } else {
+          statusEl.style.color = 'var(--success)';
+          statusEl.innerHTML = '<i class="fa-solid fa-circle-check"></i> เปิดใช้งานปกติ';
+        }
+      }
+    }
+
     function renderFilteredTeacherTable() {
+      updateTeacherDashboardMetrics();
       const lvl = document.getElementById('filter-teacher-level').value;
       const sessionFilter = document.getElementById('filter-teacher-session').value;
       const tbody = document.getElementById('teacher-records-tbody');
@@ -2893,12 +4466,12 @@
         const session = r.session || '-';
         const lessonTitle = r.lessonTitle || r.lessontitle || '-';
         const attendedAt = r.attendedAt || r.attendedat || '-';
-        const bestQuizScore = (r.bestQuizScore !== undefined && r.bestQuizScore !== "") ? r.bestQuizScore : 0;
-        const assignmentScore = (r.assignmentScore !== "" && r.assignmentScore !== null && r.assignmentScore !== undefined) ? r.assignmentScore : null;
+        const bestQuizScore = (r.bestQuizScore !== undefined && r.bestQuizScore !== '') ? r.bestQuizScore : 0;
+        const assignmentScore = (r.assignmentScore !== '' && r.assignmentScore !== null && r.assignmentScore !== undefined) ? r.assignmentScore : null;
 
         const assignScoreNum = assignmentScore !== null ? Number(assignmentScore) : 0;
         const total = Number(bestQuizScore) + assignScoreNum;
-        
+
         let hasAnswers = false;
         let answersObj = r.assignmentAnswers || r.assignmentanswers;
         if (typeof answersObj === 'object' && answersObj !== null) {
@@ -2911,7 +4484,7 @@
         if (!hasAnswers) {
           gradingBtn = '<span style="color:var(--text-muted); font-size:0.75rem;">ยังไม่ส่งงาน</span>';
         } else if (assignmentScore === null) {
-          gradingBtn = `<button class="btn btn-sm" style="background:var(--warning); color:#333;" onclick="openGradingModal('${stdId}', '${r.lessonId || ''}')"><i class="fa-solid fa-pen"></i> รอตรวจ</button>`;
+          gradingBtn = `<button class="btn btn-sm" style="background:var(--warning); color:white;" onclick="openGradingModal('${stdId}', '${r.lessonId || ''}')"><i class="fa-solid fa-pen"></i> รอตรวจ</button>`;
         } else {
           gradingBtn = `<button class="btn btn-sm" style="background:var(--pastel-purple);" onclick="openGradingModal('${stdId}', '${r.lessonId || ''}')"><i class="fa-solid fa-check"></i> ตรวจแล้ว (${assignmentScore})</button>`;
         }
@@ -2919,7 +4492,7 @@
         tbody.innerHTML += `
           <tr>
             <td><strong>${stdId}</strong><br><small>${stdName}</small></td>
-            <td><span class="badge" style="background:var(--pastel-purple-light);">${session}</span><br><small>${lessonTitle}</small></td>
+            <td><span class="badge" style="background:var(--pastel-purple-light); color:var(--pastel-purple);">${session}</span><br><small>${lessonTitle}</small></td>
             <td><small>${attendedAt}</small></td>
             <td><strong>${bestQuizScore}</strong>/10</td>
             <td>${assignmentScore !== null ? `<strong>${assignmentScore}</strong>/10` : '-'}</td>
@@ -2942,7 +4515,7 @@
       }
 
       document.getElementById('grade-modal-student').innerText = `ผู้เรียน: ${selectedGradingRecord.stdName} (${selectedGradingRecord.stdId}) - ${selectedGradingRecord.lessonTitle} ${selectedGradingRecord.session}`;
-      
+
       const answersContainer = document.getElementById('grade-modal-answers-container');
       answersContainer.innerHTML = '';
 
@@ -2950,7 +4523,7 @@
       let answers = selectedGradingRecord.assignmentAnswers || selectedGradingRecord.assignmentanswers || {};
 
       if (typeof answers === 'string') {
-        try { answers = JSON.parse(answers); } catch(e){}
+        try { answers = JSON.parse(answers); } catch (e) {}
       }
 
       if (tasks.length === 0 && (!answers || Object.keys(answers).length === 0)) {
@@ -2959,15 +4532,15 @@
         tasks.forEach((taskText, idx) => {
           const ans = answers[idx] || (typeof answers === 'string' ? answers : '(ยังไม่ได้ตอบข้อนี้)');
           answersContainer.innerHTML += `
-            <div style="background:#FDF9F2; border:1px solid #EFE4D2; border-radius:8px; padding:10px; margin-bottom:8px; font-size:0.88rem;">
-              <strong style="color:#6D4C41;"><i class="fa-solid fa-angle-right"></i> ${taskText}</strong>
-              <p style="margin-top:4px; color:#222; white-space:pre-wrap; background:#fff; padding:6px 10px; border-radius:6px; border:1px solid #eee;">${ans}</p>
+            <div style="background:#FFF8F2; border:1px solid var(--border-hairline); border-radius:10px; padding:10px; margin-bottom:8px; font-size:0.88rem;">
+              <strong style="color:var(--pastel-purple);"><i class="fa-solid fa-angle-right"></i> ${taskText}</strong>
+              <p style="margin-top:5px; color:var(--text-dark); white-space:pre-wrap; background:#fff; padding:8px 10px; border-radius:8px; border:1px solid var(--border-hairline);">${ans}</p>
             </div>
           `;
         });
       }
 
-      document.getElementById('grade-modal-score').value = (selectedGradingRecord.assignmentScore !== null && selectedGradingRecord.assignmentScore !== "" && selectedGradingRecord.assignmentScore !== undefined) ? selectedGradingRecord.assignmentScore : '';
+      document.getElementById('grade-modal-score').value = (selectedGradingRecord.assignmentScore !== null && selectedGradingRecord.assignmentScore !== '' && selectedGradingRecord.assignmentScore !== undefined) ? selectedGradingRecord.assignmentScore : '';
       document.getElementById('grade-modal-feedback').value = selectedGradingRecord.teacherFeedback || '';
 
       document.getElementById('modal-grading').classList.add('active');
@@ -2984,7 +4557,7 @@
         return;
       }
 
-      selectedGradingRecord.assignmentScore = parseInt(scoreVal);
+      selectedGradingRecord.assignmentScore = parseInt(scoreVal, 10);
       selectedGradingRecord.teacherFeedback = document.getElementById('grade-modal-feedback').value;
 
       saveStorage();
@@ -2995,9 +4568,7 @@
       alert('บันทึกผลการตรวจใบงานเรียบร้อย');
     }
 
-    // =========================================================================
-    // 📝 ระบบจัดการคะแนนเข้าเรียนรวมทั้งเทอม (ไม่แยกรายวิชา: ครูกรอกเอง + นักศึกษาดูได้)
-    // =========================================================================
+    // คะแนนเข้าเรียนรวมทั้งเทอม
     function getTermAttendanceStore() {
       try {
         return JSON.parse(localStorage.getItem('clc_term_attendance_scores')) || {};
@@ -3138,7 +4709,7 @@
       const saveBtn = document.getElementById('btn-save-attendance');
       if (saveBtn) {
         saveBtn.disabled = true;
-        saveBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกลงชีต...`;
+        saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกลงชีต...';
       }
 
       const numericScore = Number(scoreVal);
@@ -3153,12 +4724,10 @@
       });
       saveStorage();
 
-      // 1. ซิงค์คะแนนเข้าเรียนไปยังแถวเรียนที่มีอยู่ของนักศึกษาใน Google Sheets
       for (const rec of matchingRecords) {
         await syncToCloud(rec);
       }
 
-      // 2. ซิงค์แถวคะแนนเข้าเรียนรวมลงฐานข้อมูลชีตอันเก่า (รองรับแม้ชีตอันเก่าไม่มีคอลัมน์ termAttendanceScore หรือนักศึกษายังไม่เคยเข้าเรียนออนไลน์)
       const cloudAttendanceRecord = {
         stdId: stdId,
         stdName: stdName,
@@ -3180,16 +4749,14 @@
 
       if (saveBtn) {
         saveBtn.disabled = false;
-        saveBtn.innerHTML = `บันทึกคะแนนเข้าเรียน`;
+        saveBtn.innerHTML = 'บันทึกคะแนนเข้าเรียน';
       }
 
       renderSavedAttendanceList();
       alert(`บันทึกคะแนนเข้าเรียนรวมทั้งเทอมของ ${stdName} (${numericScore} คะแนน) ลงฐานข้อมูลเรียบร้อย`);
     }
 
-    // =========================================================================
-    // 🏫 ระบบบันทึกคะแนนสำหรับเรียนในชั้นเรียน (รหัสผ่านครู 954803 + ลิ้งเข้าชีต)
-    // =========================================================================
+    // ระบบบันทึกคะแนนสำหรับเรียนในชั้นเรียน (รหัสผ่านครู 954803)
     let inClassFromLogin = false;
 
     function openInClassModal(fromLessonLogin = false) {
@@ -3227,7 +4794,6 @@
       document.getElementById('inclass-note').value = '';
       updateInClassScorePreview();
 
-      // ดึงข้อมูลล่าสุดจากชีตมาอัปเดตรายชื่อนักศึกษา
       const synced = await fetchCloudRecords();
       if (synced) {
         const currentSelected = document.getElementById('inclass-lesson-select').value || preselectId;
@@ -3339,7 +4905,7 @@
       const saveBtn = document.getElementById('btn-save-inclass');
       if (saveBtn) {
         saveBtn.disabled = true;
-        saveBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกลงชีต...`;
+        saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกลงชีต...';
       }
 
       const totalScore = Number(scoreVal);
@@ -3397,7 +4963,7 @@
 
       if (saveBtn) {
         saveBtn.disabled = false;
-        saveBtn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> บันทึกคะแนนในชั้นเรียนลงชีต`;
+        saveBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> บันทึกคะแนนในชั้นเรียนลงชีต';
       }
 
       const statusBox = document.getElementById('inclass-save-status');
@@ -3416,37 +4982,112 @@
       renderFilteredTeacherTable();
     }
 
-    // ซิงค์ Google Sheets
-    async function syncToCloud(recordData) {
-      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("วาง_URL")) return;
+    // ซิงค์ Google Sheets แบบสมบูรณ์ (Retry + Offline Pending Queue + Deduplicate)
+    const PENDING_SYNC_KEY = 'clc_pending_sync_queue';
+
+    function getPendingSyncQueue() {
       try {
-        await fetch(GOOGLE_SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "save", data: recordData })
-        });
-      } catch (err) {
-        console.error("ส่งข้อมูลล้มเหลว:", err);
+        const raw = localStorage.getItem(PENDING_SYNC_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
       }
     }
 
-    async function fetchCloudRecords(showAlert = false) {
-      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("วาง_URL")) return false;
+    function savePendingSyncQueue(queue) {
       try {
-        const res = await fetch(GOOGLE_SCRIPT_URL + "?action=getRecords&nocache=" + new Date().getTime());
+        localStorage.setItem(PENDING_SYNC_KEY, JSON.stringify(queue));
+      } catch (e) {}
+    }
+
+    function enqueuePendingSync(recordData) {
+      const queue = getPendingSyncQueue();
+      const key = `${String(recordData.stdId || '').trim()}__${String(recordData.lessonId || '').trim()}`;
+      const filtered = queue.filter(item =>
+        `${String(item.stdId || '').trim()}__${String(item.lessonId || '').trim()}` !== key
+      );
+      filtered.push(recordData);
+      savePendingSyncQueue(filtered);
+    }
+
+    async function postRecordOnce(recordData) {
+      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes('วาง_URL')) return false;
+      try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          keepalive: true,
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'save', data: recordData })
+        });
+        return true;
+      } catch (err) {
+        console.error('ส่งข้อมูลล้มเหลว:', err);
+        return false;
+      }
+    }
+
+    async function flushPendingSyncQueue() {
+      const queue = getPendingSyncQueue();
+      if (queue.length === 0) return;
+      const remaining = [];
+      for (const item of queue) {
+        const ok = await postRecordOnce(item);
+        if (!ok) remaining.push(item);
+      }
+      savePendingSyncQueue(remaining);
+    }
+
+    async function syncToCloud(recordData) {
+      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes('วาง_URL')) return;
+      const ok = await postRecordOnce(recordData);
+      if (!ok) {
+        await new Promise(resolve => setTimeout(resolve, 900));
+        const retryOk = await postRecordOnce(recordData);
+        if (!retryOk) {
+          enqueuePendingSync(recordData);
+        }
+      }
+    }
+
+    window.addEventListener('online', () => {
+      flushPendingSyncQueue();
+    });
+
+    async function fetchCloudRecords(showAlert = false) {
+      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes('วาง_URL')) return false;
+      try {
+        await flushPendingSyncQueue();
+        const res = await fetch(GOOGLE_SCRIPT_URL + '?action=getRecords&nocache=' + new Date().getTime(), {
+          cache: 'no-store'
+        });
         const data = await res.json();
         if (Array.isArray(data)) {
           const termStore = getTermAttendanceStore();
-          const cleanedRecords = [];
+          const dedupedMap = new Map();
+          const extraRows = [];
           const attendanceMetaRows = [];
 
           data.forEach(r => {
-            r.stdId = String(r.stdId || r.stdid || "").trim();
-            const lId = String(r.lessonId || r.lessonid || "").trim();
+            r.stdId = String(r.stdId || r.stdid || r.std_id || '').trim();
+            r.stdName = String(r.stdName || r.stdname || r.std_name || '').trim();
+            r.level = String(r.level || r.Level || 'm-ton').trim();
+            r.lessonId = String(r.lessonId || r.lessonid || r.lesson_id || '').trim();
+            r.courseCode = String(r.courseCode || r.coursecode || '').trim();
+            r.session = String(r.session || r.Session || '').trim();
+            r.lessonTitle = String(r.lessonTitle || r.lessontitle || '').trim();
+            r.attendedAt = String(r.attendedAt || r.attendedat || '').trim();
+            if (r.quizAttempts === undefined && r.quizattempts !== undefined) r.quizAttempts = Number(r.quizattempts) || 0;
+            if (r.bestQuizScore === undefined && r.bestquizscore !== undefined) r.bestQuizScore = Number(r.bestquizscore) || 0;
+            if (r.quizPassed === undefined && r.quizpassed !== undefined) r.quizPassed = r.quizpassed;
+            if (r.assignmentScore === undefined && r.assignmentscore !== undefined) r.assignmentScore = r.assignmentscore;
+            if (r.teacherFeedback === undefined && r.teacherfeedback !== undefined) r.teacherFeedback = r.teacherfeedback;
+
+            const lId = r.lessonId;
             let ans = r.assignmentAnswers || r.assignmentanswers;
             if (typeof ans === 'string' && ans.startsWith('{')) {
-              try { r.assignmentAnswers = JSON.parse(ans); } catch(e){}
+              try { r.assignmentAnswers = JSON.parse(ans); } catch (e) {}
             }
 
             if (lId === '__TERM_ATTENDANCE__') {
@@ -3470,14 +5111,19 @@
               r.termAttendanceScore = Number(cloudTermAtt);
               termStore[r.stdId] = {
                 stdId: r.stdId,
-                stdName: String(r.stdName || r.stdname || '').trim(),
+                stdName: r.stdName,
                 score: Number(cloudTermAtt)
               };
             }
-            cleanedRecords.push(r);
+            if (r.stdId && r.lessonId) {
+              dedupedMap.set(`${r.stdId}__${r.lessonId}`, r);
+            } else {
+              extraRows.push(r);
+            }
           });
 
-          // อ่านคะแนนเข้าเรียนรวมจากแถว __TERM_ATTENDANCE__ ในชีตอันเก่า
+          const cleanedRecords = [...Array.from(dedupedMap.values()), ...extraRows];
+
           attendanceMetaRows.forEach(r => {
             if (!r.stdId) return;
             let metaScore = r.termAttendanceScore !== undefined ? r.termAttendanceScore : r.termattendancescore;
@@ -3490,15 +5136,13 @@
                 metaScore = parsedAns.termAttendanceScore;
               } else if (r.assignmentScore !== undefined && r.assignmentScore !== null && r.assignmentScore !== '') {
                 metaScore = r.assignmentScore;
-              } else if (r.assignmentscore !== undefined && r.assignmentscore !== null && r.assignmentscore !== '') {
-                metaScore = r.assignmentscore;
               }
             }
             if (metaScore !== undefined && metaScore !== null && metaScore !== '' && !isNaN(Number(metaScore))) {
               const numScore = Number(metaScore);
               termStore[r.stdId] = {
                 stdId: r.stdId,
-                stdName: String(r.stdName || r.stdname || '').trim(),
+                stdName: r.stdName,
                 score: numScore
               };
               cleanedRecords.forEach(rec => {
@@ -3517,16 +5161,18 @@
           return true;
         }
       } catch (err) {
-        console.error("ดึงข้อมูลจากคลาวด์ไม่สำเร็จ:", err);
+        console.error('ดึงข้อมูลจากคลาวด์ไม่สำเร็จ:', err);
       }
       return false;
     }
-function closeKpcAlert() {
+
+    function closeKpcAlert() {
       const el = document.getElementById('modal-kpc-alert');
       if (el) el.classList.remove('active');
     }
+
     // =========================================================================
-    // 🚧 ระบบเปิด-ปิดปรับปรุงเว็บไซต์ชั่วคราว (ลิ้งผ่าน Google Sheets)
+    // 🔒 ระบบเปิด-ปิดปรับปรุงเว็บไซต์ (ล็อคตั้งแต่หน้าแรก + ซ่อนหน้าแรก & กพช. สนิท)
     // =========================================================================
     function getMaintenanceState() {
       if (FORCE_MAINTENANCE_MODE) {
@@ -3542,6 +5188,9 @@ function closeKpcAlert() {
     function applyMaintenanceMode() {
       const state = getMaintenanceState();
       const overlay = document.getElementById('maintenance-overlay');
+      const appShell = document.getElementById('app-shell');
+      const bootLoader = document.getElementById('maint-boot-loader');
+      const bypassBar = document.getElementById('teacher-bypass-bar');
       const msgEl = document.getElementById('maint-display-message');
       const dashBtn = document.getElementById('btn-toggle-maintenance');
       const isTeacherBypass = sessionStorage.getItem('clc_teacher_bypass') === '1';
@@ -3549,15 +5198,23 @@ function closeKpcAlert() {
       if (dashBtn) {
         if (state.enabled) {
           dashBtn.style.background = 'var(--success)';
-          dashBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i> เปิดใช้งานเว็บตามปกติ`;
+          dashBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> เปิดใช้งานเว็บตามปกติ';
         } else {
           dashBtn.style.background = 'var(--danger)';
-          dashBtn.innerHTML = `<i class="fa-solid fa-screwdriver-wrench"></i> ปิดปรับปรุงเว็บ`;
+          dashBtn.innerHTML = '<i class="fa-solid fa-screwdriver-wrench"></i> ปิดปรับปรุงเว็บ';
         }
       }
 
-      if (!overlay) return;
+      if (bypassBar) {
+        bypassBar.style.display = (state.enabled && isTeacherBypass) ? 'block' : 'none';
+      }
+
+      if (!overlay || !appShell) return;
+
       if (state.enabled && !isTeacherBypass) {
+        if (bootLoader) bootLoader.style.display = 'none';
+        appShell.style.display = 'none';
+        closeKpcAlert();
         if (msgEl && state.message) msgEl.innerText = state.message;
         overlay.style.display = 'flex';
         document.getElementById('maint-teacher-panel').style.display = 'none';
@@ -3566,7 +5223,37 @@ function closeKpcAlert() {
         document.getElementById('maint-teacher-pwd').value = '';
       } else {
         overlay.style.display = 'none';
+        if (initialBootResolved) {
+          if (bootLoader) bootLoader.style.display = 'none';
+          appShell.style.display = 'flex';
+        }
       }
+    }
+
+    async function refreshMaintenanceStatusFromLock() {
+      const btn = document.getElementById('btn-maint-refresh');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังตรวจสอบ...';
+      }
+      await fetchCloudRecords();
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> ตรวจสอบสถานะอีกครั้ง';
+      }
+      const state = getMaintenanceState();
+      if (!state.enabled) {
+        initialBootResolved = true;
+        applyMaintenanceMode();
+        const kpcModal = document.getElementById('modal-kpc-alert');
+        if (kpcModal) kpcModal.classList.add('active');
+      }
+    }
+
+    function returnToMaintenanceLock() {
+      sessionStorage.removeItem('clc_teacher_bypass');
+      navigate('view-home');
+      applyMaintenanceMode();
     }
 
     function toggleMaintTeacherPanel() {
@@ -3587,6 +5274,7 @@ function closeKpcAlert() {
 
     function bypassMaintenanceForTeacher() {
       sessionStorage.setItem('clc_teacher_bypass', '1');
+      initialBootResolved = true;
       applyMaintenanceMode();
     }
 
@@ -3625,13 +5313,14 @@ function closeKpcAlert() {
       const btn = document.getElementById('btn-maint-turn-off');
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังเปิดเว็บไซต์...`;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังเปิดเว็บไซต์...';
       }
       sessionStorage.removeItem('clc_teacher_bypass');
+      initialBootResolved = true;
       await setCloudMaintenance(false);
       if (btn) {
         btn.disabled = false;
-        btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> เปิดเว็บไซต์ให้นักศึกษาเข้าใช้งานทันที`;
+        btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> เปิดเว็บไซต์ให้นักศึกษาเข้าใช้งานทันที';
       }
       alert('เปิดเว็บไซต์ให้นักศึกษาเข้าใช้งานตามปกติแล้วครับ');
     }
@@ -3650,16 +5339,43 @@ function closeKpcAlert() {
       } else {
         const msg = prompt('ต้องการปิดปรับปรุงเว็บไซต์ใช่หรือไม่?\n(ระบุข้อความแจ้งนักศึกษา หรือกดตกลงเพื่อใช้ข้อความมาตรฐาน):', 'ขณะนี้คุณครูกำลังปรับปรุงและอัปเดตข้อมูลระบบห้องเรียนออนไลน์ เพื่อป้องกันข้อมูลคลาดเคลื่อน กรุณารอสักครู่แล้วกลับมาใช้งานใหม่อีกครั้งครับ');
         if (msg === null) return;
-        sessionStorage.setItem('clc_teacher_bypass', '1'); // ให้เครื่องครูปัจจุบันยังกดทำงานต่อได้
+        sessionStorage.setItem('clc_teacher_bypass', '1');
         await setCloudMaintenance(true, msg.trim());
-        alert('เปิดโหมดปิดปรับปรุงเว็บไซต์แล้ว!\nนักศึกษาทุกเครื่องจะเข้าใช้งานไม่ได้จนกว่าคุณครูจะกด "เปิดใช้งานเว็บตามปกติ"');
+        alert('เปิดโหมดปิดปรับปรุงเว็บไซต์แล้ว!\nนักศึกษาทุกเครื่องจะถูกล็อคตั้งแต่หน้าแรกทันที จนกว่าคุณครูจะกด "เปิดใช้งานเว็บตามปกติ"');
       }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    // ตรวจสอบสถานะปิดระบบตั้งแต่หน้าแรกก่อนเผยหน้าเว็บและป๊อปอัป กพช.
+    document.addEventListener('DOMContentLoaded', async () => {
+      const bootLoader = document.getElementById('maint-boot-loader');
+      const localState = getMaintenanceState();
+      const isTeacherBypass = sessionStorage.getItem('clc_teacher_bypass') === '1';
+
+      if (localState.enabled && !isTeacherBypass) {
+        initialBootResolved = true;
+        applyMaintenanceMode();
+        await fetchCloudRecords();
+        return;
+      }
+
+      if (!isTeacherBypass && bootLoader) {
+        bootLoader.style.display = 'flex';
+      }
+
+      const timeoutPromise = new Promise(resolve => setTimeout(resolve, 2200));
+      await Promise.race([fetchCloudRecords(), timeoutPromise]);
+
+      initialBootResolved = true;
+      if (bootLoader) bootLoader.style.display = 'none';
       applyMaintenanceMode();
-      fetchCloudRecords();
+
+      const finalState = getMaintenanceState();
+      if (!finalState.enabled || sessionStorage.getItem('clc_teacher_bypass') === '1') {
+        const kpcModal = document.getElementById('modal-kpc-alert');
+        if (kpcModal) kpcModal.classList.add('active');
+      }
     });
+
     function openLightbox(src) {
       document.getElementById('lightbox-img').src = src;
       document.getElementById('modal-lightbox').classList.add('active');
@@ -3675,4 +5391,3 @@ function closeKpcAlert() {
   </script>
 </body>
 </html>
-
