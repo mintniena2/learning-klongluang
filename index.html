@@ -351,7 +351,7 @@
     .gemini-hero-left {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: center;
       gap: 20px;
     }
 
@@ -625,7 +625,8 @@
       border-radius: 18px;
       padding: 20px 18px;
       box-shadow: var(--shadow);
-      margin-top: 26px;
+      margin-top: 0;
+      margin-bottom: 28px;
     }
     @media (min-width: 640px) {
       .news-board-card {
@@ -1619,8 +1620,6 @@
 
         <nav class="header-nav">
           <button type="button" class="nav-link-btn active" id="nav-link-home" onclick="navigate('view-home')">หน้าแรก</button>
-          <button type="button" class="nav-link-btn" id="nav-link-mton" onclick="openLevel('m-ton')">ระดับ ม.ต้น</button>
-          <button type="button" class="nav-link-btn" id="nav-link-mplai" onclick="openLevel('m-ปลาย')">ระดับ ม.ปลาย</button>
           <button type="button" class="nav-link-btn" id="nav-link-student" onclick="navigate('view-student-login')">ตรวจสอบคะแนน</button>
         </nav>
 
@@ -1636,8 +1635,6 @@
       <!-- เมนูแถบลัดบนมือถือ -->
       <div class="mobile-quick-nav">
         <button type="button" class="mobile-nav-chip active" id="mnav-home" onclick="navigate('view-home')"><i class="fa-solid fa-house"></i> หน้าแรก</button>
-        <button type="button" class="mobile-nav-chip" id="mnav-mton" onclick="openLevel('m-ton')"><i class="fa-solid fa-school"></i> ม.ต้น</button>
-        <button type="button" class="mobile-nav-chip" id="mnav-mplai" onclick="openLevel('m-ปลาย')"><i class="fa-solid fa-building-columns"></i> ม.ปลาย</button>
         <button type="button" class="mobile-nav-chip" id="mnav-student" onclick="navigate('view-student-login')"><i class="fa-solid fa-award"></i> ดูผลคะแนน</button>
       </div>
     </header>
@@ -1655,36 +1652,6 @@
                 ระบบการเรียนรู้ครบวงจร เช็คชื่อเข้าเรียนอัตโนมัติ ศึกษาเนื้อหาและอินโฟกราฟิก
                 เล่นเกมจับคู่ทบทวนความรู้ ทำใบงาน และทำแบบทดสอบออนไลน์พร้อมตรวจผลคะแนนได้ทันที
               </p>
-            </div>
-
-            <div class="gemini-steps-overview">
-              <div>
-                <p class="gemini-step-mini-num pink">ขั้นตอนที่ 01</p>
-                <p class="gemini-step-mini-label">อ่านเนื้อหา</p>
-              </div>
-              <div>
-                <p class="gemini-step-mini-num purple">ขั้นตอนที่ 02</p>
-                <p class="gemini-step-mini-label">เกมจับคู่ความรู้</p>
-              </div>
-              <div>
-                <p class="gemini-step-mini-num pink">ขั้นตอนที่ 03</p>
-                <p class="gemini-step-mini-label">พิมพ์ตอบใบงาน</p>
-              </div>
-              <div>
-                <p class="gemini-step-mini-num purple">ขั้นตอนที่ 04</p>
-                <p class="gemini-step-mini-label">แบบทดสอบ 10 ข้อ</p>
-              </div>
-            </div>
-
-            <div class="gemini-hero-cta">
-              <button type="button" class="gemini-cta-primary" onclick="openLevel('m-ton')">
-                <span>เริ่มเรียนระดับ ม.ต้น</span>
-                <i class="fa-solid fa-arrow-right"></i>
-              </button>
-              <button type="button" class="gemini-cta-secondary" onclick="openLevel('m-ปลาย')">
-                <span>เริ่มเรียนระดับ ม.ปลาย</span>
-                <i class="fa-solid fa-arrow-right"></i>
-              </button>
             </div>
           </div>
 
@@ -1713,16 +1680,44 @@
           </div>
         </section>
 
-        <!-- เลือกระดับชั้นเพื่อเข้าเรียน -->
+        <!-- 📰 กระดานข่าวประชาสัมพันธ์หน้าแรก (วางไว้ด้านบนก่อนปุ่มเลือกระดับชั้น เพื่อให้นักศึกษาเห็นข่าวสารก่อน) -->
+        <section class="news-board-card" id="home-news-board">
+          <div class="news-board-header">
+            <i class="fa-solid fa-bullhorn" style="color:#B95D78; font-size:1.1rem;"></i>
+            <h2 style="font-size:1.12rem; color:var(--text-dark); font-weight:600;">กระดานข่าวประชาสัมพันธ์</h2>
+          </div>
+
+          <div class="news-board-grid">
+            <div>
+              <!-- 👉 เปลี่ยนรูปกระดานข่าวโดยแก้ชื่อไฟล์ตรง src="images/news.png" ได้เลย -->
+              <div class="news-board-img-wrap" id="news-board-img-wrap" onclick="openLightbox(this.querySelector('img').src)">
+                <img src="images/news.png" alt="ภาพกระดานข่าวประชาสัมพันธ์" onerror="document.getElementById('news-board-img-wrap').style.display='none'; document.getElementById('news-board-fallback').style.display='flex';">
+                <div class="news-zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> แตะดูภาพใหญ่</div>
+              </div>
+              <div class="news-board-fallback" id="news-board-fallback">
+                <i class="fa-solid fa-bullhorn" style="font-size:1.8rem; color:#B95D78; margin-bottom:8px;"></i>
+                <p style="font-size:0.9rem; font-weight:600; color:var(--text-dark);">ประชาสัมพันธ์ภาคเรียนที่ 2/2569</p>
+                <p style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">ศูนย์การเรียนชุมชน</p>
+              </div>
+            </div>
+
+            <div>
+              <h3 style="font-size:1.02rem; font-weight:600; color:var(--text-dark);">
+                ประกาศสำหรับนักศึกษา ศรช. ปีการศึกษา 2569 ภาคเรียนที่ 2
+              </h3>
+              <!-- 👉 แก้ข้อความข่าวในบรรทัดล่างนี้ได้เลย -->
+              <p class="news-board-caption">ยินดีต้อนรับนักศึกษา ศรช. ปีการศึกษา 2569 ภาคเรียนที่ 2 ติดตามข่าวสารและกำหนดการเรียนได้ที่นี่ครับ กรุณาเข้าเรียนตามรายวิชาที่เปิดสอน อ่านเนื้อหา เล่นเกมจับคู่ความรู้ พิมพ์ตอบใบงานด้วยตนเอง และทำแบบทดสอบให้ครบถ้วน</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- เลือกระดับชั้นเพื่อเข้าเรียน (อยู่ถัดจากกระดานข่าว) -->
         <section style="margin-bottom: 24px;">
           <div class="gemini-section-head">
             <div>
               <h2>เลือกระดับชั้นเพื่อเข้าเรียน</h2>
               <p>เลือกหมวดระดับชั้นของนักศึกษาเพื่อดูรายวิชาและครั้งที่เปิดสอน</p>
             </div>
-            <button type="button" class="gemini-link-action" onclick="navigate('view-student-login')">
-              ตรวจสอบผลคะแนนสะสม →
-            </button>
           </div>
 
           <div class="level-selection">
@@ -1762,37 +1757,6 @@
             <button type="button" class="btn btn-sm" onclick="openInClassModal(false)">
               <i class="fa-solid fa-key"></i> กรอกคะแนนสำหรับเรียนในชั้นเรียน
             </button>
-          </div>
-        </section>
-
-        <!-- 📰 กระดานข่าวประชาสัมพันธ์หน้าแรก (แก้รูป src="images/news.png" และข้อความได้เลย) -->
-        <section class="news-board-card" id="home-news-board">
-          <div class="news-board-header">
-            <i class="fa-solid fa-bullhorn" style="color:#B95D78; font-size:1.1rem;"></i>
-            <h2 style="font-size:1.12rem; color:var(--text-dark); font-weight:600;">กระดานข่าวประชาสัมพันธ์</h2>
-          </div>
-
-          <div class="news-board-grid">
-            <div>
-              <!-- 👉 เปลี่ยนรูปกระดานข่าวโดยแก้ชื่อไฟล์ตรง src="images/news.png" ได้เลย -->
-              <div class="news-board-img-wrap" id="news-board-img-wrap" onclick="openLightbox(this.querySelector('img').src)">
-                <img src="images/news.png" alt="ภาพกระดานข่าวประชาสัมพันธ์" onerror="document.getElementById('news-board-img-wrap').style.display='none'; document.getElementById('news-board-fallback').style.display='flex';">
-                <div class="news-zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> แตะดูภาพใหญ่</div>
-              </div>
-              <div class="news-board-fallback" id="news-board-fallback">
-                <i class="fa-solid fa-bullhorn" style="font-size:1.8rem; color:#B95D78; margin-bottom:8px;"></i>
-                <p style="font-size:0.9rem; font-weight:600; color:var(--text-dark);">ประชาสัมพันธ์ภาคเรียนที่ 2/2569</p>
-                <p style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">ศูนย์การเรียนชุมชน</p>
-              </div>
-            </div>
-
-            <div>
-              <h3 style="font-size:1.02rem; font-weight:600; color:var(--text-dark);">
-                ประกาศสำหรับนักศึกษา ศรช. ปีการศึกษา 2569 ภาคเรียนที่ 2
-              </h3>
-              <!-- 👉 แก้ข้อความข่าวในบรรทัดล่างนี้ได้เลย -->
-              <p class="news-board-caption">ยินดีต้อนรับนักศึกษา ศรช. ปีการศึกษา 2569 ภาคเรียนที่ 2 ติดตามข่าวสารและกำหนดการเรียนได้ที่นี่ครับ กรุณาเข้าเรียนตามรายวิชาที่เปิดสอน อ่านเนื้อหา เล่นเกมจับคู่ความรู้ พิมพ์ตอบใบงานด้วยตนเอง และทำแบบทดสอบให้ครบถ้วน</p>
-            </div>
           </div>
         </section>
       </div>
@@ -2129,7 +2093,7 @@
         </div>
       </div>
 
-      <!-- 10. TEACHER LOGIN (รหัส ) -->
+      <!-- 10. TEACHER LOGIN (รหัส 954803) -->
       <div id="view-teacher-login" class="view">
         <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> กลับหน้าแรก</span>
         <div class="card" style="text-align: center; max-width:460px; margin:0 auto;">
@@ -2293,7 +2257,7 @@
       </div>
     </div>
 
-    <!-- MODAL: สำหรับเรียนในชั้นเรียน (ครูใส่รหัส  และกรอกคะแนนในคาบ) -->
+    <!-- MODAL: สำหรับเรียนในชั้นเรียน (ครูใส่รหัส 954803 และกรอกคะแนนในคาบ) -->
     <div id="modal-inclass" class="modal" onclick="if(event.target===this) closeInClassModal()">
       <div class="modal-content">
         <h3 style="color:var(--pastel-purple); margin-bottom:6px;"><i class="fa-solid fa-chalkboard-user"></i> สำหรับเรียนในชั้นเรียน</h3>
@@ -3496,8 +3460,8 @@
     let isThaiComposing = false;
 
     function updateHeaderActiveNav(viewId) {
-      const desktopIds = ['nav-link-home', 'nav-link-mton', 'nav-link-mplai', 'nav-link-student'];
-      const mobileIds = ['mnav-home', 'mnav-mton', 'mnav-mplai', 'mnav-student'];
+      const desktopIds = ['nav-link-home', 'nav-link-student'];
+      const mobileIds = ['mnav-home', 'mnav-student'];
       [...desktopIds, ...mobileIds].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.remove('active');
@@ -3506,14 +3470,6 @@
       if (viewId === 'view-home') {
         document.getElementById('nav-link-home')?.classList.add('active');
         document.getElementById('mnav-home')?.classList.add('active');
-      } else if (viewId === 'view-lessons' || viewId === 'view-lesson-login' || viewId.startsWith('view-step-')) {
-        if (currentLevel === 'm-ton') {
-          document.getElementById('nav-link-mton')?.classList.add('active');
-          document.getElementById('mnav-mton')?.classList.add('active');
-        } else {
-          document.getElementById('nav-link-mplai')?.classList.add('active');
-          document.getElementById('mnav-mplai')?.classList.add('active');
-        }
       } else if (viewId === 'view-student-login' || viewId === 'view-student-result') {
         document.getElementById('nav-link-student')?.classList.add('active');
         document.getElementById('mnav-student')?.classList.add('active');
