@@ -1176,15 +1176,16 @@
 
     .matching-board {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 18px;
       margin-bottom: 18px;
+      align-items: stretch;
     }
-    @media (max-width: 640px) {
-      .matching-board {
-        grid-template-columns: 1fr;
-        gap: 14px;
-      }
+
+    .matching-col {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
     }
 
     .matching-col-title {
@@ -1194,17 +1195,26 @@
       margin-bottom: 8px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+    .matching-col-hint {
+      font-weight: 400;
+      font-size: 0.74rem;
+      white-space: nowrap;
     }
 
     .matching-card-list {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-auto-rows: 1fr;
       gap: 10px;
+      flex: 1;
     }
 
     .match-card {
       width: 100%;
-      min-height: 54px;
+      height: 100%;
+      min-height: 58px;
       text-align: left;
       padding: 12px 14px;
       border-radius: 13px;
@@ -1219,6 +1229,33 @@
       justify-content: space-between;
       gap: 10px;
       transition: all 0.16s ease;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    @media (max-width: 640px) {
+      .matching-board {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 8px;
+      }
+      .matching-col-title {
+        font-size: 0.72rem;
+        margin-bottom: 6px;
+      }
+      .matching-col-hint {
+        display: none;
+      }
+      .matching-card-list {
+        gap: 8px;
+      }
+      .match-card {
+        min-height: 64px;
+        padding: 10px 9px;
+        font-size: 0.76rem;
+        line-height: 1.38;
+        gap: 6px;
+        border-radius: 11px;
+      }
     }
     .match-card.left-side:hover:not(:disabled) {
       border-color: var(--pastel-purple);
@@ -1917,18 +1954,18 @@
           </div>
 
           <div class="matching-board">
-            <div>
+            <div class="matching-col">
               <div class="matching-col-title">
-                <span>ฝั่งที่ 1 · หัวข้อ / คำถามสำคัญ</span>
-                <span style="font-weight:400;">แตะเลือก</span>
+                <span>ฝั่งซ้าย · หัวข้อ</span>
+                <span class="matching-col-hint">แตะเลือก</span>
               </div>
               <div id="matching-left-col" class="matching-card-list"></div>
             </div>
 
-            <div>
+            <div class="matching-col">
               <div class="matching-col-title">
-                <span>ฝั่งที่ 2 · คำอธิบาย / คำตอบที่คู่กัน</span>
-                <span style="font-weight:400;">แตะจับคู่</span>
+                <span>ฝั่งขวา · คำตอบที่คู่กัน</span>
+                <span class="matching-col-hint">แตะจับคู่</span>
               </div>
               <div id="matching-right-col" class="matching-card-list"></div>
             </div>
