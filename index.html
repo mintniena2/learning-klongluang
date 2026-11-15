@@ -1293,6 +1293,95 @@
       color: #9F1239 !important;
     }
 
+    /* 🃏 เกมเปิดการ์ดจับคู่ความจำ (ใช้ในบทที่กำหนด เช่น mp4_s1) */
+    .flip-card-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 640px) {
+      .flip-card-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+    }
+    .flip-card-btn {
+      min-height: 112px;
+      border-radius: 15px;
+      border: 2px solid #DFCFEA;
+      padding: 10px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.18s ease, border-color 0.18s ease;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .flip-card-btn.face-down {
+      background: linear-gradient(135deg, #8B68B8 0%, #D9829B 100%);
+      color: #FFFFFF;
+      box-shadow: 0 3px 10px rgba(124, 90, 168, 0.22);
+    }
+    .flip-card-btn.face-down:hover {
+      opacity: 0.94;
+      transform: translateY(-2px);
+    }
+    .flip-card-btn.flipped-term {
+      background: #F4ECFC;
+      border-color: var(--pastel-purple);
+      color: var(--text-dark);
+      box-shadow: 0 0 0 3px rgba(124, 90, 168, 0.16);
+    }
+    .flip-card-btn.flipped-match {
+      background: #FFF0F4;
+      border-color: var(--pastel-pink-bright);
+      color: var(--text-dark);
+      box-shadow: 0 0 0 3px rgba(217, 123, 147, 0.18);
+    }
+    .flip-card-btn.matched {
+      background: var(--success-bg) !important;
+      border-color: #6EE7B7 !important;
+      color: #065F46 !important;
+      cursor: default;
+      box-shadow: none;
+    }
+    .flip-card-btn.mismatch {
+      background: #FFF1F2 !important;
+      border-color: #E11D48 !important;
+      color: #9F1239 !important;
+    }
+    .flip-card-tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+    .flip-card-tag.term { background: #E9DAF8; color: #6D4E99; }
+    .flip-card-tag.match { background: #FDE2EA; color: #B95D78; }
+    .flip-card-tag.done { background: rgba(16, 185, 129, 0.16); color: #065F46; }
+    .flip-card-text {
+      font-size: 0.84rem;
+      font-weight: 600;
+      line-height: 1.38;
+    }
+    @media (max-width: 640px) {
+      .flip-card-btn {
+        min-height: 102px;
+        padding: 8px 6px;
+        border-radius: 12px;
+      }
+      .flip-card-text {
+        font-size: 0.74rem;
+        line-height: 1.32;
+      }
+    }
+
     .btn {
       width: 100%;
       padding: 13px 16px;
@@ -1953,7 +2042,7 @@
             <span>เลือกการ์ดหัวข้อทางฝั่งซ้าย 1 ใบ แล้วแตะจับคู่กับคำตอบที่ถูกต้องทางฝั่งขวา</span>
           </div>
 
-          <div class="matching-board">
+          <div class="matching-board" id="matching-board">
             <div class="matching-col">
               <div class="matching-col-title">
                 <span>ฝั่งซ้าย · หัวข้อ</span>
@@ -1970,6 +2059,9 @@
               <div id="matching-right-col" class="matching-card-list"></div>
             </div>
           </div>
+
+          <!-- กระดานเกมเปิดการ์ดความจำ (แสดงอัตโนมัติในบทที่ใช้เกมเปิดการ์ด เช่น mp4_s1) -->
+          <div class="flip-card-grid" id="flip-card-board" style="display:none;"></div>
 
           <button type="button" id="btn-proceed-to-assignment" class="btn" disabled onclick="goToAssignmentStep()">
             <i class="fa-solid fa-lock"></i> จับคู่ให้ครบทุกคู่ก่อนทำใบงาน
@@ -3452,8 +3544,19 @@
         { id: 'p3', term: 'ระบบเศรษฐกิจแบบผสม', match: 'ผสมผสานกลไกตลาดเข้ากับบทบาทการกำกับดูแลของภาครัฐ' },
         { id: 'p4', term: 'กฎอุปสงค์ (Demand)', match: 'เมื่อราคาสินค้าสูงขึ้น ความต้องการซื้อสินค้าจะลดลง' },
         { id: 'p5', term: 'ราคาดุลยภาพในตลาด', match: 'จุดที่ปริมาณความต้องการซื้อเท่ากับปริมาณเสนอขายพอดี' }
+      ],
+      mp4_s1: [
+        { id: 'p1', term: 'Resume / CV', match: 'ประวัติย่อสำหรับสมัครงาน' },
+        { id: 'p2', term: 'Education', match: 'ประวัติการศึกษา' },
+        { id: 'p3', term: 'Work Experience', match: 'ประสบการณ์การทำงาน' },
+        { id: 'p4', term: 'Skills', match: 'ทักษะและความสามารถ' },
+        { id: 'p5', term: 'Action Verbs', match: 'คำกริยาแสดงผลงาน เช่น Achieved' },
+        { id: 'p6', term: 'References', match: 'บุคคลอ้างอิงรับรองการทำงาน' }
       ]
     };
+
+    // 👉 รายการรหัสบทเรียนที่เปลี่ยนขั้นตอนที่ 2 เป็น "เกมเปิดการ์ดความจำ"
+    const FLIP_GAME_LESSON_IDS = ['mp4_s1', 'mt1_s1'];
 
     function getLessonMatchingPairs(lesson) {
       if (CURATED_MATCHING_PAIRS[lesson.id]) {
@@ -3491,6 +3594,12 @@
     let matchingMistakes = 0;
     let matchingLockedAnim = false;
     let matchingMuted = false;
+
+    // ตัวแปรควบคุมเกมเปิดการ์ด (สำหรับบทเรียนใน FLIP_GAME_LESSON_IDS เช่น mp4_s1)
+    let isFlipGameMode = false;
+    let flipDeck = [];
+    let flippedCardUids = [];
+    let flipMismatchUids = [];
 
     // ตัวแปรป้องกัน Copy-Paste ในใบงาน
     let pasteWarningCount = 0;
@@ -3725,7 +3834,19 @@
         if (!AudioCtx) return;
         const ctx = new AudioCtx();
         const now = ctx.currentTime;
-        if (type === 'match') {
+        if (type === 'flip') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(420, now);
+          osc.frequency.exponentialRampToValueAtTime(520, now + 0.06);
+          gain.gain.setValueAtTime(0.05, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.09);
+        } else if (type === 'match') {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'sine';
@@ -3775,24 +3896,170 @@
       }
     }
 
+    function buildFlipDeck(pairs) {
+      const deck = [];
+      pairs.forEach(p => {
+        deck.push({ uid: `${p.id}_term`, pairId: p.id, side: 'term', text: p.term });
+        deck.push({ uid: `${p.id}_match`, pairId: p.id, side: 'match', text: p.match });
+      });
+      return shuffleList(deck);
+    }
+
     function goToMatchingGameStep() {
       matchingPairs = getLessonMatchingPairs(currentLesson);
-      matchingLeftOrder = shuffleList(matchingPairs);
-      matchingRightOrder = shuffleList(matchingPairs);
-      selectedLeftId = null;
-      selectedRightId = null;
+      isFlipGameMode = FLIP_GAME_LESSON_IDS.includes(currentLesson.id);
       matchedPairIds = matchingCompleted ? matchingPairs.map(x => x.id) : [];
       matchingMistakes = 0;
       matchingLockedAnim = false;
 
       document.getElementById('matching-lesson-sub').innerText = `${currentLesson.code} • ${currentLesson.title} (${currentLesson.session})`;
-      setMatchingFeedback('info', 'เลือกการ์ดหัวข้อทางฝั่งซ้าย 1 ใบ แล้วแตะจับคู่กับคำตอบที่ถูกต้องทางฝั่งขวา');
-      renderMatchingBoard();
+
+      const titleEl = document.querySelector('#view-step-matching h2');
+      const matchingBoardEl = document.getElementById('matching-board');
+      const flipBoardEl = document.getElementById('flip-card-board');
+
+      if (isFlipGameMode) {
+        if (titleEl) titleEl.innerText = 'เกมเปิดการ์ดจับคู่ความจำประจำบทเรียน';
+        if (matchingBoardEl) matchingBoardEl.style.display = 'none';
+        if (flipBoardEl) flipBoardEl.style.display = 'grid';
+        flipDeck = buildFlipDeck(matchingPairs);
+        flippedCardUids = [];
+        flipMismatchUids = [];
+        setMatchingFeedback('info', matchingCompleted
+          ? 'ผ่านเกมเปิดการ์ดแล้ว สามารถกดไปทำใบงานด้านล่างได้ทันที'
+          : 'แตะเปิดการ์ดทีละ 2 ใบ เพื่อจับคู่คำศัพท์ภาษาอังกฤษกับความหมายให้ครบทุกคู่');
+        renderFlipCardBoard();
+      } else {
+        if (titleEl) titleEl.innerText = 'เกมจับคู่ทบทวนความรู้ประจำบทเรียน';
+        if (matchingBoardEl) matchingBoardEl.style.display = 'grid';
+        if (flipBoardEl) flipBoardEl.style.display = 'none';
+        matchingLeftOrder = shuffleList(matchingPairs);
+        matchingRightOrder = shuffleList(matchingPairs);
+        selectedLeftId = null;
+        selectedRightId = null;
+        setMatchingFeedback('info', 'เลือกการ์ดหัวข้อทางฝั่งซ้าย 1 ใบ แล้วแตะจับคู่กับคำตอบที่ถูกต้องทางฝั่งขวา');
+        renderMatchingBoard();
+      }
+
       navigate('view-step-matching');
+    }
+
+    function renderFlipCardBoard() {
+      const total = matchingPairs.length;
+      const done = matchedPairIds.length;
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+      document.getElementById('matching-status-badge').innerText = `เจอแล้ว ${done}/${total} คู่ · พลาด ${matchingMistakes} ครั้ง`;
+      document.getElementById('matching-progress-pct').innerText = `${pct}%`;
+      const fill = document.getElementById('matching-progress-fill');
+      fill.style.width = `${pct}%`;
+      if (done === total && total > 0) fill.classList.add('done'); else fill.classList.remove('done');
+
+      const board = document.getElementById('flip-card-board');
+      board.innerHTML = '';
+
+      flipDeck.forEach((card, idx) => {
+        const isMatched = matchedPairIds.includes(card.pairId);
+        const isFlipped = isMatched || flippedCardUids.includes(card.uid);
+        const isMismatch = flipMismatchUids.includes(card.uid);
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.disabled = isMatched;
+
+        if (!isFlipped) {
+          btn.className = 'flip-card-btn face-down';
+          btn.innerHTML = `<i class="fa-solid fa-circle-question" style="font-size:1.35rem; opacity:0.92;"></i><span style="font-size:0.76rem; font-weight:600;">การ์ด #${idx + 1}</span>`;
+        } else {
+          const stateCls = isMatched ? 'matched' : isMismatch ? 'mismatch animate-shake' : (card.side === 'term' ? 'flipped-term' : 'flipped-match');
+          const tagCls = isMatched ? 'done' : card.side;
+          const tagText = card.side === 'term' ? 'คำศัพท์' : 'ความหมาย';
+          btn.className = `flip-card-btn ${stateCls}`;
+          btn.innerHTML = `<span class="flip-card-tag ${tagCls}">${tagText}</span><span class="flip-card-text">${card.text}</span>${isMatched ? '<i class="fa-solid fa-circle-check" style="color:#059669; font-size:0.9rem;"></i>' : ''}`;
+        }
+
+        btn.onclick = () => onFlipCardClick(card.uid);
+        board.appendChild(btn);
+      });
+
+      const proceedBtn = document.getElementById('btn-proceed-to-assignment');
+      const shuffleBtn = document.getElementById('btn-matching-shuffle');
+      if (matchingCompleted) {
+        proceedBtn.disabled = false;
+        proceedBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> ผ่านเกมเปิดการ์ดแล้ว • ไปทำใบงานประจำครั้ง <i class="fa-solid fa-arrow-right"></i>';
+        if (shuffleBtn) shuffleBtn.style.display = 'none';
+      } else {
+        proceedBtn.disabled = true;
+        proceedBtn.innerHTML = `<i class="fa-solid fa-lock"></i> เปิดการ์ดจับคู่ให้ครบทุกคู่ก่อนทำใบงาน (${done}/${total} คู่)`;
+        if (shuffleBtn) shuffleBtn.style.display = 'inline-flex';
+      }
+    }
+
+    function onFlipCardClick(uid) {
+      if (matchingLockedAnim || matchingCompleted || flippedCardUids.includes(uid)) return;
+      const card = flipDeck.find(c => c.uid === uid);
+      if (!card || matchedPairIds.includes(card.pairId)) return;
+
+      if (flippedCardUids.length === 0) {
+        playGameTone('flip');
+        flippedCardUids = [uid];
+        renderFlipCardBoard();
+        return;
+      }
+
+      if (flippedCardUids.length === 1) {
+        const firstCard = flipDeck.find(c => c.uid === flippedCardUids[0]);
+        if (!firstCard) return;
+
+        flippedCardUids = [firstCard.uid, uid];
+        matchingLockedAnim = true;
+        renderFlipCardBoard();
+
+        if (firstCard.pairId === card.pairId) {
+          setTimeout(() => {
+            matchedPairIds.push(card.pairId);
+            flippedCardUids = [];
+            matchingLockedAnim = false;
+
+            if (matchedPairIds.length === matchingPairs.length) {
+              matchingCompleted = true;
+              playGameTone('win');
+              setMatchingFeedback('success', 'เก่งมาก! คุณเปิดการ์ดจับคู่ครบทุกคู่แล้ว สามารถกดปุ่มด้านล่างเพื่อเข้าทำใบงานได้เลย');
+            } else {
+              playGameTone('match');
+              setMatchingFeedback('success', `เปิดเจอคู่ถูกต้อง! จับคู่สำเร็จแล้ว ${matchedPairIds.length} จาก ${matchingPairs.length} คู่`);
+            }
+            renderFlipCardBoard();
+          }, 320);
+        } else {
+          playGameTone('wrong');
+          matchingMistakes++;
+          flipMismatchUids = [firstCard.uid, uid];
+          setMatchingFeedback('error', 'ยังไม่ตรงคู่กัน จำตำแหน่งการ์ดไว้แล้วลองเปิดใหม่อีกครั้งนะครับ');
+          renderFlipCardBoard();
+
+          setTimeout(() => {
+            flippedCardUids = [];
+            flipMismatchUids = [];
+            matchingLockedAnim = false;
+            renderFlipCardBoard();
+          }, 780);
+        }
+      }
     }
 
     function shuffleMatchingBoard() {
       if (matchingCompleted || matchingLockedAnim) return;
+      if (isFlipGameMode) {
+        flipDeck = buildFlipDeck(matchingPairs);
+        flippedCardUids = [];
+        flipMismatchUids = [];
+        matchedPairIds = [];
+        matchingMistakes = 0;
+        setMatchingFeedback('info', 'สลับการ์ดคว่ำหน้าใหม่ทั้งหมดแล้ว เริ่มเปิดการ์ดได้เลยครับ');
+        renderFlipCardBoard();
+        return;
+      }
       matchingLeftOrder = shuffleList(matchingPairs);
       matchingRightOrder = shuffleList(matchingPairs);
       selectedLeftId = null;
