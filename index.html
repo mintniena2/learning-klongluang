@@ -983,7 +983,7 @@
       </div>
     </div>
 
-    <!-- 9. TEACHER LOGIN (รหัส 954803) -->
+    <!-- 9. TEACHER LOGIN (รหัส ) -->
     <div id="view-teacher-login" class="view">
       <span class="back-btn" onclick="navigate('view-home')"><i class="fa-solid fa-arrow-left"></i> กลับหน้าแรก</span>
       <div class="card" style="text-align: center;">
@@ -1121,17 +1121,17 @@
     </div>
   </div>
 
-  <!-- MODAL: สำหรับเรียนในชั้นเรียน (ครูใส่รหัส 954803 และกรอกคะแนนในคาบ) -->
+  <!-- MODAL: สำหรับเรียนในชั้นเรียน (ครูใส่รหัส  และกรอกคะแนนในคาบ) -->
   <div id="modal-inclass" class="modal">
     <div class="modal-content">
       <h3 style="color:var(--pastel-purple); margin-bottom:6px;"><i class="fa-solid fa-chalkboard-user"></i> สำหรับเรียนในชั้นเรียน</h3>
       <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">บันทึกคะแนนสำหรับนักศึกษาที่เข้าเรียนในชั้นเรียนกับครู (นำไปคำนวณเหมือนใบงานและแบบทดสอบ)</p>
 
-      <!-- ส่วนยืนยันรหัสผ่านครู 954803 -->
+      <!-- ส่วนยืนยันรหัสผ่านครู  -->
       <div id="inclass-auth-box">
         <div class="input-group">
           <label>กรอกรหัสผ่านคุณครูเพื่อเปิดช่องกรอกคะแนน</label>
-          <input type="password" id="inclass-teacher-pwd" placeholder="กรอกรหัสผ่านคุณครู (954803)" onkeydown="if(event.key==='Enter') verifyInClassTeacherPassword()">
+          <input type="password" id="inclass-teacher-pwd" placeholder="กรอกรหัสผ่านคุณครู" onkeydown="if(event.key==='Enter') verifyInClassTeacherPassword()">
         </div>
         <div style="display:flex; gap:10px;">
           <button type="button" class="btn btn-secondary" onclick="closeInClassModal()">ยกเลิก</button>
@@ -1214,7 +1214,7 @@
 
         <div id="maint-teacher-panel" style="display:none; margin-top:12px; text-align:left; background:#faf7fd; padding:12px; border-radius:12px; border:1px solid #ece3f6;">
           <div id="maint-pwd-step">
-            <label style="font-size:0.82rem; font-weight:600; display:block; margin-bottom:6px;">กรอกรหัสผ่านคุณครู (954803)</label>
+            <label style="font-size:0.82rem; font-weight:600; display:block; margin-bottom:6px;">กรอกรหัสผ่านคุณครู</label>
             <div style="display:flex; gap:8px;">
               <input type="password" id="maint-teacher-pwd" placeholder="รหัสผ่านคุณครู" style="flex:1; padding:8px; border:1px solid #d9c7ee; border-radius:8px; outline:none;" onkeydown="if(event.key==='Enter') verifyMaintTeacherPwd()">
               <button type="button" class="btn btn-sm" onclick="verifyMaintTeacherPwd()">ยืนยัน</button>
