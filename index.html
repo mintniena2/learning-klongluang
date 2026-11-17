@@ -1541,7 +1541,7 @@
     }
     @media (min-width: 640px) {
       .teacher-filter-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(3, 1fr);
       }
     }
 
@@ -1910,7 +1910,7 @@
             <label>ชื่อ - นามสกุล นักศึกษา</label>
             <input type="text" id="lesson-std-name" placeholder="ชื่อ นามสกุล จริง">
           </div>
-          <button class="btn" onclick="startLearningLesson()">เช็คชื่อและเริ่มศึกษาเนื้อหา</button>
+          <button class="btn" id="btn-start-lesson" onclick="startLearningLesson()">เช็คชื่อและเริ่มศึกษาเนื้อหา</button>
 
           <!-- แถบแยกเล็กๆ: สำหรับเรียนในชั้นเรียน -->
           <div class="inclass-strip">
@@ -2246,6 +2246,7 @@
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom: 10px;">
             <h2 style="color:var(--pastel-purple); font-size:1.22rem;"><i class="fa-solid fa-gauge"></i> แผงควบคุมระบบคลาวด์</h2>
             <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="btn btn-sm" id="btn-open-ungraded" style="background:var(--warning); color:white;" onclick="openUngradedModal()"><i class="fa-solid fa-clipboard-list"></i> งานรอตรวจ (<span id="ungraded-count-badge">0</span>)</button>
               <button class="btn btn-sm" style="background:var(--success);" onclick="openAttendanceModal()"><i class="fa-solid fa-user-check"></i> กรอกคะแนนเข้าเรียน</button>
               <button class="btn btn-sm btn-outline" onclick="openInClassModal(false)"><i class="fa-solid fa-chalkboard-user"></i> คะแนนในชั้นเรียน</button>
               <button class="btn btn-sm btn-outline" onclick="fetchCloudRecords(true)"><i class="fa-solid fa-arrows-rotate"></i> ซิงค์ข้อมูลล่าสุด</button>
@@ -2287,6 +2288,15 @@
                 <option value="all">-- ทุกรายวิชา/ครั้งที่ --</option>
               </select>
             </div>
+            <div>
+              <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:4px;">สถานะการตรวจ:</label>
+              <select id="filter-teacher-status" onchange="renderFilteredTeacherTable()">
+                <option value="all">-- ทั้งหมด --</option>
+                <option value="ungraded">⏳ รอตรวจ (ยังไม่ได้ตรวจ)</option>
+                <option value="graded">✅ ตรวจแล้ว</option>
+                <option value="not_submitted">📝 ยังไม่ส่งงาน</option>
+              </select>
+            </div>
           </div>
 
           <p class="mobile-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> ปัดซ้าย-ขวาบนตารางเพื่อดูข้อมูลทั้งหมด</p>
@@ -2324,7 +2334,7 @@
 
         <div class="input-group">
           <label>คะแนนใบงาน (เต็ม 10 คะแนน)</label>
-          <input type="number" id="grade-modal-score" min="0" max="10" placeholder="0 - 10">
+          <input type="number" id="grade-modal-score" min="0" max="10" step="0.5" placeholder="0 - 10">
         </div>
         <div class="input-group">
           <label>คำแนะนำ / ข้อเสนอแนะของคุณครู</label>
@@ -2332,7 +2342,47 @@
         </div>
         <div class="modal-actions-row">
           <button type="button" class="btn btn-secondary" onclick="closeGradingModal()">ยกเลิก</button>
-          <button type="button" class="btn" onclick="saveAssignmentGrade()">บันทึกผลการตรวจ</button>
+          <button type="button" class="btn" id="btn-save-grade" onclick="saveAssignmentGrade()">บันทึกผลการตรวจ</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: หน้าต่างเลือกงานที่ยังไม่ได้ตรวจ -->
+    <div id="modal-ungraded" class="modal" onclick="if(event.target===this) closeUngradedModal()">
+      <div class="modal-content" style="max-width:640px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+          <h3 style="color:var(--pastel-purple);"><i class="fa-solid fa-clipboard-question"></i> งานที่ยังไม่ได้ตรวจ</h3>
+          <button type="button" class="btn btn-sm btn-outline" onclick="refreshUngradedModal()"><i class="fa-solid fa-arrows-rotate"></i> รีเฟรช</button>
+        </div>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">แสดงเฉพาะนักศึกษาที่ส่งคำตอบใบงานแล้ว และรอคุณครูให้คะแนน</p>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:12px;">
+          <select id="ungraded-filter-level" onchange="renderUngradedList()" style="padding:9px 10px; border:1px solid var(--border-soft); border-radius:10px; font-size:0.85rem; background:white;">
+            <option value="all">-- ทุกระดับชั้น --</option>
+            <option value="m-ton">มัธยมศึกษาตอนต้น</option>
+            <option value="m-ปลาย">มัธยมศึกษาตอนปลาย</option>
+          </select>
+          <select id="ungraded-filter-course" onchange="renderUngradedList()" style="padding:9px 10px; border:1px solid var(--border-soft); border-radius:10px; font-size:0.85rem; background:white;">
+            <option value="all">-- ทุกรายวิชา --</option>
+          </select>
+        </div>
+
+        <div class="table-container" style="max-height:360px; overflow-y:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>รหัส / ผู้เรียน</th>
+                <th>วิชา / ครั้งที่</th>
+                <th>ส่งเมื่อ</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="ungraded-modal-tbody"></tbody>
+          </table>
+        </div>
+
+        <div style="margin-top:14px;">
+          <button type="button" class="btn btn-secondary" onclick="closeUngradedModal()">ปิดหน้าต่าง</button>
         </div>
       </div>
     </div>
@@ -2989,6 +3039,12 @@
           ]
         }
       ],
+      นี่คือ ส่วนที่ 2 (ส่วนจบสมบูรณ์) ครับ ก๊อปปี้ทั้งหมดในกล่องด้านล่างนี้ไปวาง
+ต่อท้ายบรรทัดสุดท้ายของส่วนที่ 1 (],) ได้เลยครับ จะจบครบสมบูรณ์ถึง
+</html> พอดีครับ
+
+ส่วนที่ 2 (วางต่อท้ายส่วนที่ 1)
+
       // =====================================================================
       // 2. ระดับมัธยมศึกษาตอนปลาย (ม.ปลาย) - รวม 4 วิชา (18 ครั้ง)
       // =====================================================================
@@ -3605,6 +3661,10 @@
     let pasteWarningCount = 0;
     let isThaiComposing = false;
 
+    function normalizeStdId(id) {
+      return String(id || '').trim().replace(/^0+/, '');
+    }
+
     function updateHeaderActiveNav(viewId) {
       const desktopIds = ['nav-link-home', 'nav-link-student'];
       const mobileIds = ['mnav-home', 'mnav-student'];
@@ -3704,7 +3764,7 @@
       navigate('view-lesson-login');
     }
 
-    // เช็คชื่อเข้าเรียน + ยิงเข้า Google Sheets ทันที -> เข้าสู่หน้าอ่านเนื้อหา
+    // เช็คชื่อเข้าเรียน (ดึงประวัติจากคลาวด์ก่อนเพื่อป้องกันการเขียนทับงานเก่าที่ครูตรวจไว้แล้ว)
     async function startLearningLesson() {
       const id = document.getElementById('lesson-std-id').value.trim();
       const name = document.getElementById('lesson-std-name').value.trim();
@@ -3716,8 +3776,30 @@
 
       currentStudent = { id, name };
       matchingCompleted = false;
+      const normId = normalizeStdId(id);
 
-      let record = appData.records.find(r => String(r.stdId).trim() === String(id).trim() && r.lessonId === currentLesson.id);
+      let record = appData.records.find(r =>
+        normalizeStdId(r.stdId || r.stdid) === normId &&
+        String(r.lessonId || '').trim() === currentLesson.id
+      );
+
+      if (!record) {
+        const startBtn = document.getElementById('btn-start-lesson');
+        if (startBtn) {
+          startBtn.disabled = true;
+          startBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังตรวจสอบประวัติเดิม...';
+        }
+        await fetchCloudRecords();
+        if (startBtn) {
+          startBtn.disabled = false;
+          startBtn.innerHTML = 'เช็คชื่อและเริ่มศึกษาเนื้อหา';
+        }
+        record = appData.records.find(r =>
+          normalizeStdId(r.stdId || r.stdid) === normId &&
+          String(r.lessonId || '').trim() === currentLesson.id
+        );
+      }
+
       const existingTermAtt = getTermAttendanceScore(id);
       if (!record) {
         record = {
@@ -3739,12 +3821,12 @@
         };
         appData.records.push(record);
         saveStorage();
+        syncToCloud(record);
       } else if (existingTermAtt !== null && (record.termAttendanceScore === undefined || record.termAttendanceScore === '')) {
         record.termAttendanceScore = existingTermAtt;
         saveStorage();
       }
 
-      syncToCloud(record);
       startReadingStep();
     }
 
@@ -3927,7 +4009,7 @@
         flipMismatchUids = [];
         setMatchingFeedback('info', matchingCompleted
           ? 'ผ่านเกมเปิดการ์ดแล้ว สามารถกดไปทำใบงานด้านล่างได้ทันที'
-          : 'แตะเปิดการ์ดทีละ 2 ใบ เพื่อจับคู่คำศัพท์ภาษาอังกฤษกับความหมายให้ครบทุกคู่');
+          : 'แตะเปิดการ์ดทีละ 2 ใบ เพื่อจับคู่คำศัพท์กับความหมายให้ครบทุกคู่');
         renderFlipCardBoard();
       } else {
         if (titleEl) titleEl.innerText = 'เกมจับคู่ทบทวนความรู้ประจำบทเรียน';
@@ -3973,7 +4055,7 @@
         } else {
           const stateCls = isMatched ? 'matched' : isMismatch ? 'mismatch animate-shake' : (card.side === 'term' ? 'flipped-term' : 'flipped-match');
           const tagCls = isMatched ? 'done' : card.side;
-          const tagText = card.side === 'term' ? 'คำศัพท์' : 'ความหมาย';
+          const tagText = card.side === 'term' ? 'หัวข้อ' : 'ความหมาย';
           btn.className = `flip-card-btn ${stateCls}`;
           btn.innerHTML = `<span class="flip-card-tag ${tagCls}">${tagText}</span><span class="flip-card-text">${card.text}</span>${isMatched ? '<i class="fa-solid fa-circle-check" style="color:#059669; font-size:0.9rem;"></i>' : ''}`;
         }
@@ -4253,7 +4335,11 @@
       const questionsBox = document.getElementById('assignment-questions-list');
       questionsBox.innerHTML = '';
 
-      let record = appData.records.find(r => String(r.stdId).trim() === String(currentStudent.id).trim() && r.lessonId === currentLesson.id);
+      const normId = normalizeStdId(currentStudent.id);
+      let record = appData.records.find(r =>
+        normalizeStdId(r.stdId || r.stdid) === normId &&
+        String(r.lessonId || '').trim() === currentLesson.id
+      );
       const studentAnswers = (record && record.assignmentAnswers) ? record.assignmentAnswers : {};
       const tasks = currentLesson.assignmentTasks || ['ให้นักศึกษาสรุปสิ่งที่ได้เรียนรู้'];
 
@@ -4357,7 +4443,11 @@
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกงานขึ้นระบบคลาวด์...';
       }
 
-      let record = appData.records.find(r => String(r.stdId).trim() === String(currentStudent.id).trim() && r.lessonId === currentLesson.id);
+      const normId = normalizeStdId(currentStudent.id);
+      let record = appData.records.find(r =>
+        normalizeStdId(r.stdId || r.stdid) === normId &&
+        String(r.lessonId || '').trim() === currentLesson.id
+      );
       const answersObj = {};
 
       tasks.forEach((_, index) => {
@@ -4381,8 +4471,12 @@
 
     // Step 4: Quiz (10 ข้อ)
     function goToQuizStep() {
-      let record = appData.records.find(r => String(r.stdId).trim() === String(currentStudent.id).trim() && r.lessonId === currentLesson.id);
-      const attempts = record ? record.quizAttempts : 0;
+      const normId = normalizeStdId(currentStudent.id);
+      let record = appData.records.find(r =>
+        normalizeStdId(r.stdId || r.stdid) === normId &&
+        String(r.lessonId || '').trim() === currentLesson.id
+      );
+      const attempts = record ? (Number(record.quizAttempts) || 0) : 0;
 
       if (attempts >= 2) {
         alert(`ท่านใช้สิทธิ์สอบครบ 2 ครั้งแล้ว คะแนนสอบสูงสุด: ${record.bestQuizScore}/10 (${record.quizPassed ? 'ผ่าน' : 'ไม่ผ่าน'})`);
@@ -4439,7 +4533,11 @@
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกคะแนนลงระบบ...';
       }
 
-      let record = appData.records.find(r => String(r.stdId).trim() === String(currentStudent.id).trim() && r.lessonId === currentLesson.id);
+      const normId = normalizeStdId(currentStudent.id);
+      let record = appData.records.find(r =>
+        normalizeStdId(r.stdId || r.stdid) === normId &&
+        String(r.lessonId || '').trim() === currentLesson.id
+      );
       if (record) {
         record.quizAttempts = (Number(record.quizAttempts) || 0) + 1;
         if (score > (Number(record.bestQuizScore) || 0)) {
@@ -4489,9 +4587,11 @@
         loginBtn.innerHTML = 'เข้าสู่ระบบดูผลคะแนน';
       }
 
-      const records = appData.records.filter(r => String(r.stdId).trim() === String(idInput).trim());
+      const normInput = normalizeStdId(idInput);
+      const records = appData.records.filter(r => normalizeStdId(r.stdId || r.stdid) === normInput);
       const termAttScore = getTermAttendanceScore(idInput, records);
-      const termAttEntry = getTermAttendanceStore()[String(idInput).trim()];
+      const termStore = getTermAttendanceStore();
+      const termAttEntry = termStore[String(idInput).trim()] || Object.values(termStore).find(e => normalizeStdId(e.stdId) === normInput);
 
       if (records.length === 0 && termAttScore === null) {
         alert('ไม่พบข้อมูลประวัติการเรียนของรหัสนักศึกษานี้ ในระบบออนไลน์');
@@ -4518,7 +4618,8 @@
       records.forEach(r => {
         const isPassed = (r.quizPassed === true || r.quizPassed === 'ผ่าน' || Number(r.bestQuizScore) >= 6);
         const quizBadge = isPassed ? `<span class="badge badge-pass">${r.bestQuizScore}/10 (ผ่าน)</span>` : `<span class="badge badge-fail">${r.bestQuizScore}/10 (ไม่ผ่าน)</span>`;
-        const assignBadge = (r.assignmentScore !== null && r.assignmentScore !== '') ? `<span class="badge badge-pass">${r.assignmentScore}/10 คะแนน</span>` : '<span class="badge badge-wait">รอครูตรวจ</span>';
+        const assignScore = getRecordAssignmentScore(r);
+        const assignBadge = assignScore !== null ? `<span class="badge badge-pass">${assignScore}/10 คะแนน</span>` : '<span class="badge badge-wait">รอครูตรวจ</span>';
         const feedback = r.teacherFeedback ? `<small style="color:var(--pastel-purple);">${r.teacherFeedback}</small>` : '<small style="color:var(--text-muted);">-</small>';
 
         tbody.innerHTML += `
@@ -4603,7 +4704,7 @@
 
         recordsForCourse.forEach(r => {
           totalQuiz += Number(r.bestQuizScore) || 0;
-          totalAssign += Number(r.assignmentScore) || 0;
+          totalAssign += Number(getRecordAssignmentScore(r)) || 0;
         });
 
         const result = calculateSubjectSummary(
@@ -4663,6 +4764,39 @@
       renderFilteredTeacherTable();
     }
 
+    function hasStudentSubmittedAssignment(r) {
+      let answersObj = r.assignmentAnswers || r.assignmentanswers;
+      if (typeof answersObj === 'string' && answersObj.trim().startsWith('{')) {
+        try { answersObj = JSON.parse(answersObj); } catch (e) {}
+      }
+      if (typeof answersObj === 'object' && answersObj !== null) {
+        if (answersObj.inClass) return false;
+        return Object.values(answersObj).some(val => String(val).trim() !== '');
+      }
+      if (typeof answersObj === 'string') {
+        return answersObj.trim() !== '' && answersObj !== '{}';
+      }
+      return false;
+    }
+
+    function getRecordAssignmentScore(r) {
+      const val = r.assignmentScore !== undefined ? r.assignmentScore : r.assignmentscore;
+      if (val !== '' && val !== null && val !== undefined && !isNaN(Number(val))) {
+        return Number(val);
+      }
+      return null;
+    }
+
+    function updateUngradedBadgeCount() {
+      const badge = document.getElementById('ungraded-count-badge');
+      const validRecords = (appData.records || []).filter(r => r && (r.stdId || r.stdname || r.lessonTitle || r.lessontitle));
+      const count = validRecords.filter(r =>
+        hasStudentSubmittedAssignment(r) && getRecordAssignmentScore(r) === null
+      ).length;
+      if (badge) badge.innerText = String(count);
+      return count;
+    }
+
     function updateTeacherDashboardMetrics() {
       const totalEl = document.getElementById('teacher-metric-total');
       const pendingEl = document.getElementById('teacher-metric-pending');
@@ -4671,20 +4805,8 @@
       const validRecords = (appData.records || []).filter(r => r && (r.stdId || r.stdname || r.lessonTitle || r.lessontitle));
       if (totalEl) totalEl.innerText = String(validRecords.length);
 
-      if (pendingEl) {
-        const pendingCount = validRecords.filter(r => {
-          const assignVal = r.assignmentScore !== '' && r.assignmentScore !== null && r.assignmentScore !== undefined;
-          let hasAns = false;
-          const ansObj = r.assignmentAnswers || r.assignmentanswers;
-          if (typeof ansObj === 'object' && ansObj !== null) {
-            hasAns = Object.values(ansObj).some(val => String(val).trim() !== '');
-          } else if (typeof ansObj === 'string') {
-            hasAns = ansObj.trim() !== '' && ansObj !== '{}';
-          }
-          return hasAns && !assignVal;
-        }).length;
-        pendingEl.innerText = String(pendingCount);
-      }
+      const pendingCount = updateUngradedBadgeCount();
+      if (pendingEl) pendingEl.innerText = String(pendingCount);
 
       if (statusEl) {
         const maint = getMaintenanceState();
@@ -4702,6 +4824,8 @@
       updateTeacherDashboardMetrics();
       const lvl = document.getElementById('filter-teacher-level').value;
       const sessionFilter = document.getElementById('filter-teacher-session').value;
+      const statusEl = document.getElementById('filter-teacher-status');
+      const statusFilter = statusEl ? statusEl.value : 'all';
       const tbody = document.getElementById('teacher-records-tbody');
       tbody.innerHTML = '';
 
@@ -4714,9 +4838,16 @@
       if (sessionFilter !== 'all') {
         list = list.filter(r => (r.lessonId || '') === sessionFilter);
       }
+      if (statusFilter === 'ungraded') {
+        list = list.filter(r => hasStudentSubmittedAssignment(r) && getRecordAssignmentScore(r) === null);
+      } else if (statusFilter === 'graded') {
+        list = list.filter(r => getRecordAssignmentScore(r) !== null);
+      } else if (statusFilter === 'not_submitted') {
+        list = list.filter(r => !hasStudentSubmittedAssignment(r) && getRecordAssignmentScore(r) === null);
+      }
 
       if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:15px; color:var(--text-muted);">ยังไม่มีข้อมูลการเข้าเรียน หรือยังไม่ได้ซิงค์ข้อมูล</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:15px; color:var(--text-muted);">ไม่พบรายการตามเงื่อนไขที่เลือก</td></tr>';
         return;
       }
 
@@ -4727,21 +4858,14 @@
         const lessonTitle = r.lessonTitle || r.lessontitle || '-';
         const attendedAt = r.attendedAt || r.attendedat || '-';
         const bestQuizScore = (r.bestQuizScore !== undefined && r.bestQuizScore !== '') ? r.bestQuizScore : 0;
-        const assignmentScore = (r.assignmentScore !== '' && r.assignmentScore !== null && r.assignmentScore !== undefined) ? r.assignmentScore : null;
+        const assignmentScore = getRecordAssignmentScore(r);
 
-        const assignScoreNum = assignmentScore !== null ? Number(assignmentScore) : 0;
+        const assignScoreNum = assignmentScore !== null ? assignmentScore : 0;
         const total = Number(bestQuizScore) + assignScoreNum;
-
-        let hasAnswers = false;
-        let answersObj = r.assignmentAnswers || r.assignmentanswers;
-        if (typeof answersObj === 'object' && answersObj !== null) {
-          hasAnswers = Object.values(answersObj).some(val => String(val).trim() !== '');
-        } else if (typeof answersObj === 'string') {
-          hasAnswers = answersObj.trim() !== '' && answersObj !== '{}';
-        }
+        const hasAnswers = hasStudentSubmittedAssignment(r);
 
         let gradingBtn = '';
-        if (!hasAnswers) {
+        if (!hasAnswers && assignmentScore === null) {
           gradingBtn = '<span style="color:var(--text-muted); font-size:0.75rem;">ยังไม่ส่งงาน</span>';
         } else if (assignmentScore === null) {
           gradingBtn = `<button class="btn btn-sm" style="background:var(--warning); color:white;" onclick="openGradingModal('${stdId}', '${r.lessonId || ''}')"><i class="fa-solid fa-pen"></i> รอตรวจ</button>`;
@@ -4763,9 +4887,85 @@
       });
     }
 
+    // หน้าต่างเลือกงานที่ยังไม่ได้ตรวจ
+    function openUngradedModal() {
+      const courseSelect = document.getElementById('ungraded-filter-course');
+      if (courseSelect) {
+        courseSelect.innerHTML = '<option value="all">-- ทุกรายวิชา --</option>';
+        const seenCodes = {};
+        [...(appData.lessons['m-ton'] || []), ...(appData.lessons['m-ปลาย'] || [])].forEach(l => {
+          if (!seenCodes[l.code]) {
+            seenCodes[l.code] = l.title;
+            courseSelect.innerHTML += `<option value="${l.code}">${l.code} - ${l.title}</option>`;
+          }
+        });
+      }
+      renderUngradedList();
+      document.getElementById('modal-ungraded').classList.add('active');
+    }
+
+    function closeUngradedModal() {
+      document.getElementById('modal-ungraded').classList.remove('active');
+    }
+
+    async function refreshUngradedModal() {
+      await fetchCloudRecords();
+      renderUngradedList();
+    }
+
+    function renderUngradedList() {
+      const tbody = document.getElementById('ungraded-modal-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const lvl = document.getElementById('ungraded-filter-level').value;
+      const courseCode = document.getElementById('ungraded-filter-course').value;
+
+      let list = (appData.records || []).filter(r =>
+        hasStudentSubmittedAssignment(r) && getRecordAssignmentScore(r) === null
+      );
+
+      if (lvl !== 'all') {
+        list = list.filter(r => (r.level || '') === lvl);
+      }
+      if (courseCode !== 'all') {
+        list = list.filter(r =>
+          (r.courseCode === courseCode) ||
+          (r.lessonTitle && r.lessonTitle.includes(courseCode))
+        );
+      }
+
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:18px; color:var(--success); font-weight:500;"><i class="fa-solid fa-circle-check"></i> เยี่ยมมาก! ไม่มีงานค้างตรวจแล้ว</td></tr>';
+        return;
+      }
+
+      list.forEach(r => {
+        const stdId = r.stdId || r.stdid || '-';
+        const stdName = r.stdName || r.stdname || 'ไม่ระบุชื่อ';
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${stdId}</strong><br><small>${stdName}</small></td>
+            <td><span class="badge" style="background:var(--pastel-purple-light); color:var(--pastel-purple);">${r.session || '-'}</span><br><small>${r.lessonTitle || '-'}</small></td>
+            <td><small>${r.attendedAt || '-'}</small></td>
+            <td>
+              <button type="button" class="btn btn-sm" style="background:var(--warning); color:white;" onclick="openGradingModal('${stdId}', '${r.lessonId || ''}')">
+                <i class="fa-solid fa-pen"></i> ตรวจงานนี้
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
     // Modal ตรวจงาน
     function openGradingModal(stdId, lessonId) {
-      selectedGradingRecord = appData.records.find(r => String(r.stdId).trim() === String(stdId).trim() && r.lessonId === lessonId);
+      const normId = normalizeStdId(stdId);
+      const targetLesson = String(lessonId || '').trim();
+      selectedGradingRecord = appData.records.find(r =>
+        normalizeStdId(r.stdId || r.stdid) === normId &&
+        String(r.lessonId || '').trim() === targetLesson
+      );
       if (!selectedGradingRecord) return;
 
       let lesson = null;
@@ -4800,7 +5000,8 @@
         });
       }
 
-      document.getElementById('grade-modal-score').value = (selectedGradingRecord.assignmentScore !== null && selectedGradingRecord.assignmentScore !== '' && selectedGradingRecord.assignmentScore !== undefined) ? selectedGradingRecord.assignmentScore : '';
+      const curScore = getRecordAssignmentScore(selectedGradingRecord);
+      document.getElementById('grade-modal-score').value = curScore !== null ? curScore : '';
       document.getElementById('grade-modal-feedback').value = selectedGradingRecord.teacherFeedback || '';
 
       document.getElementById('modal-grading').classList.add('active');
@@ -4812,20 +5013,48 @@
 
     async function saveAssignmentGrade() {
       const scoreVal = document.getElementById('grade-modal-score').value;
-      if (scoreVal === '' || scoreVal < 0 || scoreVal > 10) {
+      if (scoreVal === '' || isNaN(Number(scoreVal)) || Number(scoreVal) < 0 || Number(scoreVal) > 10) {
         alert('กรุณาระบุคะแนนระหว่าง 0 ถึง 10');
         return;
       }
 
-      selectedGradingRecord.assignmentScore = parseInt(scoreVal, 10);
-      selectedGradingRecord.teacherFeedback = document.getElementById('grade-modal-feedback').value;
+      const saveBtn = document.getElementById('btn-save-grade');
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกลงชีต...';
+      }
+
+      const numericScore = Number(scoreVal);
+      const feedbackVal = document.getElementById('grade-modal-feedback').value;
+      const normId = normalizeStdId(selectedGradingRecord.stdId || selectedGradingRecord.stdid);
+      const targetLessonId = String(selectedGradingRecord.lessonId || '').trim();
+
+      // อัปเดตทุกเรคคอร์ดในเครื่องที่ตรงกับรหัสและบทเรียนเดียวกัน (กันค่าเก่าค้าง)
+      appData.records.forEach(r => {
+        if (normalizeStdId(r.stdId || r.stdid) === normId &&
+            String(r.lessonId || '').trim() === targetLessonId) {
+          r.assignmentScore = numericScore;
+          r.teacherFeedback = feedbackVal;
+        }
+      });
+
+      selectedGradingRecord.assignmentScore = numericScore;
+      selectedGradingRecord.teacherFeedback = feedbackVal;
 
       saveStorage();
       await syncToCloud(selectedGradingRecord);
 
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = 'บันทึกผลการตรวจ';
+      }
+
       closeGradingModal();
       renderFilteredTeacherTable();
-      alert('บันทึกผลการตรวจใบงานเรียบร้อย');
+      if (document.getElementById('modal-ungraded') && document.getElementById('modal-ungraded').classList.contains('active')) {
+        renderUngradedList();
+      }
+      alert('บันทึกผลการตรวจใบงานลงฐานข้อมูลเรียบร้อย');
     }
 
     // คะแนนเข้าเรียนรวมทั้งเทอม
@@ -4850,6 +5079,7 @@
 
     function getTermAttendanceScore(stdId, studentRecords = []) {
       const cleanId = String(stdId || '').trim();
+      const normId = normalizeStdId(cleanId);
       for (const r of studentRecords) {
         const val = r.termAttendanceScore !== undefined ? r.termAttendanceScore : r.termattendancescore;
         if (val !== undefined && val !== null && val !== '') {
@@ -4857,7 +5087,7 @@
         }
       }
       const store = getTermAttendanceStore();
-      const entry = store[cleanId];
+      const entry = store[cleanId] || Object.values(store).find(e => normalizeStdId(e.stdId) === normId);
       if (entry && entry.score !== undefined && entry.score !== null && entry.score !== '') {
         return Number(entry.score);
       }
@@ -4873,8 +5103,9 @@
       appData.records.forEach(r => {
         const sId = String(r.stdId || r.stdid || '').trim();
         const sName = String(r.stdName || r.stdname || '').trim();
-        if (sId && !uniqueStudents[sId]) {
-          uniqueStudents[sId] = sName;
+        const key = normalizeStdId(sId) || sId;
+        if (sId && !uniqueStudents[key]) {
+          uniqueStudents[key] = sName;
           studentSelect.innerHTML += `<option value="${sId}" data-name="${sName}">${sId} - ${sName}</option>`;
         }
       });
@@ -4941,7 +5172,8 @@
     function syncAttendanceScorePreview() {
       const stdId = document.getElementById('att-modal-std-id').value.trim();
       if (!stdId) return;
-      const studentRecords = appData.records.filter(r => String(r.stdId || r.stdid || '').trim() === stdId);
+      const normId = normalizeStdId(stdId);
+      const studentRecords = appData.records.filter(r => normalizeStdId(r.stdId || r.stdid) === normId);
       const existingScore = getTermAttendanceScore(stdId, studentRecords);
       if (existingScore !== null) {
         document.getElementById('att-modal-score').value = existingScore;
@@ -4975,8 +5207,9 @@
       const numericScore = Number(scoreVal);
       saveTermAttendanceToStore(stdId, stdName, numericScore);
 
+      const normId = normalizeStdId(stdId);
       const matchingRecords = appData.records.filter(r =>
-        String(r.stdId || r.stdid || '').trim() === stdId
+        normalizeStdId(r.stdId || r.stdid) === normId
       );
 
       matchingRecords.forEach(r => {
@@ -5092,8 +5325,9 @@
         appData.records.forEach(r => {
           const sId = String(r.stdId || r.stdid || '').trim();
           const sName = String(r.stdName || r.stdname || '').trim();
-          if (sId && !uniqueStudents[sId]) {
-            uniqueStudents[sId] = sName;
+          const key = normalizeStdId(sId) || sId;
+          if (sId && !uniqueStudents[key]) {
+            uniqueStudents[key] = sName;
             studentSelect.innerHTML += `<option value="${sId}" data-name="${sName}">${sId} - ${sName}</option>`;
           }
         });
@@ -5175,9 +5409,10 @@
       const existingTermAtt = getTermAttendanceScore(stdId);
       const feedbackText = noteVal ? `เรียนในชั้นเรียน (${noteVal})` : 'เรียนในชั้นเรียน';
       const attendedTime = new Date().toLocaleString('th-TH') + ' (ในชั้นเรียน)';
+      const normId = normalizeStdId(stdId);
 
       let record = appData.records.find(r =>
-        String(r.stdId || r.stdid || '').trim() === stdId &&
+        normalizeStdId(r.stdId || r.stdid) === normId &&
         String(r.lessonId || r.lessonid || '').trim() === lessonId
       );
 
@@ -5242,7 +5477,7 @@
       renderFilteredTeacherTable();
     }
 
-    // ซิงค์ Google Sheets แบบสมบูรณ์ (Retry + Offline Pending Queue + Deduplicate)
+    // ซิงค์ Google Sheets แบบสมบูรณ์ (Retry + Offline Pending Queue + Merge Deduplicate)
     const PENDING_SYNC_KEY = 'clc_pending_sync_queue';
 
     function getPendingSyncQueue() {
@@ -5263,9 +5498,9 @@
 
     function enqueuePendingSync(recordData) {
       const queue = getPendingSyncQueue();
-      const key = `${String(recordData.stdId || '').trim()}__${String(recordData.lessonId || '').trim()}`;
+      const key = `${normalizeStdId(recordData.stdId) || String(recordData.stdId || '').trim()}__${String(recordData.lessonId || '').trim()}`;
       const filtered = queue.filter(item =>
-        `${String(item.stdId || '').trim()}__${String(item.lessonId || '').trim()}` !== key
+        `${normalizeStdId(item.stdId) || String(item.stdId || '').trim()}__${String(item.lessonId || '').trim()}` !== key
       );
       filtered.push(recordData);
       savePendingSyncQueue(filtered);
@@ -5325,7 +5560,7 @@
         const data = await res.json();
         if (Array.isArray(data)) {
           const termStore = getTermAttendanceStore();
-          const dedupedMap = new Map();
+          const mergedMap = new Map();
           const extraRows = [];
           const attendanceMetaRows = [];
 
@@ -5375,14 +5610,41 @@
                 score: Number(cloudTermAtt)
               };
             }
-            if (r.stdId && r.lessonId) {
-              dedupedMap.set(`${r.stdId}__${r.lessonId}`, r);
+
+            const normId = normalizeStdId(r.stdId) || r.stdId;
+            if (normId && lId) {
+              const key = `${normId}__${lId}`;
+              if (!mergedMap.has(key)) {
+                mergedMap.set(key, r);
+              } else {
+                // รวมแถวที่ซ้ำซ้อนโดยรักษาข้อมูลที่ตรวจแล้วและคะแนนสูงสุดไว้เสมอ
+                const prev = mergedMap.get(key);
+                if (!prev.stdName && r.stdName) prev.stdName = r.stdName;
+                if (r.stdId.length > prev.stdId.length) prev.stdId = r.stdId;
+                prev.bestQuizScore = Math.max(Number(prev.bestQuizScore) || 0, Number(r.bestQuizScore) || 0);
+                if (r.quizPassed === true || r.quizPassed === 'ผ่าน' || prev.bestQuizScore >= 6) {
+                  prev.quizPassed = true;
+                }
+                if (hasStudentSubmittedAssignment(r) && !hasStudentSubmittedAssignment(prev)) {
+                  prev.assignmentAnswers = r.assignmentAnswers;
+                }
+                const rScore = getRecordAssignmentScore(r);
+                if (rScore !== null) {
+                  prev.assignmentScore = rScore;
+                }
+                if (r.teacherFeedback) {
+                  prev.teacherFeedback = r.teacherFeedback;
+                }
+                if (r.termAttendanceScore !== undefined && r.termAttendanceScore !== '') {
+                  prev.termAttendanceScore = r.termAttendanceScore;
+                }
+              }
             } else {
               extraRows.push(r);
             }
           });
 
-          const cleanedRecords = [...Array.from(dedupedMap.values()), ...extraRows];
+          const cleanedRecords = [...Array.from(mergedMap.values()), ...extraRows];
 
           attendanceMetaRows.forEach(r => {
             if (!r.stdId) return;
@@ -5405,8 +5667,9 @@
                 stdName: r.stdName,
                 score: numScore
               };
+              const metaNormId = normalizeStdId(r.stdId);
               cleanedRecords.forEach(rec => {
-                if (rec.stdId === r.stdId) {
+                if (normalizeStdId(rec.stdId) === metaNormId) {
                   rec.termAttendanceScore = numScore;
                 }
               });
@@ -5417,6 +5680,9 @@
           appData.records = cleanedRecords;
           saveStorage();
           renderFilteredTeacherTable();
+          if (document.getElementById('modal-ungraded') && document.getElementById('modal-ungraded').classList.contains('active')) {
+            renderUngradedList();
+          }
           if (showAlert) alert('ดึงข้อมูลล่าสุดจาก Google Sheets สำเร็จ! (' + cleanedRecords.length + ' รายการ)');
           return true;
         }
