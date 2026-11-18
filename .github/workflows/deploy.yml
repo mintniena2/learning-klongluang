@@ -24,19 +24,23 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Build
         run: npm run build
 
-      - name: Preserve existing images folder
+      - name: Preserve existing images and video folders
         run: |
           if [ -d "images" ]; then
             mkdir -p dist/images
             cp -r images/* dist/images/
+          fi
+          if [ -d "video" ]; then
+            mkdir -p dist/video
+            cp -r video/* dist/video/
           fi
 
       - name: Upload artifact
