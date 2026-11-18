@@ -258,6 +258,12 @@ export default function App() {
   const [trashModalOpen, setTrashModalOpen] = useState(false);
   const [cmsModalOpen, setCmsModalOpen] = useState(false);
 
+  const [editStdRecord, setEditStdRecord] = useState<StudentRecord | null>(null);
+  const [editStdIdInput, setEditStdIdInput] = useState('');
+  const [editStdNameInput, setEditStdNameInput] = useState('');
+  const [editStdAllSessions, setEditStdAllSessions] = useState(true);
+  const [editStdBusy, setEditStdBusy] = useState(false);
+
   // Sync helper
   const syncFromCloud = useCallback(
     async (showSuccessToast = false) => {
@@ -963,6 +969,11 @@ export default function App() {
     [validRecords]
   );
 
+  const invalidIdCount = useMemo(
+    () => validRecords.filter((r) => !validateStudentId(String(r.stdId || r.stdid || '')).valid).length,
+    [validRecords]
+  );
+
   const teacherFilterSessions = useMemo(() => {
     if (filterLevel === 'all') {
       return [...(courses['m-ton'] || []), ...(courses['m-ปลาย'] || [])];
@@ -984,6 +995,8 @@ export default function App() {
       list = list.filter((r) => getRecordAssignmentScore(r) !== null);
     } else if (filterStatus === 'not_submitted') {
       list = list.filter((r) => !hasStudentSubmittedAssignment(r) && getRecordAssignmentScore(r) === null);
+    } else if (filterStatus === 'invalid_id') {
+      list = list.filter((r) => !validateStudentId(String(r.stdId || r.stdid || '')).valid);
     }
     const q = teacherSearch.trim().toLowerCase();
     if (q) {
@@ -1046,6 +1059,236 @@ export default function App() {
     setTrashItems(nextTrash);
     await syncTrashStateToCloud(nextTrash, { type: 'permanent', target: item });
     showNotice(`ลบข้อมูลของ ${item.record.stdName || item.record.stdId} ออกจากถังขยะถาวรแล้ว`, 'ลบถาวรสำเร็จ');
+  };
+
+  // Edit / Migrate Student ID & Name without losing worksheet/quiz/grade data
+  const smartMergeAssignmentAnswers = (
+    primary?: StudentRecord['assignmentAnswers'],
+    secondary?: StudentRecord['assignmentAnswers']
+  ): Record<string, unknown> | string => {
+    if (!primary || (typeof primary === 'string' && !primary.trim())) return secondary ?? {};
+    if (!secondary || (typeof secondary === 'string' && !secondary.trim())) return primary;
+    if (typeof primary === 'object' && typeof secondary === 'object' && !Array.isArray(primary) && !Array.isArray(secondary)) {
+      const merged: Record<string, unknown> = { ...secondary };
+      Object.keys(primary).forEach((k) => {
+        const val = primary[k];
+        if (val !== undefined && val !== null && String(val).trim() !== '') {
+          merged[k] = val;
+        }
+      });
+      return merged;
+    }
+    return primary;
+  };
+
+  const openEditStudentModal = (rec: StudentRecord) => {
+    const rawId = String(rec.stdId || rec.stdid || '').trim();
+    const rawName = String(rec.stdName || rec.stdname || '').trim();
+    setEditStdRecord(rec);
+    setEditStdIdInput(sanitizeStudentIdInput(rawId));
+    setEditStdNameInput(rawName);
+    setEditStdAllSessions(true);
+  };
+
+  const saveMigratedStudentRecords = async () => {
+    if (!editStdRecord) return;
+    const idCheck = validateStudentId(editStdIdInput);
+    if (!idCheck.valid) {
+      showNotice(idCheck.error, 'รหัสนักศึกษาใหม่ไม่ถูกต้อง');
+      return;
+    }
+    const cleanNewName = editStdNameInput.trim();
+    if (!cleanNewName) {
+      showNotice('กรุณากรอกชื่อ-นามสกุลนักศึกษา');
+      return;
+    }
+
+    const oldRawId = String(editStdRecord.stdId || editStdRecord.stdid || '').trim();
+    const oldNormId = normalizeStdId(oldRawId) || oldRawId;
+    const newStdId = idCheck.clean;
+    const newNormId = normalizeStdId(newStdId) || newStdId;
+    const isSameNormId = newNormId === oldNormId;
+
+    const targetRecords =
+      editStdAllSessions && oldNormId
+        ? records.filter((r) => {
+            const rRaw = String(r.stdId || r.stdid || '').trim();
+            const rNorm = normalizeStdId(rRaw) || rRaw;
+            return rNorm === oldNormId;
+          })
+        : [editStdRecord];
+
+    if (targetRecords.length === 0) return;
+
+    setEditStdBusy(true);
+
+    // 1) Update in-place when keeping the same numeric ID (only fixing name or formatting)
+    if (isSameNormId) {
+      const targetKeySet = new Set(targetRecords.map((t) => getRecordTrashKey(t)));
+      const updatedList: StudentRecord[] = [];
+      const nextRecords = records.map((r) => {
+        if (targetKeySet.has(getRecordTrashKey(r))) {
+          const updated: StudentRecord = { ...r, stdId: newStdId, stdName: cleanNewName };
+          updatedList.push(updated);
+          return updated;
+        }
+        return r;
+      });
+
+      setRecords(nextRecords);
+      saveCachedRecords(nextRecords);
+      for (const upd of updatedList) {
+        await syncToCloud(upd);
+      }
+
+      setEditStdBusy(false);
+      setEditStdRecord(null);
+      showNotice(
+        `อัปเดตข้อมูล ${updatedList.length} รายการ เป็น "${newStdId} (${cleanNewName})" เรียบร้อยแล้ว`,
+        'แก้ไขข้อมูลสำเร็จ'
+      );
+      return;
+    }
+
+    // 2) Migrate records to the new valid 6xxxxxxxxx student ID (preserving & merging all quiz, worksheet & grade data)
+    const oldKeySet = new Set(targetRecords.map((t) => getRecordTrashKey(t)));
+    let workingRecords = [...records];
+    const migratedToSave: StudentRecord[] = [];
+
+    const existingOldTermAtt = getTermAttendanceScore(oldRawId, records);
+
+    for (const oldRec of targetRecords) {
+      const lessonId = String(oldRec.lessonId || oldRec.lessonid || '').trim();
+      const targetNewKey = `${newNormId}__${lessonId}`;
+      const existingTargetIdx = workingRecords.findIndex(
+        (r) => !oldKeySet.has(getRecordTrashKey(r)) && getRecordTrashKey(r) === targetNewKey
+      );
+      const existingTarget = existingTargetIdx >= 0 ? workingRecords[existingTargetIdx] : null;
+
+      const oldBestQuiz = Number(oldRec.bestQuizScore) || 0;
+      const targetBestQuiz = Number(existingTarget?.bestQuizScore) || 0;
+      const bestQuizScore = Math.max(oldBestQuiz, targetBestQuiz);
+      const quizAttempts = Math.max(Number(oldRec.quizAttempts) || 0, Number(existingTarget?.quizAttempts) || 0);
+      const quizPassed =
+        bestQuizScore >= 6 ||
+        oldRec.quizPassed === true ||
+        oldRec.quizPassed === 'ผ่าน' ||
+        existingTarget?.quizPassed === true ||
+        existingTarget?.quizPassed === 'ผ่าน';
+
+      const oldAssignScore = getRecordAssignmentScore(oldRec);
+      const targetAssignScore = existingTarget ? getRecordAssignmentScore(existingTarget) : null;
+      const finalAssignScore =
+        oldAssignScore !== null && targetAssignScore !== null
+          ? Math.max(oldAssignScore, targetAssignScore)
+          : oldAssignScore !== null
+            ? oldAssignScore
+            : targetAssignScore !== null
+              ? targetAssignScore
+              : '';
+
+      const mergedFeedback = [oldRec.teacherFeedback, existingTarget?.teacherFeedback]
+        .map((s) => String(s || '').trim())
+        .filter((s, idx, arr) => s && arr.indexOf(s) === idx)
+        .join(' | ');
+
+      const mergedTermAtt =
+        existingTarget?.termAttendanceScore !== undefined && existingTarget?.termAttendanceScore !== ''
+          ? existingTarget.termAttendanceScore
+          : oldRec.termAttendanceScore !== undefined && oldRec.termAttendanceScore !== ''
+            ? oldRec.termAttendanceScore
+            : existingOldTermAtt !== null
+              ? existingOldTermAtt
+              : undefined;
+
+      const mergedRec: StudentRecord = {
+        ...oldRec,
+        stdId: newStdId,
+        stdName: cleanNewName,
+        attendedAt: oldRec.attendedAt || existingTarget?.attendedAt || new Date().toLocaleString('th-TH'),
+        quizAttempts,
+        bestQuizScore,
+        quizPassed,
+        assignmentAnswers: smartMergeAssignmentAnswers(oldRec.assignmentAnswers, existingTarget?.assignmentAnswers),
+        assignmentScore: finalAssignScore,
+        teacherFeedback: mergedFeedback,
+        ...(mergedTermAtt !== undefined ? { termAttendanceScore: mergedTermAtt } : {}),
+      };
+
+      migratedToSave.push(mergedRec);
+      if (existingTargetIdx >= 0) {
+        workingRecords[existingTargetIdx] = mergedRec;
+      } else {
+        workingRecords.push(mergedRec);
+      }
+    }
+
+    // Remove old wrong-ID rows from active list (they will be backed up in Trash below)
+    workingRecords = workingRecords.filter((r) => !oldKeySet.has(getRecordTrashKey(r)));
+
+    // Migrate Term Attendance Store if student had term attendance recorded under the old ID
+    if (existingOldTermAtt !== null) {
+      saveTermAttendanceToStore(newStdId, cleanNewName, existingOldTermAtt);
+      workingRecords = workingRecords.map((r) =>
+        normalizeStdId(r.stdId || r.stdid) === newNormId ? { ...r, termAttendanceScore: existingOldTermAtt } : r
+      );
+    }
+
+    // Save newly migrated records to Google Sheets FIRST (safety first!)
+    for (const rec of migratedToSave) {
+      await syncToCloud(rec);
+    }
+    if (existingOldTermAtt !== null) {
+      await syncToCloud({
+        stdId: newStdId,
+        stdName: cleanNewName,
+        level: (migratedToSave[0]?.level as CourseLevel) || 'm-ton',
+        lessonId: '__TERM_ATTENDANCE__',
+        courseCode: 'ATTENDANCE',
+        session: 'คะแนนเข้าเรียนรวมทั้งเทอม',
+        lessonTitle: 'คะแนนเข้าเรียนรวมทั้งเทอม',
+        attendedAt: new Date().toLocaleString('th-TH'),
+        quizAttempts: 0,
+        bestQuizScore: 0,
+        quizPassed: false,
+        assignmentAnswers: { termAttendanceScore: existingOldTermAtt },
+        assignmentScore: existingOldTermAtt,
+        teacherFeedback: 'TERM_ATTENDANCE:' + existingOldTermAtt,
+        termAttendanceScore: existingOldTermAtt,
+      });
+    }
+
+    // Move old wrong-ID rows into Trash as backup (with reason)
+    const nowText = new Date().toLocaleString('th-TH');
+    const trashMap = new Map<string, TrashedRecord>();
+    trashItems.forEach((t) => trashMap.set(t.trashKey, t));
+    // Ensure target new keys are not marked as trashed
+    migratedToSave.forEach((m) => trashMap.delete(getRecordTrashKey(m)));
+
+    const backupEntries: TrashedRecord[] = targetRecords.map((rec) => ({
+      trashKey: getRecordTrashKey(rec),
+      deletedAt: nowText,
+      deletedReason: `ย้ายรหัสเป็น ${newStdId} (${cleanNewName})`,
+      record: rec,
+    }));
+    backupEntries.forEach((entry) => trashMap.set(entry.trashKey, entry));
+    const nextTrash = Array.from(trashMap.values());
+
+    setRecords(workingRecords);
+    setTrashItems(nextTrash);
+    setSelectedTrashKeys((prev) => prev.filter((k) => !oldKeySet.has(k)));
+    saveCachedRecords(workingRecords);
+
+    for (const entry of backupEntries) {
+      await syncTrashStateToCloud(nextTrash, { type: 'move', target: entry });
+    }
+
+    setEditStdBusy(false);
+    setEditStdRecord(null);
+    showNotice(
+      `ย้ายข้อมูล ${targetRecords.length} รายการ จากรหัส "${oldRawId}" ไปเป็น "${newStdId} (${cleanNewName})" เรียบร้อยแล้ว!\nคะแนนสอบ ใบงาน และผลการตรวจทั้งหมดถูกย้ายตามไปด้วยครบถ้วน (ข้อมูลเดิมสำรองไว้ในถังขยะ)`,
+      'ย้ายรหัสสำเร็จ'
+    );
   };
 
   // Grading modal
@@ -3091,9 +3334,42 @@ export default function App() {
                         <option value="ungraded">⏳ รอตรวจ (ยังไม่ได้ตรวจ)</option>
                         <option value="graded">✅ ตรวจแล้ว</option>
                         <option value="not_submitted">📝 ยังไม่ส่งงาน</option>
+                        <option value="invalid_id">⚠️ รหัสเก่า / ผิดรูปแบบ ({invalidIdCount})</option>
                       </select>
                     </div>
                   </div>
+
+                  {invalidIdCount > 0 && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                        gap: '8px',
+                        padding: '10px 14px',
+                        borderRadius: '12px',
+                        background: '#FFF7ED',
+                        border: '1px solid #FDBA74',
+                        color: '#9A3412',
+                        fontSize: '0.82rem',
+                        marginBottom: '12px',
+                      }}
+                    >
+                      <span>
+                        <i className="fa-solid fa-triangle-exclamation"></i>{' '}
+                        พบข้อมูลนักศึกษารหัสเก่า/ผิดรูปแบบ (ยังไม่ตรง 6xxxxxxxxx) จำนวน <strong>{invalidIdCount}</strong> รายการ — ครูสามารถกดปุ่ม <strong>&ldquo;แก้รหัส&rdquo;</strong> เพื่อย้ายคะแนนและใบงานเดิมทั้งหมดไปรหัสใหม่ได้โดยข้อมูลไม่หาย
+                      </span>
+                      <button
+                        type="button"
+                        className="btn btn-xs"
+                        style={{ background: filterStatus === 'invalid_id' ? 'var(--pastel-purple)' : '#EA580C' }}
+                        onClick={() => setFilterStatus(filterStatus === 'invalid_id' ? 'all' : 'invalid_id')}
+                      >
+                        {filterStatus === 'invalid_id' ? 'แสดงทั้งหมด' : `กรองดูเฉพาะรหัสเก่า (${invalidIdCount})`}
+                      </button>
+                    </div>
+                  )}
 
                   {/* Search & Bulk Trash bar */}
                   <div
@@ -3173,7 +3449,7 @@ export default function App() {
                           <th>ใบงาน (10)</th>
                           <th>รวม (20)</th>
                           <th>การตรวจงาน</th>
-                          <th>ลบข้อมูล</th>
+                          <th>จัดการข้อมูล</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -3268,23 +3544,34 @@ export default function App() {
                                   )}
                                 </td>
                                 <td>
-                                  <button
-                                    type="button"
-                                    className="btn btn-xs"
-                                    style={{ background: 'var(--danger)' }}
-                                    title="ย้ายข้อมูลนี้ลงถังขยะ (กู้คืนได้)"
-                                    onClick={() =>
-                                      setConfirmDialog({
-                                        title: 'ย้ายข้อมูลไปถังขยะ',
-                                        message: `ต้องการลบข้อมูลของ "${stdName} (${stdId})" ใน "${r.session}" ใช่หรือไม่?\n(ข้อมูลจะถูกย้ายไปที่ถังขยะและสามารถกู้คืนได้)`,
-                                        confirmLabel: 'ย้ายลงถังขยะ',
-                                        danger: true,
-                                        onConfirm: () => moveRecordsToTrash([r]),
-                                      })
-                                    }
-                                  >
-                                    <i className="fa-solid fa-trash-can"></i> ลบ
-                                  </button>
+                                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                                    <button
+                                      type="button"
+                                      className="btn btn-xs"
+                                      style={{ background: invalidIdFlag ? '#EA580C' : 'var(--pastel-purple)' }}
+                                      title="แก้ไขรหัสนักศึกษา/ชื่อ และย้ายคะแนน+ใบงานเดิมทั้งหมดโดยข้อมูลไม่หาย"
+                                      onClick={() => openEditStudentModal(r)}
+                                    >
+                                      <i className="fa-solid fa-user-pen"></i> แก้รหัส
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="btn btn-xs"
+                                      style={{ background: 'var(--danger)' }}
+                                      title="ย้ายข้อมูลนี้ลงถังขยะ (กู้คืนได้)"
+                                      onClick={() =>
+                                        setConfirmDialog({
+                                          title: 'ย้ายข้อมูลไปถังขยะ',
+                                          message: `ต้องการลบข้อมูลของ "${stdName} (${stdId})" ใน "${r.session}" ใช่หรือไม่?\n(ข้อมูลจะถูกย้ายไปที่ถังขยะและสามารถกู้คืนได้)`,
+                                          confirmLabel: 'ย้ายลงถังขยะ',
+                                          danger: true,
+                                          onConfirm: () => moveRecordsToTrash([r]),
+                                        })
+                                      }
+                                    >
+                                      <i className="fa-solid fa-trash-can"></i> ลบ
+                                    </button>
+                                  </div>
                                 </td>
                               </tr>
                             );
@@ -3891,6 +4178,136 @@ export default function App() {
             onDeleteLesson={handleCmsDeleteLesson}
             onSaveCmsSettings={handleCmsSaveSettings}
           />
+
+          {/* MODAL: EDIT / MIGRATE STUDENT ID (แก้รหัสเก่า/ผิด โดยข้อมูลและใบงานไม่หาย) */}
+          {editStdRecord && (
+            <div
+              className="modal active"
+              onClick={(e) => {
+                if (e.target === e.currentTarget && !editStdBusy) setEditStdRecord(null);
+              }}
+            >
+              <div className="modal-content" style={{ maxWidth: '520px' }}>
+                <h3 style={{ color: 'var(--pastel-purple)', marginBottom: '6px' }}>
+                  <i className="fa-solid fa-user-pen"></i> แก้ไขรหัสนักศึกษา / ย้ายข้อมูล (ไม่เสียใบงาน)
+                </h3>
+                <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginBottom: '12px', lineHeight: 1.55 }}>
+                  คะแนนสอบ ใบงานที่ส่งแล้ว ผลการตรวจ และคะแนนเข้าเรียนทั้งหมดจะถูกย้ายไปรหัสใหม่ให้ครบถ้วนโดยไม่สูญหาย (และหากรหัสใหม่เคยส่งครั้งอื่นไว้แล้ว ระบบจะรวมคะแนนให้อัตโนมัติ)
+                </p>
+
+                <div
+                  style={{
+                    background: 'var(--pastel-purple-light)',
+                    border: '1px solid var(--border-soft)',
+                    borderRadius: '12px',
+                    padding: '10px 14px',
+                    marginBottom: '14px',
+                    fontSize: '0.84rem',
+                  }}
+                >
+                  <div>
+                    รหัสเดิม: <strong style={{ color: 'var(--danger)' }}>{editStdRecord.stdId || '-'}</strong> | ชื่อเดิม:{' '}
+                    <strong>{editStdRecord.stdName || '-'}</strong>
+                  </div>
+                  <div style={{ color: 'var(--text-muted)', marginTop: '3px' }}>
+                    รายการที่เลือก: {editStdRecord.session} ({editStdRecord.lessonTitle})
+                  </div>
+                </div>
+
+                <div className="input-group">
+                  <label>รหัสนักศึกษาใหม่ (ต้องขึ้นต้นด้วย 6 และครบ 10 หลัก)</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={10}
+                    value={editStdIdInput}
+                    onChange={(e) => setEditStdIdInput(sanitizeStudentIdInput(e.target.value))}
+                    placeholder="เช่น 6812000123"
+                  />
+                  {renderStdIdValidationHint(editStdIdInput)}
+                </div>
+
+                <div className="input-group">
+                  <label>ชื่อ-นามสกุลนักศึกษา</label>
+                  <input
+                    type="text"
+                    value={editStdNameInput}
+                    onChange={(e) => setEditStdNameInput(e.target.value)}
+                    placeholder="ระบุชื่อ-นามสกุลที่ถูกต้อง"
+                  />
+                </div>
+
+                {(() => {
+                  const oldNorm =
+                    normalizeStdId(editStdRecord.stdId || editStdRecord.stdid) ||
+                    String(editStdRecord.stdId || editStdRecord.stdid || '').trim();
+                  const sameIdCount = oldNorm
+                    ? records.filter((r) => {
+                        const rNorm = normalizeStdId(r.stdId || r.stdid) || String(r.stdId || r.stdid || '').trim();
+                        return rNorm === oldNorm;
+                      }).length
+                    : 1;
+
+                  if (sameIdCount <= 1) return null;
+                  return (
+                    <div
+                      style={{
+                        background: '#F0FDF4',
+                        border: '1px solid #BBF7D0',
+                        borderRadius: '12px',
+                        padding: '10px 12px',
+                        marginBottom: '14px',
+                        fontSize: '0.83rem',
+                      }}
+                    >
+                      <label style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', cursor: 'pointer' }}>
+                        <input
+                          type="checkbox"
+                          checked={editStdAllSessions}
+                          onChange={(e) => setEditStdAllSessions(e.target.checked)}
+                          style={{ marginTop: '3px' }}
+                        />
+                        <span>
+                          <strong>ย้ายทุกครั้งที่ใช้รหัสเดิม &ldquo;{editStdRecord.stdId}&rdquo; ทั้งหมด ({sameIdCount} รายการ)</strong>
+                          <br />
+                          <small style={{ color: '#166534' }}>
+                            (แนะนำ) ระบบจะย้ายประวัติของเด็กคนนี้ทุกวิชาและทุกครั้งที่เคยทำไว้ไปรหัสใหม่พร้อมกันในคลิกเดียว
+                          </small>
+                        </span>
+                      </label>
+                    </div>
+                  );
+                })()}
+
+                <div className="modal-actions-row">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    disabled={editStdBusy}
+                    onClick={() => setEditStdRecord(null)}
+                  >
+                    ยกเลิก
+                  </button>
+                  <button
+                    type="button"
+                    className="btn"
+                    disabled={editStdBusy}
+                    onClick={saveMigratedStudentRecords}
+                  >
+                    {editStdBusy ? (
+                      <>
+                        <i className="fa-solid fa-spinner fa-spin"></i> กำลังย้ายข้อมูล...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fa-solid fa-cloud-arrow-up"></i> บันทึกและย้ายข้อมูลทั้งหมด
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* MODAL: KPC ALERT */}
           {kpcOpen && (
