@@ -1623,3 +1623,114 @@ footer {
   font-size: 0.78rem;
   color: var(--text-muted);
 }
+/* กล่องค้นหานักศึกษาแบบพิมพ์รหัสทันที (สำหรับครู) */
+.std-lookup-wrap {
+  position: relative;
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.std-lookup-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.std-lookup-input-box i.lookup-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--pastel-purple);
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+.std-lookup-input-box input {
+  width: 100%;
+  padding: 10px 36px 10px 36px;
+  border: 1.5px solid var(--border-soft);
+  border-radius: 12px;
+  font-size: 0.92rem;
+  background: #FAF5FF;
+  color: var(--text-dark);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.std-lookup-input-box input:focus {
+  border-color: var(--pastel-purple);
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(124, 90, 168, 0.14);
+}
+
+.std-lookup-clear-btn {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 7px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+.std-lookup-clear-btn:hover {
+  background: #EFE4F6;
+  color: var(--text-dark);
+}
+
+.std-lookup-dropdown {
+  margin-top: 6px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  box-shadow: 0 10px 26px rgba(58, 42, 77, 0.14);
+  max-height: 230px;
+  overflow-y: auto;
+  z-index: 30;
+}
+
+.std-lookup-item {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #F3EAF9;
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  transition: background 0.12s;
+}
+.std-lookup-item:last-child {
+  border-bottom: none;
+}
+.std-lookup-item:hover {
+  background: var(--pastel-purple-light);
+}
+
+.std-lookup-badge {
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 8px;
+  background: var(--success-bg);
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+  white-space: nowrap;
+}
+
+.std-found-pill {
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: var(--success-bg);
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
