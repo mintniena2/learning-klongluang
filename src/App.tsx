@@ -4634,4 +4634,151 @@ export default function App() {
                     boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
                   }}
                 />
-                <p
+                <p style={{ color: 'white', textAlign: 'center', fontSize: '0.85rem', marginTop: '10px' }}>
+                  (คลิกพื้นที่ว่างเพื่อปิดหน้าต่าง)
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* MODAL: MAINTENANCE MESSAGE PROMPT */}
+          {maintPromptOpen && (
+            <div
+              className="modal active"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) setMaintPromptOpen(false);
+              }}
+            >
+              <div className="modal-content" style={{ maxWidth: '480px' }}>
+                <h3 style={{ color: 'var(--danger)', marginBottom: '8px' }}>
+                  <i className="fa-solid fa-screwdriver-wrench"></i> เปิดโหมดปิดปรับปรุงเว็บไซต์
+                </h3>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '12px' }}>
+                  นักศึกษาทุกเครื่องจะถูกล็อคตั้งแต่หน้าแรกทันที จนกว่าคุณครูจะกด &ldquo;เปิดใช้งานเว็บตามปกติ&rdquo;
+                </p>
+                <div className="input-group">
+                  <label>ข้อความแจ้งเตือนนักศึกษา</label>
+                  <textarea
+                    rows={3}
+                    value={maintPromptMsg}
+                    onChange={(e) => setMaintPromptMsg(e.target.value)}
+                  />
+                </div>
+                <div className="modal-actions-row">
+                  <button type="button" className="btn btn-secondary" onClick={() => setMaintPromptOpen(false)}>
+                    ยกเลิก
+                  </button>
+                  <button
+                    type="button"
+                    className="btn"
+                    style={{ background: 'var(--danger)' }}
+                    onClick={async () => {
+                      setMaintPromptOpen(false);
+                      sessionStorage.setItem('clc_teacher_bypass', '1');
+                      setTeacherBypass(true);
+                      await setCloudMaintenance(true, maintPromptMsg.trim());
+                      showNotice('เปิดโหมดปิดปรับปรุงเว็บไซต์แล้ว! นักศึกษาทุกเครื่องจะถูกล็อคตั้งแต่หน้าแรกทันที');
+                    }}
+                  >
+                    ยืนยันปิดปรับปรุงเว็บ
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* IN-APP NOTICE DIALOG */}
+      {noticeDialog && (
+        <div
+          className="modal active"
+          style={{ zIndex: 3000 }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setNoticeDialog(null);
+          }}
+        >
+          <div className="modal-content" style={{ maxWidth: '420px', textAlign: 'center', padding: '24px 20px' }}>
+            <div
+              style={{
+                width: '52px',
+                height: '52px',
+                borderRadius: '15px',
+                background: 'var(--pastel-purple-light)',
+                color: 'var(--pastel-purple)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 12px',
+                fontSize: '1.4rem',
+              }}
+            >
+              <i className="fa-solid fa-circle-info"></i>
+            </div>
+            <h3 style={{ color: 'var(--text-dark)', fontSize: '1.1rem', marginBottom: '8px' }}>{noticeDialog.title}</h3>
+            <p
+              style={{
+                fontSize: '0.9rem',
+                color: 'var(--text-body)',
+                lineHeight: 1.6,
+                whiteSpace: 'pre-wrap',
+                marginBottom: '18px',
+              }}
+            >
+              {noticeDialog.message}
+            </p>
+            <button type="button" className="btn" onClick={() => setNoticeDialog(null)}>
+              ตกลง
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* IN-APP CONFIRM DIALOG */}
+      {confirmDialog && (
+        <div
+          className="modal active"
+          style={{ zIndex: 3000 }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setConfirmDialog(null);
+          }}
+        >
+          <div className="modal-content" style={{ maxWidth: '440px', padding: '24px 20px' }}>
+            <h3 style={{ color: confirmDialog.danger ? 'var(--danger)' : 'var(--pastel-purple)', marginBottom: '8px' }}>
+              <i className={`fa-solid ${confirmDialog.danger ? 'fa-triangle-exclamation' : 'fa-circle-question'}`}></i>{' '}
+              {confirmDialog.title}
+            </h3>
+            <p
+              style={{
+                fontSize: '0.9rem',
+                color: 'var(--text-body)',
+                lineHeight: 1.6,
+                whiteSpace: 'pre-wrap',
+                marginBottom: '18px',
+              }}
+            >
+              {confirmDialog.message}
+            </p>
+            <div className="modal-actions-row">
+              <button type="button" className="btn btn-secondary" onClick={() => setConfirmDialog(null)}>
+                ยกเลิก
+              </button>
+              <button
+                type="button"
+                className="btn"
+                style={{ background: confirmDialog.danger ? 'var(--danger)' : undefined }}
+                onClick={async () => {
+                  const fn = confirmDialog.onConfirm;
+                  setConfirmDialog(null);
+                  await fn();
+                }}
+              >
+                {confirmDialog.confirmLabel || 'ยืนยัน'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
