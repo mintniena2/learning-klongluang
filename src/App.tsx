@@ -112,6 +112,149 @@ function SmartImage({
   );
 }
 
+function StudentQuickLookup({
+  students,
+  onSelectStudent,
+  onUseNewId,
+  getExtraBadge,
+  label = 'ค้นหาด่วนด้วยรหัสนักศึกษา หรือ ชื่อ (พิมพ์แล้วกดเลือก / กด Enter)',
+  placeholder = 'พิมพ์รหัส (เช่น 6912 หรือเลขท้าย) หรือชื่อนักศึกษา...',
+}: {
+  students: { stdId: string; stdName: string }[];
+  onSelectStudent: (student: { stdId: string; stdName: string }) => void;
+  onUseNewId?: (newId: string) => void;
+  getExtraBadge?: (stdId: string) => string | null;
+  label?: string;
+  placeholder?: string;
+}) {
+  const [query, setQuery] = useState('');
+  const [open, setOpen] = useState(false);
+
+  const trimmed = query.trim();
+  const normQ = normalizeStdId(trimmed);
+
+  const matches = useMemo(() => {
+    if (!trimmed) return [];
+    const qLower = trimmed.toLowerCase();
+    return students
+      .filter((s) => {
+        const sid = s.stdId.toLowerCase();
+        const sname = s.stdName.toLowerCase();
+        return sid.includes(qLower) || (normQ !== '' && normalizeStdId(sid).includes(normQ)) || sname.includes(qLower);
+      })
+      .slice(0, 10);
+  }, [students, trimmed, normQ]);
+
+  const handlePick = (student: { stdId: string; stdName: string }) => {
+    onSelectStudent(student);
+    setQuery('');
+    setOpen(false);
+  };
+
+  const isValidNewTenDigits = /^\d{10}$/.test(trimmed) && trimmed.startsWith('6');
+
+  return (
+    <div className="std-lookup-wrap">
+      <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.84rem', fontWeight: 600, color: 'var(--text-dark)' }}>
+        <i className="fa-solid fa-magnifying-glass" style={{ color: 'var(--pastel-purple)' }}></i> {label}
+      </label>
+      <div className="std-lookup-input-box">
+        <i className="fa-solid fa-magnifying-glass lookup-icon"></i>
+        <input
+          type="text"
+          value={query}
+          placeholder={placeholder}
+          onFocus={() => setOpen(true)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setOpen(true);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              const exact = matches.find(
+                (m) => m.stdId === trimmed || (normQ !== '' && normalizeStdId(m.stdId) === normQ)
+              );
+              if (exact) {
+                handlePick(exact);
+              } else if (matches.length === 1) {
+                handlePick(matches[0]);
+              } else if (matches.length === 0 && isValidNewTenDigits && onUseNewId) {
+                onUseNewId(trimmed);
+                setQuery('');
+                setOpen(false);
+              }
+            }
+          }}
+        />
+        {query && (
+          <button
+            type="button"
+            className="std-lookup-clear-btn"
+            title="ล้างคำค้นหา"
+            onClick={() => {
+              setQuery('');
+              setOpen(false);
+            }}
+          >
+            <i className="fa-solid fa-xmark"></i>
+          </button>
+        )}
+      </div>
+
+      {open && trimmed.length > 0 && (
+        <div className="std-lookup-dropdown">
+          {matches.length > 0 ? (
+            matches.map((u) => {
+              const badgeText = getExtraBadge ? getExtraBadge(u.stdId) : null;
+              return (
+                <button
+                  key={u.stdId}
+                  type="button"
+                  className="std-lookup-item"
+                  onClick={() => handlePick(u)}
+                >
+                  <div>
+                    <strong className="font-mono-num" style={{ color: 'var(--pastel-purple-dark)', fontSize: '0.9rem' }}>
+                      {u.stdId}
+                    </strong>
+                    <div style={{ fontSize: '0.84rem', color: 'var(--text-dark)' }}>{u.stdName || 'ไม่ระบุชื่อ'}</div>
+                  </div>
+                  {badgeText ? (
+                    <span className="std-lookup-badge">{badgeText}</span>
+                  ) : (
+                    <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>
+                      เลือก <i className="fa-solid fa-arrow-right"></i>
+                    </span>
+                  )}
+                </button>
+              );
+            })
+          ) : (
+            <div style={{ padding: '12px', fontSize: '0.84rem', color: 'var(--text-muted)', textAlign: 'center' }}>
+              <div>ไม่พบรหัส &ldquo;{trimmed}&rdquo; ในรายชื่อเดิม</div>
+              {isValidNewTenDigits && onUseNewId && (
+                <button
+                  type="button"
+                  className="btn btn-xs"
+                  style={{ marginTop: '8px', background: 'var(--pastel-purple)' }}
+                  onClick={() => {
+                    onUseNewId(trimmed);
+                    setQuery('');
+                    setOpen(false);
+                  }}
+                >
+                  <i className="fa-solid fa-plus"></i> ใช้รหัสใหม่ {trimmed} กรอกข้อมูลด้านล่าง
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function App() {
   // Boot & Maintenance state
   const [bootResolved, setBootResolved] = useState(false);
@@ -243,6 +386,8 @@ export default function App() {
   const [attScore, setAttScore] = useState('');
   const [attBusy, setAttBusy] = useState(false);
   const [attSavedEntries, setAttSavedEntries] = useState<TermAttendanceEntry[]>([]);
+  const [attListSearch, setAttListSearch] = useState('');
+  const attScoreInputRef = useRef<HTMLInputElement | null>(null);
 
   const [inClassOpen, setInClassOpen] = useState(false);
   const [inClassAuthed, setInClassAuthed] = useState(false);
@@ -254,6 +399,7 @@ export default function App() {
   const [inClassNote, setInClassNote] = useState('');
   const [inClassStatusMsg, setInClassStatusMsg] = useState('');
   const [inClassBusy, setInClassBusy] = useState(false);
+  const inClassScoreInputRef = useRef<HTMLInputElement | null>(null);
 
   const [trashModalOpen, setTrashModalOpen] = useState(false);
   const [cmsModalOpen, setCmsModalOpen] = useState(false);
@@ -1343,18 +1489,36 @@ export default function App() {
     records.forEach((r) => {
       const sId = String(r.stdId || r.stdid || '').trim();
       const sName = String(r.stdName || r.stdname || '').trim();
+      if (!sId || sId.startsWith('__')) return;
       const key = normalizeStdId(sId) || sId;
-      if (sId && !map[key]) {
+      if (!map[key]) {
         map[key] = { stdId: sId, stdName: sName };
+      } else if (!map[key].stdName && sName) {
+        map[key].stdName = sName;
       }
     });
-    return Object.values(map);
-  }, [records]);
+
+    const termStore = getTermAttendanceStore();
+    Object.values(termStore).forEach((entry) => {
+      const sId = String(entry.stdId || '').trim();
+      const sName = String(entry.stdName || '').trim();
+      if (!sId || sId.startsWith('__')) return;
+      const key = normalizeStdId(sId) || sId;
+      if (!map[key]) {
+        map[key] = { stdId: sId, stdName: sName };
+      } else if (!map[key].stdName && sName) {
+        map[key].stdName = sName;
+      }
+    });
+
+    return Object.values(map).sort((a, b) => a.stdId.localeCompare(b.stdId));
+  }, [records, attSavedEntries]);
 
   const openAttendanceModal = async () => {
     setAttStdId('');
     setAttStdName('');
     setAttScore('');
+    setAttListSearch('');
     setAttSavedEntries(Object.values(getTermAttendanceStore()));
     setAttModalOpen(true);
     const res = await syncFromCloud(false);
@@ -3833,7 +3997,7 @@ export default function App() {
             </div>
           )}
 
-          {/* MODAL: TERM ATTENDANCE */}
+          {/* MODAL: TERM ATTENDANCE (ค้นหาด้วยรหัสทันที) */}
           {attModalOpen && (
             <div
               className="modal active"
@@ -3846,44 +4010,62 @@ export default function App() {
                   <i className="fa-solid fa-user-check"></i> กรอกคะแนนเข้าเรียนรวมทั้งเทอม
                 </h3>
                 <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '12px' }}>
-                  เลือกรายชื่อนักศึกษาหรือกรอกรหัส เพื่อบันทึกคะแนนเข้าเรียนรวมทั้งเทอม (ไม่แยกรายวิชา)
+                  พิมพ์รหัสนักศึกษาหรือชื่อเพื่อค้นหาและดึงข้อมูลทันที (ไม่ต้องเลื่อนหาในแถบรายการ)
                 </p>
 
-                <div className="input-group">
-                  <label>เลือกจากนักศึกษาในระบบ (หรือกรอกรหัสเองด้านล่าง)</label>
-                  <select
-                    value=""
-                    onChange={(e) => {
-                      const sid = e.target.value;
-                      if (!sid) return;
-                      const found = uniqueStudentsList.find((u) => u.stdId === sid);
-                      setAttStdId(sanitizeStudentIdInput(sid));
-                      setAttStdName(found ? found.stdName : '');
-                      const norm = normalizeStdId(sid);
-                      const existingScore = getTermAttendanceScore(
-                        sid,
-                        records.filter((r) => normalizeStdId(r.stdId || r.stdid) === norm)
-                      );
-                      if (existingScore !== null) setAttScore(String(existingScore));
-                    }}
-                  >
-                    <option value="">-- กรอกรหัสใหม่ / เลือกนักศึกษา --</option>
-                    {uniqueStudentsList.map((u) => (
-                      <option key={u.stdId} value={u.stdId}>
-                        {u.stdId} - {u.stdName}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <StudentQuickLookup
+                  students={uniqueStudentsList}
+                  getExtraBadge={(sid) => {
+                    const norm = normalizeStdId(sid);
+                    const sc = getTermAttendanceScore(
+                      sid,
+                      records.filter((r) => normalizeStdId(r.stdId || r.stdid) === norm)
+                    );
+                    return sc !== null ? `เดิม: ${sc} คะแนน` : null;
+                  }}
+                  onSelectStudent={(u) => {
+                    const cleanId = sanitizeStudentIdInput(u.stdId);
+                    setAttStdId(cleanId);
+                    setAttStdName(u.stdName);
+                    const norm = normalizeStdId(u.stdId);
+                    const existingScore = getTermAttendanceScore(
+                      u.stdId,
+                      records.filter((r) => normalizeStdId(r.stdId || r.stdid) === norm)
+                    );
+                    setAttScore(existingScore !== null ? String(existingScore) : '');
+                    setTimeout(() => attScoreInputRef.current?.focus(), 50);
+                  }}
+                  onUseNewId={(newId) => {
+                    setAttStdId(sanitizeStudentIdInput(newId));
+                    setAttStdName('');
+                    setAttScore('');
+                  }}
+                />
 
                 <div className="input-group">
-                  <label>รหัสนักศึกษา (ขึ้นต้นด้วย 6 · 10 หลัก)</label>
+                  <label>รหัสนักศึกษา (พิมพ์ครบ 10 หลักเพื่อดึงชื่ออัตโนมัติได้ทันที)</label>
                   <input
                     type="text"
                     inputMode="numeric"
                     maxLength={10}
                     value={attStdId}
-                    onChange={(e) => setAttStdId(sanitizeStudentIdInput(e.target.value))}
+                    onChange={(e) => {
+                      const cleanVal = sanitizeStudentIdInput(e.target.value);
+                      setAttStdId(cleanVal);
+                      if (cleanVal.length === 10) {
+                        const norm = normalizeStdId(cleanVal);
+                        const hit = uniqueStudentsList.find((u) => normalizeStdId(u.stdId) === norm);
+                        if (hit) {
+                          setAttStdName(hit.stdName);
+                          const sc = getTermAttendanceScore(
+                            hit.stdId,
+                            records.filter((r) => normalizeStdId(r.stdId || r.stdid) === norm)
+                          );
+                          setAttScore(sc !== null ? String(sc) : '');
+                          setTimeout(() => attScoreInputRef.current?.focus(), 50);
+                        }
+                      }
+                    }}
                     placeholder="เช่น 6912345678"
                   />
                   {renderStdIdValidationHint(attStdId)}
@@ -3900,11 +4082,15 @@ export default function App() {
                 <div className="input-group">
                   <label>คะแนนเข้าเรียนรวมทั้งเทอม</label>
                   <input
+                    ref={attScoreInputRef}
                     type="number"
                     min={0}
                     step={0.5}
                     value={attScore}
                     onChange={(e) => setAttScore(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !attBusy) saveAttendanceScore();
+                    }}
                     placeholder="กรอกคะแนนเข้าเรียนรวมทั้งเทอม"
                   />
                 </div>
@@ -3925,9 +4111,34 @@ export default function App() {
                 </div>
 
                 <div style={{ borderTop: '1px dashed var(--border-hairline)', paddingTop: '12px' }}>
-                  <h4 style={{ fontSize: '0.9rem', color: 'var(--pastel-purple)', marginBottom: '8px' }}>
-                    รายการคะแนนเข้าเรียนที่บันทึกไว้
-                  </h4>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      gap: '8px',
+                      flexWrap: 'wrap',
+                      marginBottom: '8px',
+                    }}
+                  >
+                    <h4 style={{ fontSize: '0.9rem', color: 'var(--pastel-purple)', margin: 0 }}>
+                      รายการคะแนนเข้าเรียนที่บันทึกไว้ ({attSavedEntries.length})
+                    </h4>
+                    <input
+                      type="text"
+                      value={attListSearch}
+                      onChange={(e) => setAttListSearch(e.target.value)}
+                      placeholder="ค้นหารหัส/ชื่อในรายการ..."
+                      style={{
+                        padding: '6px 10px',
+                        borderRadius: '9px',
+                        border: '1px solid var(--border-soft)',
+                        fontSize: '0.82rem',
+                        width: '210px',
+                        background: 'white',
+                      }}
+                    />
+                  </div>
                   <div className="table-container" style={{ maxHeight: '200px', overflowY: 'auto' }}>
                     <table>
                       <thead>
@@ -3938,14 +4149,25 @@ export default function App() {
                         </tr>
                       </thead>
                       <tbody>
-                        {attSavedEntries.length === 0 ? (
-                          <tr>
-                            <td colSpan={3} style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
-                              ยังไม่มีรายการคะแนนเข้าเรียนที่บันทึกไว้
-                            </td>
-                          </tr>
-                        ) : (
-                          attSavedEntries.map((item) => (
+                        {(() => {
+                          const q = attListSearch.trim().toLowerCase();
+                          const shown = q
+                            ? attSavedEntries.filter(
+                                (item) =>
+                                  item.stdId.toLowerCase().includes(q) ||
+                                  (item.stdName || '').toLowerCase().includes(q)
+                              )
+                            : attSavedEntries;
+                          if (shown.length === 0) {
+                            return (
+                              <tr>
+                                <td colSpan={3} style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+                                  {q ? 'ไม่พบรายการที่ค้นหา' : 'ยังไม่มีรายการคะแนนเข้าเรียนที่บันทึกไว้'}
+                                </td>
+                              </tr>
+                            );
+                          }
+                          return shown.map((item) => (
                             <tr key={item.stdId}>
                               <td>
                                 <strong>{item.stdId}</strong>
@@ -3964,14 +4186,15 @@ export default function App() {
                                     setAttStdId(sanitizeStudentIdInput(item.stdId));
                                     setAttStdName(item.stdName || '');
                                     setAttScore(String(item.score));
+                                    setTimeout(() => attScoreInputRef.current?.focus(), 50);
                                   }}
                                 >
                                   <i className="fa-solid fa-pen"></i>
                                 </button>
                               </td>
                             </tr>
-                          ))
-                        )}
+                          ));
+                        })()}
                       </tbody>
                     </table>
                   </div>
@@ -3980,7 +4203,7 @@ export default function App() {
             </div>
           )}
 
-          {/* MODAL: IN-CLASS SCORING */}
+          {/* MODAL: IN-CLASS SCORING (ค้นหาด้วยรหัสทันที) */}
           {inClassOpen && (
             <div
               className="modal active"
@@ -4053,35 +4276,78 @@ export default function App() {
                       </select>
                     </div>
 
-                    <div className="input-group">
-                      <label>เลือกจากนักศึกษาในระบบ (หรือกรอกรหัสใหม่ด้านล่าง)</label>
-                      <select
-                        value=""
-                        onChange={(e) => {
-                          const sid = e.target.value;
-                          if (!sid) return;
-                          const found = uniqueStudentsList.find((u) => u.stdId === sid);
-                          setInClassStdId(sanitizeStudentIdInput(sid));
-                          setInClassStdName(found ? found.stdName : '');
-                        }}
-                      >
-                        <option value="">-- กรอกรหัสใหม่ / เลือกนักศึกษา --</option>
-                        {uniqueStudentsList.map((u) => (
-                          <option key={u.stdId} value={u.stdId}>
-                            {u.stdId} - {u.stdName}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <StudentQuickLookup
+                      students={uniqueStudentsList}
+                      getExtraBadge={(sid) => {
+                        const norm = normalizeStdId(sid);
+                        const existing = records.find(
+                          (r) =>
+                            normalizeStdId(r.stdId || r.stdid) === norm &&
+                            String(r.lessonId || r.lessonid || '').trim() === inClassLessonId
+                        );
+                        if (!existing) return null;
+                        const qSc = Number(existing.bestQuizScore) || 0;
+                        const aSc = getRecordAssignmentScore(existing) ?? 0;
+                        return `ในคาบนี้: ${qSc + aSc}/20`;
+                      }}
+                      onSelectStudent={(u) => {
+                        setInClassStdId(sanitizeStudentIdInput(u.stdId));
+                        setInClassStdName(u.stdName);
+                        const norm = normalizeStdId(u.stdId);
+                        const existing = records.find(
+                          (r) =>
+                            normalizeStdId(r.stdId || r.stdid) === norm &&
+                            String(r.lessonId || r.lessonid || '').trim() === inClassLessonId
+                        );
+                        if (existing) {
+                          const qSc = Number(existing.bestQuizScore) || 0;
+                          const aSc = getRecordAssignmentScore(existing);
+                          if (aSc !== null) {
+                            setInClassScore(String(qSc + aSc));
+                          } else {
+                            setInClassScore('');
+                          }
+                        } else {
+                          setInClassScore('');
+                        }
+                        setTimeout(() => inClassScoreInputRef.current?.focus(), 50);
+                      }}
+                      onUseNewId={(newId) => {
+                        setInClassStdId(sanitizeStudentIdInput(newId));
+                        setInClassStdName('');
+                        setInClassScore('');
+                      }}
+                    />
 
                     <div className="input-group">
-                      <label>รหัสนักศึกษา (ขึ้นต้นด้วย 6 · 10 หลัก)</label>
+                      <label>รหัสนักศึกษา (พิมพ์ครบ 10 หลักเพื่อดึงชื่ออัตโนมัติได้ทันที)</label>
                       <input
                         type="text"
                         inputMode="numeric"
                         maxLength={10}
                         value={inClassStdId}
-                        onChange={(e) => setInClassStdId(sanitizeStudentIdInput(e.target.value))}
+                        onChange={(e) => {
+                          const cleanVal = sanitizeStudentIdInput(e.target.value);
+                          setInClassStdId(cleanVal);
+                          if (cleanVal.length === 10) {
+                            const norm = normalizeStdId(cleanVal);
+                            const hit = uniqueStudentsList.find((u) => normalizeStdId(u.stdId) === norm);
+                            if (hit) {
+                              setInClassStdName(hit.stdName);
+                              const existing = records.find(
+                                (r) =>
+                                  normalizeStdId(r.stdId || r.stdid) === norm &&
+                                  String(r.lessonId || r.lessonid || '').trim() === inClassLessonId
+                              );
+                              if (existing) {
+                                const qSc = Number(existing.bestQuizScore) || 0;
+                                const aSc = getRecordAssignmentScore(existing);
+                                if (aSc !== null) setInClassScore(String(qSc + aSc));
+                              }
+                              setTimeout(() => inClassScoreInputRef.current?.focus(), 50);
+                            }
+                          }
+                        }}
                         placeholder="เช่น 6912345678"
                       />
                       {renderStdIdValidationHint(inClassStdId)}
@@ -4100,12 +4366,16 @@ export default function App() {
                     <div className="input-group">
                       <label>คะแนนในชั้นเรียน (เต็ม 20 คะแนน)</label>
                       <input
+                        ref={inClassScoreInputRef}
                         type="number"
                         min={0}
                         max={20}
                         step={0.5}
                         value={inClassScore}
                         onChange={(e) => setInClassScore(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !inClassBusy) saveInClassScore();
+                        }}
                         placeholder="กรอกคะแนน 0 - 20"
                       />
                       <small style={{ display: 'block', marginTop: '5px', color: 'var(--pastel-purple)', fontSize: '0.8rem' }}>
@@ -4364,151 +4634,4 @@ export default function App() {
                     boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
                   }}
                 />
-                <p style={{ color: 'white', textAlign: 'center', fontSize: '0.85rem', marginTop: '10px' }}>
-                  (คลิกพื้นที่ว่างเพื่อปิดหน้าต่าง)
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* MODAL: MAINTENANCE MESSAGE PROMPT */}
-          {maintPromptOpen && (
-            <div
-              className="modal active"
-              onClick={(e) => {
-                if (e.target === e.currentTarget) setMaintPromptOpen(false);
-              }}
-            >
-              <div className="modal-content" style={{ maxWidth: '480px' }}>
-                <h3 style={{ color: 'var(--danger)', marginBottom: '8px' }}>
-                  <i className="fa-solid fa-screwdriver-wrench"></i> เปิดโหมดปิดปรับปรุงเว็บไซต์
-                </h3>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '12px' }}>
-                  นักศึกษาทุกเครื่องจะถูกล็อคตั้งแต่หน้าแรกทันที จนกว่าคุณครูจะกด &ldquo;เปิดใช้งานเว็บตามปกติ&rdquo;
-                </p>
-                <div className="input-group">
-                  <label>ข้อความแจ้งเตือนนักศึกษา</label>
-                  <textarea
-                    rows={3}
-                    value={maintPromptMsg}
-                    onChange={(e) => setMaintPromptMsg(e.target.value)}
-                  />
-                </div>
-                <div className="modal-actions-row">
-                  <button type="button" className="btn btn-secondary" onClick={() => setMaintPromptOpen(false)}>
-                    ยกเลิก
-                  </button>
-                  <button
-                    type="button"
-                    className="btn"
-                    style={{ background: 'var(--danger)' }}
-                    onClick={async () => {
-                      setMaintPromptOpen(false);
-                      sessionStorage.setItem('clc_teacher_bypass', '1');
-                      setTeacherBypass(true);
-                      await setCloudMaintenance(true, maintPromptMsg.trim());
-                      showNotice('เปิดโหมดปิดปรับปรุงเว็บไซต์แล้ว! นักศึกษาทุกเครื่องจะถูกล็อคตั้งแต่หน้าแรกทันที');
-                    }}
-                  >
-                    ยืนยันปิดปรับปรุงเว็บ
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* IN-APP NOTICE DIALOG */}
-      {noticeDialog && (
-        <div
-          className="modal active"
-          style={{ zIndex: 3000 }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setNoticeDialog(null);
-          }}
-        >
-          <div className="modal-content" style={{ maxWidth: '420px', textAlign: 'center', padding: '24px 20px' }}>
-            <div
-              style={{
-                width: '52px',
-                height: '52px',
-                borderRadius: '15px',
-                background: 'var(--pastel-purple-light)',
-                color: 'var(--pastel-purple)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 12px',
-                fontSize: '1.4rem',
-              }}
-            >
-              <i className="fa-solid fa-circle-info"></i>
-            </div>
-            <h3 style={{ color: 'var(--text-dark)', fontSize: '1.1rem', marginBottom: '8px' }}>{noticeDialog.title}</h3>
-            <p
-              style={{
-                fontSize: '0.9rem',
-                color: 'var(--text-body)',
-                lineHeight: 1.6,
-                whiteSpace: 'pre-wrap',
-                marginBottom: '18px',
-              }}
-            >
-              {noticeDialog.message}
-            </p>
-            <button type="button" className="btn" onClick={() => setNoticeDialog(null)}>
-              ตกลง
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* IN-APP CONFIRM DIALOG */}
-      {confirmDialog && (
-        <div
-          className="modal active"
-          style={{ zIndex: 3000 }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setConfirmDialog(null);
-          }}
-        >
-          <div className="modal-content" style={{ maxWidth: '440px', padding: '24px 20px' }}>
-            <h3 style={{ color: confirmDialog.danger ? 'var(--danger)' : 'var(--pastel-purple)', marginBottom: '8px' }}>
-              <i className={`fa-solid ${confirmDialog.danger ? 'fa-triangle-exclamation' : 'fa-circle-question'}`}></i>{' '}
-              {confirmDialog.title}
-            </h3>
-            <p
-              style={{
-                fontSize: '0.9rem',
-                color: 'var(--text-body)',
-                lineHeight: 1.6,
-                whiteSpace: 'pre-wrap',
-                marginBottom: '18px',
-              }}
-            >
-              {confirmDialog.message}
-            </p>
-            <div className="modal-actions-row">
-              <button type="button" className="btn btn-secondary" onClick={() => setConfirmDialog(null)}>
-                ยกเลิก
-              </button>
-              <button
-                type="button"
-                className="btn"
-                style={{ background: confirmDialog.danger ? 'var(--danger)' : undefined }}
-                onClick={async () => {
-                  const fn = confirmDialog.onConfirm;
-                  setConfirmDialog(null);
-                  await fn();
-                }}
-              >
-                {confirmDialog.confirmLabel || 'ยืนยัน'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
+                <p
